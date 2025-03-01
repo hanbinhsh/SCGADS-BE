@@ -1,6 +1,5 @@
 package com.scmoanno.scmoanno.controller;
 
-
 import com.scmoanno.scmoanno.entity.*;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -24,6 +23,9 @@ import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 
 import java.util.*;
+
+import static com.scmoanno.scmoanno.controller.Utils.getResultLocation;
+import static com.scmoanno.scmoanno.controller.Utils.getUploadLocation;
 
 @RestController
 public class FileController {
@@ -57,27 +59,27 @@ public class FileController {
         if(suffixIndex > 0){  // 有后缀名
             randomFileName = randomFileName + fileName.substring(suffixIndex);
         }
-        String realFilePath = "c:/ScmoannoResult/"+randomFileName;
+        String realFilePath = getResultLocation() + randomFileName;
         // 数据库包装
         Scmoannoresult result2=filesServer.findResultByTaskName(taskName);
         Scmoannoresult result = new Scmoannoresult();
         if(Objects.equals(fileType, "configjsFile")){
             if (result2.getConfigFile() != null) {
-                result2.deleteFile("c:\\ScmoannoResult\\" + result2.getConfigFile());
+                result2.deleteFile(getResultLocation() + result2.getConfigFile());
             }
             result.setConfigFile(randomFileName);
             filesServer.updateResult1(result, taskName);
         }
         else if(Objects.equals(fileType, "datajsFile")){
             if (result2.getDataFile() != null) {
-                result2.deleteFile("c:\\ScmoannoResult\\" + result2.getDataFile());
+                result2.deleteFile(getResultLocation() + result2.getDataFile());
             }
             result.setDataFile(randomFileName);
             filesServer.updateResult2(result, taskName);
         }
         else if(Objects.equals(fileType, "lablejsFile")){
             if (result2.getLableFile() != null) {
-                result2.deleteFile("c:\\ScmoannoResult\\" + result2.getLableFile());
+                result2.deleteFile(getResultLocation() + result2.getLableFile());
             }
             result.setLableFile(randomFileName);
             filesServer.updateResult3(result, taskName);
@@ -104,13 +106,13 @@ public class FileController {
 
         String filePaths = "paths";
         if(type.equals("config")) {
-            filePaths = "c:\\ScmoannoResult\\"+result.getConfigFile();
+            filePaths = getResultLocation()+result.getConfigFile();
         }
         else if(type.equals("label")) {
-            filePaths = "c:\\ScmoannoResult\\"+result.getLableFile();
+            filePaths = getResultLocation()+result.getLableFile();
         }
         else if(type.equals("data")) {
-            filePaths = "c:\\ScmoannoResult\\"+result.getDataFile();
+            filePaths = getResultLocation()+result.getDataFile();
         }
         File dFile = new File(filePaths);
         return builder.body(FileUtils.readFileToByteArray(dFile));
@@ -133,7 +135,7 @@ public class FileController {
         if(suffixIndex > 0){  // 有后缀名
             randomFileName = randomFileName + fileName.substring(suffixIndex);
         }
-        String realFilePath = "c:/ScmoannoFiles/"+randomFileName;
+        String realFilePath = getUploadLocation() + randomFileName;
         // 数据库包装
 
         Scmoannofiles files = new Scmoannofiles();
@@ -178,9 +180,9 @@ public class FileController {
     public ResponseEntity<byte[]> download(@RequestParam String taskName) throws IOException {
         Scmoannofiles file = filesServer.findFileByTaskName(taskName);
         String[] filePaths = new String[3];
-        filePaths[0] = "c:\\ScmoannoFiles\\"+file.getScRna_SeqFile();
-        filePaths[1] = "c:\\ScmoannoFiles\\"+file.getScAtac_SeqFile();
-        filePaths[2] = "c:\\ScmoannoFiles\\"+file.getTagFile();
+        filePaths[0] = getUploadLocation() + file.getScRna_SeqFile();
+        filePaths[1] = getUploadLocation() + file.getScAtac_SeqFile();
+        filePaths[2] = getUploadLocation() + file.getTagFile();
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             ZipArchiveOutputStream zaos = new ZipArchiveOutputStream(baos);

@@ -15,6 +15,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import static com.scmoanno.scmoanno.controller.Utils.getResultLocation;
+import static com.scmoanno.scmoanno.controller.Utils.getUploadLocation;
+
 @RestController
 public class TaskController {
     @Resource
@@ -53,31 +56,38 @@ public class TaskController {
     }
 
     @RequestMapping("/deleteTaskByID")
-    @CrossOrigin(origins = "*")
-    public Result deleteTaskByID(@RequestParam long taskID,@RequestParam String taskName) {
-        Scmoannofiles file  = filesServer.findFileByTaskName(taskName) ;
-        if (file.getScRna_SeqFile() != null) {
-            file.deleteFile("c:\\ScmoannoFiles\\" + file.getScRna_SeqFile());
+        @CrossOrigin(origins = "*")
+        public Result deleteTaskByID(@RequestParam long taskID,@RequestParam String taskName) {
+            Scmoannofiles file  = filesServer.findFileByTaskName(taskName);
+            if (file != null) {  // 先判断 file 是否为空
+                if (file.getScRna_SeqFile() != null) {
+                    file.deleteFile(getUploadLocation() + file.getScRna_SeqFile());
+                }
+                if (file.getScAtac_SeqFile() != null) {
+                    file.deleteFile(getUploadLocation() + file.getScAtac_SeqFile());
+                }
+                if (file.getTagFile() != null) {
+                    file.deleteFile(getUploadLocation() + file.getTagFile());
+                }
+            }
+
+            Scmoannoresult result = filesServer.findResultByTaskName(taskName);
+            if (result != null) {  // 先判断 result 是否为空
+                if (result.getConfigFile() != null) {
+                    result.deleteFile(getResultLocation() + result.getConfigFile());
+                }
+                if (result.getDataFile() != null) {
+                    result.deleteFile(getResultLocation() + result.getDataFile());
+                }
+                if (result.getLableFile() != null) {
+                    result.deleteFile(getResultLocation() + result.getLableFile());
+                }
+            }
+
+            taskServer.deleteTasksByTaskId(taskID);
+            return Result.success();
         }
-        if (file.getScAtac_SeqFile() != null) {
-            file.deleteFile("c:\\ScmoannoFiles\\" + file.getScAtac_SeqFile());
-        }
-        if (file.getTagFile() != null) {
-            file.deleteFile("c:\\ScmoannoFiles\\" + file.getTagFile());
-        }
-        Scmoannoresult result=filesServer.findResultByTaskName(taskName);
-        if (result.getConfigFile() != null) {
-            result.deleteFile("c:\\ScmoannoResult\\" + result.getConfigFile());
-        }
-        if (result.getDataFile() != null) {
-            result.deleteFile("c:\\ScmoannoResult\\" + result.getDataFile());
-        }
-        if (result.getLableFile() != null) {
-            result.deleteFile("c:\\ScmoannoResult\\" + result.getLableFile());
-        }
-        taskServer.deleteTasksByTaskId(taskID);
-        return Result.success();
-    }
+
 
     @RequestMapping("/findAllTasksWithUserInformation")
     @CrossOrigin(origins = "*")

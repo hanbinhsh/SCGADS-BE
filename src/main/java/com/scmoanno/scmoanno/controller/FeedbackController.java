@@ -2,10 +2,12 @@ package com.scmoanno.scmoanno.controller;
 
 import com.scmoanno.scmoanno.entity.Feedback;
 import com.scmoanno.scmoanno.entity.Result;
+import com.scmoanno.scmoanno.entity.Scmoannotask;
 import com.scmoanno.scmoanno.servers.FeedbackServer;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.security.PublicKey;
 import java.util.Base64;
 import java.util.List;

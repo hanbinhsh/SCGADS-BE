@@ -66,6 +66,8 @@ public class FileController {
         if(Objects.equals(fileType, "configjsFile")){
             if (result2.getConfigFile() != null) {
                 result2.deleteFile(getResultLocation() + result2.getConfigFile());
+            }else{
+                System.out.println("configjsFile update failed");
             }
             result.setConfigFile(randomFileName);
             filesServer.updateResult1(result, taskName);
@@ -73,6 +75,8 @@ public class FileController {
         else if(Objects.equals(fileType, "datajsFile")){
             if (result2.getDataFile() != null) {
                 result2.deleteFile(getResultLocation() + result2.getDataFile());
+            }else{
+                System.out.println("datajsFile update failed");
             }
             result.setDataFile(randomFileName);
             filesServer.updateResult2(result, taskName);
@@ -80,6 +84,8 @@ public class FileController {
         else if(Objects.equals(fileType, "lablejsFile")){
             if (result2.getLableFile() != null) {
                 result2.deleteFile(getResultLocation() + result2.getLableFile());
+            }else{
+                System.out.println("lablejsFile update failed");
             }
             result.setLableFile(randomFileName);
             filesServer.updateResult3(result, taskName);

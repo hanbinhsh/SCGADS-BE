@@ -1,7 +1,7 @@
 package com.ruoyi.system.domain.entity;
 
 
-public class  Scmoannotask {
+public class Scmoannotask {
 
   private long taskId;
   private String taskName;
@@ -10,6 +10,8 @@ public class  Scmoannotask {
   private long status;
   private String details;
   private long uploaderId;
+  private String type;
+  private String parameters;
 
 
   public long getTaskId() {
@@ -72,6 +74,24 @@ public class  Scmoannotask {
 
   public void setUploaderId(long uploaderId) {
     this.uploaderId = uploaderId;
+  }
+
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+
+  public String getParameters() {
+    return parameters;
+  }
+
+  public void setParameters(String parameters) {
+    this.parameters = parameters;
   }
 
 }

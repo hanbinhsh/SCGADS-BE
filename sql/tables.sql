@@ -25,6 +25,8 @@ create table `scMoAnnoTask`(
   `status` tinyint DEFAULT 0					NOT NULL	COMMENT '标志位',
   `details` text											COMMENT '详情',
   `uploader_id` int 							NOT NULL	COMMENT '上传者ID',
+  `type` VARCHAR(30) 										COMMENT '任务类型',
+  `parameters` TEXT 										COMMENT '任务参数',
   FOREIGN KEY (`uploader_id`) REFERENCES scMoAnnoUser(`user_id`)
 );
 

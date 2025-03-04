@@ -15,11 +15,11 @@ def ensure_directory(path):
         os.makedirs(path)
 
 
-def main(username, taskname, has_labels, outputnpy_dir, output_dir):
+def main(username, taskname, has_labels, outputnpy_dir, output_dir, label_dir, seq_dir):
     ensure_directory(output_dir)
 
     # 数据读取
-    adata = sc.read_h5ad('G:/Projects/seqData/mouse_skin_shareseq_rna_10k/rna.h5ad')
+    adata = sc.read_h5ad(seq_dir)
     adata = adata.X.todense()
     adata = np.asarray(adata)
 
@@ -36,7 +36,7 @@ def main(username, taskname, has_labels, outputnpy_dir, output_dir):
 
     # 处理真实标签
     if has_labels:
-        y_g = np.loadtxt('G:/Projects/seqData/mouse_skin_shareseq_rna_10k/Label.csv', dtype=str, delimiter=',',
+        y_g = np.loadtxt(label_dir, dtype=str, delimiter=',',
                          skiprows=1)
 
         # 生成真实标签 JS 文件
@@ -88,7 +88,7 @@ export const pieces = {pieces_pred};
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 6:
+    if len(sys.argv) != 8:
         print("使用方法: python script.py <用户名> <任务名> <是否有真实标签(true/false)> <outputnpy_dir> <output_dir>")
         sys.exit(1)
 
@@ -97,4 +97,6 @@ if __name__ == "__main__":
     has_labels = sys.argv[3].lower() == 'true'
     outputnpy_dir = sys.argv[4]
     output_dir = sys.argv[5]
-    main(username, taskname, has_labels, outputnpy_dir, output_dir)
+    label_dir = sys.argv[6]
+    seq_dir = sys.argv[7]
+    main(username, taskname, has_labels, outputnpy_dir, output_dir, label_dir, seq_dir)

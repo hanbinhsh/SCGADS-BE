@@ -51,4 +51,7 @@ nbdist/
 temp/
 config.json
 
+### Model files ###
+*.ckpt
+
 ruoyi-ui/

@@ -4,12 +4,10 @@
 
 <mapper namespace="com.ruoyi.system.mapper.FilesMapper">
     <insert id="insertFiles">
-        INSERT INTO scMoAnnoFiles (task_name)
-        VALUES(#{taskName} )
+        insert into scMoAnnoFiles (task_name) values(#{taskName} )
     </insert>
     <insert id="insertResult">
-        insert into scMoAnnoResult(task_name)
-        values(#{taskName})
+        insert into scMoAnnoResult (task_name) values(#{taskName})
     </insert>
     <update id="updateFiles1">
         update scMoAnnoFiles set scRNA_seq_file = #{files.scRna_SeqFile} where task_name = #{taskName}

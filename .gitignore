@@ -49,5 +49,6 @@ nbdist/
 
 ### Temp Files ###
 temp/
+config.json
 
 ruoyi-ui/

@@ -7,16 +7,16 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface FilesMapper {
-    public void insertFiles(Scmoannofiles files);
-    public void updateFiles1(Scmoannofiles files, String taskName);
-    public void updateFiles2(Scmoannofiles files, String taskName);
-    public void updateFiles3(Scmoannofiles files, String taskName);
+    public void insertFiles(@Param("files") Scmoannofiles files);
+    public void updateFiles1(@Param("files") Scmoannofiles files,@Param("taskName") String taskName);
+    public void updateFiles2(@Param("files") Scmoannofiles files,@Param("taskName") String taskName);
+    public void updateFiles3(@Param("files") Scmoannofiles files,@Param("taskName") String taskName);
 
     Scmoannofiles findFileByTaskName(String taskName);
 
     Scmoannoresult findResultByTaskName(String taskName);
 
-    public void insertResult(Scmoannoresult result);
+    public void insertResult(@Param("result") Scmoannoresult result);
     public void updateResult1(@Param("result") Scmoannoresult result,@Param("taskName") String taskName);
     public void updateResult2(@Param("result") Scmoannoresult result,@Param("taskName") String taskName);
     public void updateResult3(@Param("result") Scmoannoresult result,@Param("taskName") String taskName);

@@ -1,0 +1,33 @@
+package com.ruoyi.system.controller;
+
+import java.io.File;
+
+public class Utils {
+    public static String getResultLocation(){
+        String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
+        String tempDirPath = baseDir + "/temp/ScmoannoResult";
+        File tempDir = new File(tempDirPath);
+        if (!tempDir.exists()) {
+            tempDir.mkdirs(); // 递归创建目录
+        }
+        return tempDirPath + "/";
+    }
+
+    public static String getUploadLocation(){
+        String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
+        String tempDirPath = baseDir + "/temp/ScmoannoFiles";
+        File tempDir = new File(tempDirPath);
+        if (!tempDir.exists()) {
+            tempDir.mkdirs(); // 递归创建目录
+        }
+        return tempDirPath + "/";
+    }
+
+    //    private String getResultLocation(){
+    //        return "c:\\ScmoannoResult\\";
+    //    }
+    //
+    //    private String getUploadLocation(){
+    //        return "c:\\ScmoannoFiles\\";
+    //    }
+}

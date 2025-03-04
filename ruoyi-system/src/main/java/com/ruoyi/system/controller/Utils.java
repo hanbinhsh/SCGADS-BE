@@ -1,11 +1,12 @@
 package com.ruoyi.system.controller;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 public class Utils {
-    public static String getResultLocation(){
+    public static String getResultLocation(String userName, String taskName){
         String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
-        String tempDirPath = baseDir + "/temp/Result";
+        String tempDirPath = Paths.get(baseDir, "temp", "Result", userName, taskName).toString();
         File tempDir = new File(tempDirPath);
         if (!tempDir.exists()) {
             tempDir.mkdirs(); // 递归创建目录

@@ -50,7 +50,8 @@ public class FileController {
     @CrossOrigin(origins = "*")  // 跨域
     public Result uploadResult(@RequestParam("file") MultipartFile file,
                                 @RequestParam("taskName") String taskName,
-                                @RequestParam("fileType") String fileType) throws IOException {
+                                @RequestParam("fileType") String fileType,
+                                @RequestParam("userName") String userName) throws IOException {
         String fileName = file.getOriginalFilename();  // 文件名
         String contentType = file.getContentType();  // 内容类型
         String name = file.getName();  // 表单域名
@@ -63,13 +64,13 @@ public class FileController {
         if(suffixIndex > 0){  // 有后缀名
             randomFileName = randomFileName + fileName.substring(suffixIndex);
         }
-        String realFilePath = getResultLocation() + randomFileName;
+        String realFilePath = getResultLocation(userName, taskName) + randomFileName;
         // 数据库包装
         Scmoannoresult result2=filesServer.findResultByTaskName(taskName);
         Scmoannoresult result = new Scmoannoresult();
         if(Objects.equals(fileType, "configjsFile")){
             if (result2.getConfigFile() != null) {
-                deleteFile(getResultLocation() + result2.getConfigFile());
+                deleteFile(getResultLocation(userName, taskName) + result2.getConfigFile());
 //                result2.deleteFile(getResultLocation() + result2.getConfigFile());
             } else{
                 System.out.println("configjsFile update failed");
@@ -79,7 +80,7 @@ public class FileController {
         }
         else if(Objects.equals(fileType, "datajsFile")){
             if (result2.getDataFile() != null) {
-                deleteFile(getResultLocation() + result2.getConfigFile());
+                deleteFile(getResultLocation(userName, taskName) + result2.getConfigFile());
 //                result2.deleteFile(getResultLocation() + result2.getDataFile());
             } else{
                 System.out.println("datajsFile update failed");
@@ -89,7 +90,7 @@ public class FileController {
         }
         else if(Objects.equals(fileType, "lablejsFile")){
             if (result2.getLableFile() != null) {
-                deleteFile(getResultLocation() + result2.getConfigFile());
+                deleteFile(getResultLocation(userName, taskName) + result2.getConfigFile());
 //                result2.deleteFile(getResultLocation() + result2.getLableFile());
             } else{
                 System.out.println("lablejsFile update failed");
@@ -106,8 +107,9 @@ public class FileController {
 
     @RequestMapping("/downloadResult")
     @CrossOrigin(origins = "*")  // 跨域
-    public ResponseEntity<byte[]> downloadResult(@RequestParam String taskName,
-                                                 @RequestParam String type) throws IOException {
+    public ResponseEntity<byte[]> downloadResult(@RequestParam("taskName") String taskName,
+                                                 @RequestParam("type") String type,
+                                                 @RequestParam("userName") String userName   ) throws IOException {
         // 调用业务层接口的方法
         Scmoannoresult result = filesServer.findResultByTaskName(taskName);
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();  // 设置响应对象为二进制流
@@ -119,13 +121,13 @@ public class FileController {
 
         String filePaths = "paths";
         if(type.equals("config")) {
-            filePaths = getResultLocation()+result.getConfigFile();
+            filePaths = getResultLocation(userName, taskName)+result.getConfigFile();
         }
         else if(type.equals("label")) {
-            filePaths = getResultLocation()+result.getLableFile();
+            filePaths = getResultLocation(userName, taskName)+result.getLableFile();
         }
         else if(type.equals("data")) {
-            filePaths = getResultLocation()+result.getDataFile();
+            filePaths = getResultLocation(userName, taskName)+result.getDataFile();
         }
         File dFile = new File(filePaths);
         return builder.body(FileUtils.readFileToByteArray(dFile));

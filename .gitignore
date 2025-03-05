@@ -46,8 +46,12 @@ nbdist/
 !*/build/*.html
 !*/build/*.xml
 
-
+######################################################################
 ### Temp Files ###
 temp/
+config.json
+
+### Model files ###
+*.ckpt
 
 ruoyi-ui/

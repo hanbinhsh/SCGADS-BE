@@ -1,4 +1,0 @@
-
-export const CATEGORY_COUNT = 12;
-export const COLOR_LIST = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#B2B662', '#E03A3E'];
-export const pieces = [{'value': 0, 'label': 'Basal', 'color': '#1f77b4'}, {'value': 1, 'label': 'Dermal Fibroblast', 'color': '#ff7f0e'}, {'value': 2, 'label': 'Endo', 'color': '#2ca02c'}, {'value': 3, 'label': 'HS', 'color': '#d62728'}, {'value': 4, 'label': 'Infundibulum', 'color': '#9467bd'}, {'value': 5, 'label': 'Medulla', 'color': '#8c564b'}, {'value': 6, 'label': 'ORS', 'color': '#e377c2'}, {'value': 7, 'label': 'Spinous', 'color': '#7f7f7f'}, {'value': 8, 'label': 'TAC-1', 'color': '#bcbd22'}, {'value': 9, 'label': 'TAC-2', 'color': '#17becf'}, {'value': 10, 'label': 'ahighCD34+ bulge', 'color': '#B2B662'}, {'value': 11, 'label': 'alowCD34+ bulge', 'color': '#E03A3E'}];

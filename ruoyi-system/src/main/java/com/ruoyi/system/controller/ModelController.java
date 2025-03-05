@@ -21,7 +21,7 @@ public class ModelController {
     @Autowired
     private ModelService modelService;
 
-    @GetMapping("/list")
+    @GetMapping("/findAllModels")
     public ResponseEntity<List<Models>> getAllModels() {
         List<Models> models = modelService.getAllModels();
         String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录

@@ -76,6 +76,13 @@ CREATE TABLE `scMoAnnoResult` (
     FOREIGN KEY (`task_name`) REFERENCES scMoAnnoTask(`task_name`)
 );
 
+drop table if exists `fileHashReference`;
+CREATE TABLE `fileHashReference` (
+  `hash` VARCHAR(64)                                 COMMENT '文件哈希值（xxhash）',
+  `file_name` VARCHAR(255)  PRIMARY KEY            NOT NULL    comment '文件名',
+  `reference_count` INT DEFAULT 1                 NOT NULL     COMMENT '引用计数'
+);
+
 -- TRIGGER --
 -- 用户密码加密
 DELIMITER $$

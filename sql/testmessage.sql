@@ -12,7 +12,7 @@ INSERT INTO models (model_name, model_type, model_path, predict_file_path, train
     'a', 
     'b', 
     'c', 
-    'd', 
+    'model.png', 
     'n_epochs: 96,dropout:0.05,batch_size:128,patience:8,input_dim:512,num_layers:8,nhead:16,lr:5e-4,weight_decay:5e-3'
 );
 

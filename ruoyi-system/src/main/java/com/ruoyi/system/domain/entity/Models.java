@@ -9,8 +9,18 @@ public class Models {
   private String modelPath;
   private String predictFilePath;
   private String trainFilePath;
+  private String figurePath;
   private String defaultParameters;
 
+  private byte[] figureByte;
+
+  public byte[] getFigureByte() {
+    return figureByte;
+  }
+
+  public void setFigureByte(byte[] figureByte) {
+    this.figureByte = figureByte;
+  }
 
   public long getModelId() {
     return modelId;
@@ -63,6 +73,15 @@ public class Models {
 
   public void setTrainFilePath(String trainFilePath) {
     this.trainFilePath = trainFilePath;
+  }
+
+
+  public String getFigurePath() {
+    return figurePath;
+  }
+
+  public void setFigurePath(String figurePath) {
+    this.figurePath = figurePath;
   }
 
 

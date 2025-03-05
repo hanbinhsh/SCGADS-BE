@@ -1,0 +1,4 @@
+模型类（例如annotation）：      模型类别/模型名称/|figs （模型图）
+										      |models （训练的模型文件）
+										      |其他文件（如模型训练相关代码等）
+可视化类（如tsne_chart）：        visualization/图表名称/相关代码

@@ -27,20 +27,20 @@ public class FilesServer implements com.ruoyi.system.service.FilesServer {
 
     @Override
     @Transactional
-    public void updateFiles1(Scmoannofiles files, String taskName) {
-        filesMapper.updateFiles1(files, taskName);
+    public void updateFiles1(String name, String taskName) {
+        filesMapper.updateFiles1(name, taskName);
     }
 
     @Override
     @Transactional
-    public void updateFiles2(Scmoannofiles files, String taskName) {
-        filesMapper.updateFiles2(files, taskName);
+    public void updateFiles2(String name, String taskName) {
+        filesMapper.updateFiles2(name, taskName);
     }
 
     @Override
     @Transactional
-    public void updateFiles3(Scmoannofiles files, String taskName) {
-        filesMapper.updateFiles3(files, taskName);
+    public void updateFiles3(String name, String taskName) {
+        filesMapper.updateFiles3(name, taskName);
     }
 
     @Override
@@ -71,5 +71,27 @@ public class FilesServer implements com.ruoyi.system.service.FilesServer {
     @Transactional
     public Scmoannoresult findResultByTaskName(String taskName) {
         return filesMapper.findResultByTaskName(taskName);
+    }
+
+    @Override
+    @Transactional
+    public String findFileByHash(String hash) {
+        return filesMapper.findFileByHash(hash);
+    }
+
+    @Override
+    @Transactional
+    public void updateFileHashNum(String fileName, int index) {
+        filesMapper.updateFileHashNum(fileName, index);
+    }
+
+    @Override
+    public void insertFileHash(String hash, String randomFileName) {
+        filesMapper.insertFileHash(hash, randomFileName);
+    }
+
+    @Override
+    public int getFileHashNum(String fileName) {
+        return filesMapper.getFileHashNum(fileName);
     }
 }

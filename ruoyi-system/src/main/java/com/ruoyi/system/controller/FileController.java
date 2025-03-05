@@ -137,7 +137,8 @@ public class FileController {
     @CrossOrigin(origins = "*")  // 跨域
     public Result uploadOneFile(@RequestParam("file") MultipartFile file,
                                 @RequestParam("taskName") String taskName,
-                                @RequestParam("fileType") String fileType) throws IOException {
+                                @RequestParam("fileType") String fileType,
+                                @RequestParam("hash") String hash) throws IOException {
         String fileName = file.getOriginalFilename();  // 文件名
         String contentType = file.getContentType();  // 内容类型
         String name = file.getName();  // 表单域名
@@ -152,23 +153,41 @@ public class FileController {
         }
         String realFilePath = getUploadLocation() + randomFileName;
         // 数据库包装
-
-        Scmoannofiles files = new Scmoannofiles();
+        filesServer.insertFileHash(hash, randomFileName);
 
         if(Objects.equals(fileType, "scRNASeqFile")){
-            files.setScRna_SeqFile(randomFileName);
-            filesServer.updateFiles1(files, taskName);
+            filesServer.updateFiles1(randomFileName, taskName);
         }
         else if(Objects.equals(fileType, "scATACSeqFile")){
-            files.setScAtac_SeqFile(randomFileName);
-            filesServer.updateFiles2(files, taskName);
+            filesServer.updateFiles2(randomFileName, taskName);
         }
         else if(Objects.equals(fileType, "tagFile")){
-            files.setTagFile(randomFileName);
-            filesServer.updateFiles3(files, taskName);
+            filesServer.updateFiles3(randomFileName, taskName);
         }
         // 文件操作
         file.transferTo(new File(realFilePath));  // 移动到目标文件
+        return Result.success();
+    }
+
+    @PostMapping("/fileHash")
+    @CrossOrigin(origins = "*")
+    public Result fileHash(@RequestParam("hash") String hash,
+                           @RequestParam("fileType") String fileType,
+                           @RequestParam("taskName") String taskName) throws IOException {
+        String fileName = filesServer.findFileByHash(hash);
+        if (fileName != null) {
+            filesServer.updateFileHashNum(fileName, 1);
+            if(Objects.equals(fileType, "scRNASeqFile")){
+                filesServer.updateFiles1(fileName, taskName);
+            }
+            else if(Objects.equals(fileType, "scATACSeqFile")){
+                filesServer.updateFiles2(fileName, taskName);
+            }
+            else if(Objects.equals(fileType, "tagFile")){
+                filesServer.updateFiles3(fileName, taskName);
+            }
+            return Result.error("文件已存在");
+        }
         return Result.success();
     }
 

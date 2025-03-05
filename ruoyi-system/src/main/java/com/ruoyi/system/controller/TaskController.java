@@ -58,20 +58,26 @@ public class TaskController {
 
     @RequestMapping("/deleteTaskByID")
         @CrossOrigin(origins = "*")
-        public Result deleteTaskByID(@RequestParam long taskID,@RequestParam String taskName) {
+        public Result deleteTaskByID(@RequestParam long taskID, @RequestParam String taskName) {
             Scmoannofiles file  = filesServer.findFileByTaskName(taskName);
             if (file != null) {  // 先判断 file 是否为空
                 if (file.getScRna_SeqFile() != null) {
-                    deleteFile(getUploadLocation() + file.getScRna_SeqFile());
-//                    file.deleteFile(getUploadLocation() + file.getScRna_SeqFile());
+                    String fileName = file.getScRna_SeqFile();
+                    filesServer.updateFileHashNum(fileName, -1);
+                    if (filesServer.getFileHashNum(fileName) == 0)
+                        deleteFile(getUploadLocation() + fileName);
                 }
                 if (file.getScAtac_SeqFile() != null) {
-                    deleteFile(getUploadLocation() + file.getScRna_SeqFile());
-//                    file.deleteFile(getUploadLocation() + file.getScAtac_SeqFile());
+                    String fileName = file.getScAtac_SeqFile();
+                    filesServer.updateFileHashNum(fileName, -1);
+                    if (filesServer.getFileHashNum(fileName) == 0)
+                        deleteFile(getUploadLocation() + fileName);
                 }
                 if (file.getTagFile() != null) {
-                    deleteFile(getUploadLocation() + file.getScRna_SeqFile());
-//                    file.deleteFile(getUploadLocation() + file.getTagFile());
+                    String fileName = file.getTagFile();
+                    filesServer.updateFileHashNum(fileName, -1);
+                    if (filesServer.getFileHashNum(fileName) == 0)
+                        deleteFile(getUploadLocation() + fileName);
                 }
             }
 
@@ -79,15 +85,12 @@ public class TaskController {
             if (result != null) {  // 先判断 result 是否为空
                 if (result.getConfigFile() != null) {
                     deleteFile(getUploadLocation() + file.getScRna_SeqFile());
-//                    result.deleteFile(getResultLocation() + result.getConfigFile());
                 }
                 if (result.getDataFile() != null) {
                     deleteFile(getUploadLocation() + file.getScRna_SeqFile());
-//                    result.deleteFile(getResultLocation() + result.getDataFile());
                 }
                 if (result.getLableFile() != null) {
                     deleteFile(getUploadLocation() + file.getScRna_SeqFile());
-//                    result.deleteFile(getResultLocation() + result.getLableFile());
                 }
             }
 

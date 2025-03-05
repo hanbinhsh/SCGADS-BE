@@ -9,6 +9,7 @@ public class Models {
   private String modelPath;
   private String predictFilePath;
   private String trainFilePath;
+  private String figurePath;
   private String defaultParameters;
 
 
@@ -63,6 +64,15 @@ public class Models {
 
   public void setTrainFilePath(String trainFilePath) {
     this.trainFilePath = trainFilePath;
+  }
+
+
+  public String getFigurePath() {
+    return figurePath;
+  }
+
+  public void setFigurePath(String figurePath) {
+    this.figurePath = figurePath;
   }
 
 

@@ -17,7 +17,7 @@ public class TaskProgress {
                           @RequestParam("userName") String userName) throws IOException {
         // Python 脚本路径
         String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
-        String pythonScriptPath = baseDir + "/algorithm/prediction/predict.py"; // TODO: 预测脚本路径
+        String pythonScriptPath = baseDir + "/algorithm/annotation/predict.py"; // TODO: 预测脚本路径
 
         // 输入数据路径
         String atacPath = "'G:/Projects/seqData/mouse_skin_shareseq_rna_10k/atac.h5ad'"; // TODO
@@ -25,11 +25,11 @@ public class TaskProgress {
         String labelPath = "'G:/Projects/seqData/mouse_skin_shareseq_rna_10k/Label.csv'"; // TODO
 
         // 模型文件路径
-        String checkpointPath = "'./result/mouse_skin_shareseq_rna_10k/train_best_1919810.ckpt'"; // TODO
+        String checkpointPath = "'./models/mouse_skin_shareseq_rna_10k/train_best_1919810.ckpt'"; // TODO
 
         // 预测结果输出路径
-        String outputNumPath = baseDir + "/temp/Result/" + userName + '/' + taskName + "/output_num.npy"; // TODO
-        String outputPath = baseDir + "/temp/Result/" + userName + '/' + taskName + "/output.npy"; // TODO
+        String outputNumPath = baseDir + "/temp/Result/" + userName + '/' + taskName + "/output_num.npy";
+        String outputPath = baseDir + "/temp/Result/" + userName + '/' + taskName + "/output.npy";
 
         // 构造 ProcessBuilder
         ProcessBuilder processBuilder = new ProcessBuilder(

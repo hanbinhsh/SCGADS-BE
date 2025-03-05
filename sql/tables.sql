@@ -4,6 +4,7 @@ drop table if exists `feedback`;
 drop table if exists `scMoAnnoFiles`;
 drop table if exists `scMoAnnoTask`;
 drop table if exists `scMoAnnoUser`;
+drop table if exists `models`;
 
 drop table if exists `scMoAnnoUser`;
 create table `scMoAnnoUser`(
@@ -63,7 +64,8 @@ CREATE TABLE `scMoAnnoResult` (
     FOREIGN KEY (`task_name`) REFERENCES scMoAnnoTask(`task_name`)
 );
 
-CREATE TABLE models (
+drop table if exists `models`;
+CREATE TABLE `models` (
     `model_id` INT AUTO_INCREMENT PRIMARY KEY  				COMMENT '模型ID',
     `model_name` VARCHAR(255) NOT NULL         				COMMENT '模型名称',
     `model_type` VARCHAR(100) NOT NULL         				COMMENT '模型类型',

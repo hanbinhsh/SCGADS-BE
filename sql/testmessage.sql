@@ -7,13 +7,9 @@ INSERT INTO `scMoAnnoUser` (`user_name`, `psw`, `email`, `is_admin`, `phone`) VA
 ('David', '3', 'david@example.com', false, '456-789-0123');
 
 INSERT INTO models (model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters) VALUES (
-    'scLTH', 
-    'single', 
-    'a', 
-    'b', 
-    'c', 
-    'model.png', 
-    'n_epochs: 96,dropout:0.05,batch_size:128,patience:8,input_dim:512,num_layers:8,nhead:16,lr:5e-4,weight_decay:5e-3'
+    'scLTH', 'multi', 'a', 'b', 'c', 'model.png', 'n_epochs: 96,dropout:0.05,batch_size:128,patience:8,input_dim:512,num_layers:8,nhead:16,lr:5e-4,weight_decay:5e-3'
+    'scMoAnno', 'single', 'a', 'b', 'c', 'model.png', ''
+    'scTCHCN', 'multi', 'a', 'b', 'c', 'model.png', ''
 );
 
 

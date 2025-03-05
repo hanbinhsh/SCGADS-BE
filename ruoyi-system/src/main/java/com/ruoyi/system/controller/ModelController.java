@@ -25,11 +25,10 @@ public class ModelController {
     public ResponseEntity<List<Models>> getAllModels() {
         List<Models> models = modelService.getAllModels();
         String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
-        StringBuilder figDir  = new StringBuilder(baseDir + "/algorithm/");
 
         for (Models model : models) {
             String figurePath = "";
-
+            StringBuilder figDir  = new StringBuilder(baseDir + "/algorithm/");
             if(model.getModelType().equals("single")){
                 figurePath = "annotation/" + model.getModelName() + "/figs/" + model.getFigurePath();
             } else if(model.getModelType().equals("multi")){

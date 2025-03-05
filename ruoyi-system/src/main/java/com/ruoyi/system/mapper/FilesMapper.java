@@ -8,24 +8,24 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface FilesMapper {
     public void insertFiles(Scmoannofiles files);
-    public void updateFiles1(@Param("name") String name,@Param("taskName") String taskName);
-    public void updateFiles2(@Param("name") String name,@Param("taskName") String taskName);
-    public void updateFiles3(@Param("name") String name,@Param("taskName") String taskName);
+    public void updateFiles1(@Param("randomFileName") String randomFileName, @Param("taskName") String taskName);
+    public void updateFiles2(@Param("randomFileName") String randomFileName, @Param("taskName") String taskName);
+    public void updateFiles3(@Param("randomFileName") String randomFileName, @Param("taskName") String taskName);
 
     Scmoannofiles findFileByTaskName(String taskName);
 
     Scmoannoresult findResultByTaskName(String taskName);
 
     public void insertResult(Scmoannoresult result);
-    public void updateResult1(@Param("result") Scmoannoresult result,@Param("taskName") String taskName);
-    public void updateResult2(@Param("result") Scmoannoresult result,@Param("taskName") String taskName);
-    public void updateResult3(@Param("result") Scmoannoresult result,@Param("taskName") String taskName);
+    public void updateResult1(@Param("result") Scmoannoresult result, @Param("taskName") String taskName);
+    public void updateResult2(@Param("result") Scmoannoresult result, @Param("taskName") String taskName);
+    public void updateResult3(@Param("result") Scmoannoresult result, @Param("taskName") String taskName);
 
-    String findFileByHash(String hash);
+    String findFileByHash(@Param("hash") String hash);
 
-    void updateFileHashNum(String fileName, int index);
+    void updateFileHashNum(@Param("fileName") String fileName, @Param("index") int index);
 
-    void insertFileHash(String hash, String randomFileName);
+    void insertFileHash(@Param("hash") String hash, @Param("randomFileName") String randomFileName);
 
-    int getFileHashNum(String fileName);
+    int getFileHashNum(@Param("fileName") String fileName);
 }

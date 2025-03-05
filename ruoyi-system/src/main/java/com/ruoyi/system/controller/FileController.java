@@ -171,20 +171,18 @@ public class FileController {
 
     @PostMapping("/fileHash")
     @CrossOrigin(origins = "*")
-    public Result fileHash(@RequestParam("hash") String hash,
-                           @RequestParam("fileType") String fileType,
-                           @RequestParam("taskName") String taskName) throws IOException {
-        String fileName = filesServer.findFileByHash(hash);
+    public Result fileHash(@RequestBody Map<String, String> map) throws IOException {
+        String fileName = filesServer.findFileByHash(map.get("hash"));
         if (fileName != null) {
             filesServer.updateFileHashNum(fileName, 1);
-            if(Objects.equals(fileType, "scRNASeqFile")){
-                filesServer.updateFiles1(fileName, taskName);
+            if(Objects.equals(map.get("fileType"), "scRNASeqFile")){
+                filesServer.updateFiles1(fileName, map.get("taskName"));
             }
-            else if(Objects.equals(fileType, "scATACSeqFile")){
-                filesServer.updateFiles2(fileName, taskName);
+            else if(Objects.equals(map.get("fileType"), "scATACSeqFile")){
+                filesServer.updateFiles2(fileName, map.get("taskName"));
             }
-            else if(Objects.equals(fileType, "tagFile")){
-                filesServer.updateFiles3(fileName, taskName);
+            else if(Objects.equals(map.get("fileType"), "tagFile")){
+                filesServer.updateFiles3(fileName, map.get("taskName"));
             }
             return Result.error("文件已存在");
         }

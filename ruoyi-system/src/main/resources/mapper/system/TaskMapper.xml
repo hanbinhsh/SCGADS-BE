@@ -20,6 +20,9 @@
     <delete id="deleteTasksByTaskId">
         delete scmoannotask from scmoannotask where task_id = #{id}
     </delete>
+    <delete id="deleteTasksByTaskName">
+        delete scmoannotask from scmoannotask where task_name = #{taskName}
+    </delete>
     <select id="findTasksByUserId" resultType="com.ruoyi.system.domain.entity.Scmoannotask">
         select * from scmoannotask where uploader_id = #{id}
     </select>

@@ -27,20 +27,20 @@ public class FilesServer implements com.ruoyi.system.service.FilesServer {
 
     @Override
     @Transactional
-    public void updateFiles1(String name, String taskName) {
-        filesMapper.updateFiles1(name, taskName);
+    public void updateFiles1(String randomFileName, String taskName) {
+        filesMapper.updateFiles1(randomFileName, taskName);
     }
 
     @Override
     @Transactional
-    public void updateFiles2(String name, String taskName) {
-        filesMapper.updateFiles2(name, taskName);
+    public void updateFiles2(String randomFileName, String taskName) {
+        filesMapper.updateFiles2(randomFileName, taskName);
     }
 
     @Override
     @Transactional
-    public void updateFiles3(String name, String taskName) {
-        filesMapper.updateFiles3(name, taskName);
+    public void updateFiles3(String randomFileName, String taskName) {
+        filesMapper.updateFiles3(randomFileName, taskName);
     }
 
     @Override

@@ -5,9 +5,9 @@ import com.ruoyi.system.domain.entity.Scmoannoresult;
 
 public interface FilesServer {
     void insertFiles(Scmoannofiles files);
-    void updateFiles1(String name, String taskName);
-    void updateFiles2(String name, String taskName);
-    void updateFiles3(String name, String taskName);
+    void updateFiles1(String randomFileName, String taskName);
+    void updateFiles2(String randomFileName, String taskName);
+    void updateFiles3(String randomFileName, String taskName);
 
     Scmoannofiles findFileByTaskName(String taskName);
 

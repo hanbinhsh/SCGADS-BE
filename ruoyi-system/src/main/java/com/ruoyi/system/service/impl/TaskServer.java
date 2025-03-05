@@ -29,6 +29,12 @@ public class TaskServer implements com.ruoyi.system.service.TaskServer {
     }
 
     @Override
+    @Transactional
+    public void deleteTasksByTaskName(String taskName) {
+        taskMapper.deleteTasksByTaskName(taskName);
+    }
+
+    @Override
     public void deleteTasksByTaskId(Long id) {
         taskMapper.deleteTasksByTaskId(id);
     }

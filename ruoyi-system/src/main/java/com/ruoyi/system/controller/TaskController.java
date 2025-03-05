@@ -15,7 +15,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import static com.ruoyi.system.controller.Utils.getResultLocation;
 import static com.ruoyi.system.controller.Utils.getUploadLocation;
 import static com.ruoyi.common.utils.file.FileUtils.*;
 
@@ -56,9 +55,9 @@ public class TaskController {
             return Result.error("the taskName already exists");
     }
 
-    @RequestMapping("/deleteTaskByID")
+    @RequestMapping("/deleteTaskByTaskName")
         @CrossOrigin(origins = "*")
-        public Result deleteTaskByID(@RequestParam long taskID, @RequestParam String taskName) {
+        public Result deleteTaskByTaskName(@RequestParam String taskName) {
             Scmoannofiles file  = filesServer.findFileByTaskName(taskName);
             if (file != null) {  // 先判断 file 是否为空
                 if (file.getScRna_SeqFile() != null) {
@@ -94,7 +93,8 @@ public class TaskController {
                 }
             }
 
-            taskServer.deleteTasksByTaskId(taskID);
+//            taskServer.deleteTasksByTaskId(taskID);
+                taskServer.deleteTasksByTaskName(taskName);
             return Result.success();
         }
 

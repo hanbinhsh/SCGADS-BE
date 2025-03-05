@@ -13,13 +13,13 @@
         insert into fileHashReference(hash, file_name) values (#{hash}, #{randomFileName})
     </insert>
     <update id="updateFiles1">
-        update scMoAnnoFiles set scRNA_seq_file = #{name} where task_name = #{taskName}
+        update scMoAnnoFiles set scRNA_seq_file = #{randomFileName} where task_name = #{taskName}
     </update>
     <update id="updateFiles2">
-        update scMoAnnoFiles set scATAC_seq_file = #{name} where task_name = #{taskName}
+        update scMoAnnoFiles set scATAC_seq_file = #{randomFileName} where task_name = #{taskName}
     </update>
     <update id="updateFiles3">
-        update scMoAnnoFiles set Tag_file = #{name} where task_name = #{taskName}
+        update scMoAnnoFiles set Tag_file = #{randomFileName} where task_name = #{taskName}
     </update>
     <update id="updateResult1">
         update scMoAnnoResult set config_file = #{result.configFile} where task_name = #{taskName}

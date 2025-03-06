@@ -23,12 +23,4 @@ public class Utils {
         }
         return tempDirPath + "/";
     }
-
-    //    private String getResultLocation(){
-    //        return "c:\\ScmoannoResult\\";
-    //    }
-    //
-    //    private String getUploadLocation(){
-    //        return "c:\\ScmoannoFiles\\";
-    //    }
 }

@@ -10,7 +10,7 @@ drop table if exists `models`;
 CREATE TABLE `models` (
     `model_id` INT AUTO_INCREMENT PRIMARY KEY  				COMMENT '模型ID',
     `model_name` VARCHAR(255) NOT NULL         				COMMENT '模型名称',
-    `model_type` VARCHAR(100) NOT NULL         				COMMENT '模型类型', -- single(单模态注释) -- multi(双模态注释) -- eno(降噪)
+    `model_type` VARCHAR(100) NOT NULL         				COMMENT '模型类型', -- single(单模态注释) -- multi(双模态注释) -- deno(降噪)
     `model_path` TEXT NOT NULL                 				COMMENT '模型存储路径',
     `predict_file_path` TEXT NOT NULL         				COMMENT '预测文件存储路径',
     `train_file_path` TEXT NOT NULL               			COMMENT '训练文件存储路径',
@@ -49,9 +49,9 @@ create table `scMoAnnoTask`(
 drop table if exists `scMoAnnoFiles`;
 create table `scMoAnnoFiles`(
   `file_id` int AUTO_INCREMENT PRIMARY KEY  	NOT NULL	COMMENT '文件ID',
-  `scRNA_seq_file` varchar(100) UNIQUE						COMMENT 'scRNA-seq文件名',
-  `scATAC_seq_file` varchar(100) UNIQUE						COMMENT 'scATAC-seq文件名',
-  `Tag_file` varchar(100) UNIQUE							COMMENT 'Tag文件名',
+  `scRNA_seq_file` varchar(100) 							COMMENT 'scRNA-seq文件名',
+  `scATAC_seq_file` varchar(100) 							COMMENT 'scATAC-seq文件名',
+  `Tag_file` varchar(100) 									COMMENT 'Tag文件名',
   `task_name` varchar(20)                       NOT NULL    COMMENT '任务名',
   FOREIGN KEY (`task_name`) REFERENCES scMoAnnoTask(`task_name`)
 );
@@ -79,8 +79,8 @@ CREATE TABLE `scMoAnnoResult` (
 drop table if exists `fileHashReference`;
 CREATE TABLE `fileHashReference` (
   `hash` VARCHAR(64)                                 COMMENT '文件哈希值（xxhash）',
-  `file_name` VARCHAR(255)  PRIMARY KEY            NOT NULL    comment '文件名',
-  `reference_count` INT DEFAULT 1                 NOT NULL     COMMENT '引用计数'
+  `file_name` VARCHAR(255)  PRIMARY KEY              NOT NULL    comment '文件名',
+  `reference_count` INT DEFAULT 1                    NOT NULL     COMMENT '引用计数'
 );
 
 -- TRIGGER --

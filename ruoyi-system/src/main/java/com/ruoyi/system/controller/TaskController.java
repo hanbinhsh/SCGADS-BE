@@ -83,18 +83,18 @@ public class TaskController {
             Scmoannoresult result = filesServer.findResultByTaskName(taskName);
             if (result != null) {  // 先判断 result 是否为空
                 if (result.getConfigFile() != null) {
-                    deleteFile(getUploadLocation() + file.getScRna_SeqFile());
+                    deleteFile(getUploadLocation() + result.getConfigFile());
                 }
                 if (result.getDataFile() != null) {
-                    deleteFile(getUploadLocation() + file.getScRna_SeqFile());
+                    deleteFile(getUploadLocation() + result.getDataFile());
                 }
                 if (result.getLableFile() != null) {
-                    deleteFile(getUploadLocation() + file.getScRna_SeqFile());
+                    deleteFile(getUploadLocation() + result.getLableFile());
                 }
             }
 
 //            taskServer.deleteTasksByTaskId(taskID);
-                taskServer.deleteTasksByTaskName(taskName);
+            taskServer.deleteTasksByTaskName(taskName);
             return Result.success();
         }
 

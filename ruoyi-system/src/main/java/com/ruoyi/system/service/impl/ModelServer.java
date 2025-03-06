@@ -19,6 +19,10 @@ public class ModelServer implements ModelService {
         return modelMapper.getAllModels();
     }
 
+    @Override
+    public void deleteModel(Long modelId) {
+        modelMapper.deleteModel(modelId);
+    }
 
     @Override
     public void addModel(Models model) {

@@ -101,4 +101,10 @@ public class ModelController {
         return Result.success();
     }
 
+    @DeleteMapping("/deleteModel")
+    public Result deleteModel(@RequestParam("modelId") Long modelId) {
+        modelService.deleteModel(modelId);
+        return Result.success();
+    }
+
 }

@@ -10,7 +10,7 @@ drop table if exists `models`;
 CREATE TABLE `models` (
     `model_id` INT AUTO_INCREMENT PRIMARY KEY  				COMMENT '模型ID',
     `model_name` VARCHAR(255) NOT NULL         				COMMENT '模型名称',
-    `model_type` VARCHAR(100) NOT NULL         				COMMENT '模型类型', -- single(单模态注释) -- multi(双模态注释) -- Deno(降噪)
+    `model_type` VARCHAR(100) NOT NULL         				COMMENT '模型类型', -- single(单模态注释) -- multi(双模态注释) -- eno(降噪)
     `model_path` TEXT NOT NULL                 				COMMENT '模型存储路径',
     `predict_file_path` TEXT NOT NULL         				COMMENT '预测文件存储路径',
     `train_file_path` TEXT NOT NULL               			COMMENT '训练文件存储路径',
@@ -72,7 +72,7 @@ CREATE TABLE `scMoAnnoResult` (
     `config_file` VARCHAR(255)                                    COMMENT 'config.js文件',
     `data_file` VARCHAR(255)                                      COMMENT 'data.js文件',
     `lable_file` VARCHAR(255)                                     COMMENT 'lable.js文件',
-    `task_name` VARCHAR(255)                                      COMMENT '对应任务',
+    `task_name` VARCHAR(255) UNIQUE                               COMMENT '对应任务',
     FOREIGN KEY (`task_name`) REFERENCES scMoAnnoTask(`task_name`)
 );
 

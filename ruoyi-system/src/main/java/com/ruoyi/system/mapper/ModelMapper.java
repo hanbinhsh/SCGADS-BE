@@ -9,9 +9,8 @@ import java.util.List;
 @Mapper
 public interface ModelMapper {
     public List<Models> getAllModels();
-
+    void deleteModel(Long modelId);
 
     void addModel(Models model);
-
     void updateModel(Models model);
 }

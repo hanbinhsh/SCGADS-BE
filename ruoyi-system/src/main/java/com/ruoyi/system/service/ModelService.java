@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ModelService {
     public List<Models> getAllModels();
-
+    void deleteModel(Long modelId);
 
     void addModel(Models model);
 

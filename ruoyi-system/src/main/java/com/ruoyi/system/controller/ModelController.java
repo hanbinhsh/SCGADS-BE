@@ -33,7 +33,7 @@ public class ModelController {
                 figurePath = "annotation/" + model.getModelName() + "/figs/" + model.getFigurePath();
             } else if(model.getModelType().equals("multi")){
                 figurePath = "annotation/" + model.getModelName() + "/figs/" + model.getFigurePath();
-            } else if(model.getModelType().equals("Deno")){
+            } else if(model.getModelType().equals("deno")){
                 figurePath = "denoising/" + model.getModelName() + "/figs/" + model.getFigurePath();
             } else {
                 System.out.println("模型 " + model.getModelName() + " 类型出错");

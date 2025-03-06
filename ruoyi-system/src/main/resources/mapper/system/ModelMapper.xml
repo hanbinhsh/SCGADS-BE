@@ -3,6 +3,23 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.ModelMapper">
+    <insert id="addModel">
+        insert into models(model_name, model_type, model_path, predict_file_path, train_file_path, default_parameters, figure_path)
+        VALUES (#{modelName}, #{modelType}, #{modelPath}, #{predictFilePath}, #{trainFilePath}, #{defaultParameters}, #{figurePath})
+    </insert>
+    <update id="updateModel">
+        update models
+        <set>
+            <if test="modelName!=null"> model_name = #{modelName}, </if>
+            <if test="modelName!=null"> model_type = #{modelType}, </if>
+            <if test="modelName!=null"> model_path = #{modelPath}, </if>
+            <if test="modelName!=null"> predict_file_path = #{predictFilePath}, </if>
+            <if test="modelName!=null"> train_file_path = #{trainFilePath}, </if>
+            <if test="modelName!=null"> figure_path = #{figurePath}, </if>
+            <if test="modelName!=null"> default_parameters = #{defaultParameters}, </if>
+        </set>
+        where model_id = #{modelId}
+    </update>
     <select id="getAllModels" resultType="com.ruoyi.system.domain.entity.Models">
         select * from models
     </select>

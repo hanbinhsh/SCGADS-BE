@@ -1,16 +1,15 @@
 package com.ruoyi.system.controller;
 
 import com.ruoyi.system.domain.entity.Models;
+import com.ruoyi.system.domain.entity.Result;
 import com.ruoyi.system.service.ModelService;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -59,4 +58,47 @@ public class ModelController {
 
         return ResponseEntity.ok(models);
     }
+
+    @PostMapping("/updateModel")
+    public Result updateModel(@RequestParam("modelId") int modelId,
+                              @RequestParam("modelName") String modelName,
+                              @RequestParam("modelType") String modelType,
+                              @RequestParam("modelPath") String modelPath,
+                              @RequestParam("predictFilePath") String predictFilePath,
+                              @RequestParam("trainFilePath") String trainFilePath,
+                              @RequestParam("figurePath") String figurePath,
+                              @RequestParam("defaultParameters") String defaultParameters) {
+        Models model = new Models();
+        model.setModelId(modelId);
+        model.setModelName(modelName);
+        model.setModelType(modelType);
+        model.setModelPath(modelPath);
+        model.setPredictFilePath(predictFilePath);
+        model.setTrainFilePath(trainFilePath);
+        model.setFigurePath(figurePath);
+        model.setDefaultParameters(defaultParameters);
+        modelService.updateModel(model);
+        return Result.success();
+    }
+
+    @PostMapping("/addModel")
+    public Result addModel(@RequestParam("modelName") String modelName,
+                           @RequestParam("modelType") String modelType,
+                           @RequestParam("modelPath") String modelPath,
+                           @RequestParam("predictFilePath") String predictFilePath,
+                           @RequestParam("trainFilePath") String trainFilePath,
+                           @RequestParam("figurePath") String figurePath,
+                           @RequestParam("defaultParameters") String defaultParameters) {
+        Models model = new Models();
+        model.setModelName(modelName);
+        model.setModelType(modelType);
+        model.setModelPath(modelPath);
+        model.setPredictFilePath(predictFilePath);
+        model.setTrainFilePath(trainFilePath);
+        model.setFigurePath(figurePath);
+        model.setDefaultParameters(defaultParameters);
+        modelService.addModel(model);
+        return Result.success();
+    }
+
 }

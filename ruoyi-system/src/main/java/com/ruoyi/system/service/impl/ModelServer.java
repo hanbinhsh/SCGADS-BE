@@ -1,7 +1,6 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.system.domain.entity.Models;
-import com.ruoyi.system.mapper.FilesMapper;
 import com.ruoyi.system.mapper.ModelMapper;
 import com.ruoyi.system.service.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +17,16 @@ public class ModelServer implements ModelService {
     @Override
     public List<Models> getAllModels() {
         return modelMapper.getAllModels();
+    }
+
+
+    @Override
+    public void addModel(Models model) {
+        modelMapper.addModel(model);
+    }
+
+    @Override
+    public void updateModel(Models model) {
+        modelMapper.updateModel(model);
     }
 }

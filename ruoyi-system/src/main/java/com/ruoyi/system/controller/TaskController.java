@@ -8,6 +8,7 @@ import com.ruoyi.system.service.FilesServer;
 import com.ruoyi.system.service.TaskServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
@@ -27,15 +28,25 @@ public class TaskController {
     @Autowired
     private FilesServer filesServer;
 
+//    @RequestMapping("/insertTask")
+//    @CrossOrigin(origins = "*")
+//    public Result insertTask(@RequestBody Map<String, String> map) {
+//        Timestamp timestamp = Timestamp.from(ZonedDateTime.now().toInstant());
+//        Scmoannotask task = new Scmoannotask();
+//        task.setTaskName(map.get("taskName"));
+//        task.setStartTime(timestamp);
+//        task.setEndTime(timestamp);
+//        task.setUploaderId(Long.parseLong(map.get("userId")));
+//        taskServer.insertTask(task);
+//        return Result.success();
+//    }
+
     @RequestMapping("/insertTask")
     @CrossOrigin(origins = "*")
-    public Result insertTask(@RequestBody Map<String, String> map) {
+    public Result insertTask(@RequestBody Scmoannotask task) {
         Timestamp timestamp = Timestamp.from(ZonedDateTime.now().toInstant());
-        Scmoannotask task = new Scmoannotask();
-        task.setTaskName(map.get("taskName"));
         task.setStartTime(timestamp);
         task.setEndTime(timestamp);
-        task.setUploaderId(Long.parseLong(map.get("userId")));
         taskServer.insertTask(task);
         return Result.success();
     }

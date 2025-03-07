@@ -40,7 +40,9 @@ public class TaskServer implements com.ruoyi.system.service.TaskServer {
     }
 
     @Override
-    public void insertTask(Scmoannotask task){taskMapper.insertTask(task); }
+    public void insertTask(Scmoannotask task){
+        taskMapper.insertTask(task);
+    }
 
     @Override
     public Map<Object,Object> findAllTasksWithUserInformation() {

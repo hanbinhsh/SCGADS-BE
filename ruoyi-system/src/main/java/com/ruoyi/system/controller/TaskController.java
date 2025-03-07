@@ -15,6 +15,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import static com.ruoyi.system.controller.Utils.getResultLocation;
 import static com.ruoyi.system.controller.Utils.getUploadLocation;
 import static com.ruoyi.common.utils.file.FileUtils.*;
 
@@ -57,7 +58,7 @@ public class TaskController {
 
     @RequestMapping("/deleteTaskByTaskName")
         @CrossOrigin(origins = "*")
-        public Result deleteTaskByTaskName(@RequestParam String taskName) {
+        public Result deleteTaskByTaskName(@RequestParam String userName ,@RequestParam String taskName) {
             Scmoannofiles file  = filesServer.findFileByTaskName(taskName);
             if (file != null) {  // 先判断 file 是否为空
                 if (file.getScRna_SeqFile() != null) {
@@ -80,16 +81,16 @@ public class TaskController {
                 }
             }
 
-            Scmoannoresult result = filesServer.findResultByTaskName(taskName);
+            Scmoannoresult result = filesServer.findResultByTaskName(taskName); // BUG 没删掉
             if (result != null) {  // 先判断 result 是否为空
                 if (result.getConfigFile() != null) {
-                    deleteFile(getUploadLocation() + result.getConfigFile());
+                    deleteFile(getResultLocation(userName, taskName) + result.getConfigFile());
                 }
                 if (result.getDataFile() != null) {
-                    deleteFile(getUploadLocation() + result.getDataFile());
+                    deleteFile(getResultLocation(userName, taskName) + result.getDataFile());
                 }
                 if (result.getLableFile() != null) {
-                    deleteFile(getUploadLocation() + result.getLableFile());
+                    deleteFile(getResultLocation(userName, taskName) + result.getLableFile());
                 }
             }
 

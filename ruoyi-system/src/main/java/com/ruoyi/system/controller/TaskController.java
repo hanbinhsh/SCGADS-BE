@@ -10,15 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import static com.ruoyi.system.controller.Utils.getResultLocation;
-import static com.ruoyi.system.controller.Utils.getUploadLocation;
 import static com.ruoyi.common.utils.file.FileUtils.*;
+import static com.ruoyi.system.controller.Utils.*;
 
 @RestController
 public class TaskController {
@@ -27,19 +28,6 @@ public class TaskController {
 
     @Autowired
     private FilesServer filesServer;
-
-//    @RequestMapping("/insertTask")
-//    @CrossOrigin(origins = "*")
-//    public Result insertTask(@RequestBody Map<String, String> map) {
-//        Timestamp timestamp = Timestamp.from(ZonedDateTime.now().toInstant());
-//        Scmoannotask task = new Scmoannotask();
-//        task.setTaskName(map.get("taskName"));
-//        task.setStartTime(timestamp);
-//        task.setEndTime(timestamp);
-//        task.setUploaderId(Long.parseLong(map.get("userId")));
-//        taskServer.insertTask(task);
-//        return Result.success();
-//    }
 
     @RequestMapping("/insertTask")
     @CrossOrigin(origins = "*")
@@ -68,47 +56,39 @@ public class TaskController {
     }
 
     @RequestMapping("/deleteTaskByTaskName")
-        @CrossOrigin(origins = "*")
-        public Result deleteTaskByTaskName(@RequestParam String userName ,@RequestParam String taskName) {
-            Scmoannofiles file  = filesServer.findFileByTaskName(taskName);
-            if (file != null) {  // 先判断 file 是否为空
-                if (file.getScRna_SeqFile() != null) {
-                    String fileName = file.getScRna_SeqFile();
-                    filesServer.updateFileHashNum(fileName, -1);
-                    if (filesServer.getFileHashNum(fileName) == 0)
-                        deleteFile(getUploadLocation() + fileName);
-                }
-                if (file.getScAtac_SeqFile() != null) {
-                    String fileName = file.getScAtac_SeqFile();
-                    filesServer.updateFileHashNum(fileName, -1);
-                    if (filesServer.getFileHashNum(fileName) == 0)
-                        deleteFile(getUploadLocation() + fileName);
-                }
-                if (file.getTagFile() != null) {
-                    String fileName = file.getTagFile();
-                    filesServer.updateFileHashNum(fileName, -1);
-                    if (filesServer.getFileHashNum(fileName) == 0)
-                        deleteFile(getUploadLocation() + fileName);
-                }
+    @CrossOrigin(origins = "*")
+    public Result deleteTaskByTaskName(@RequestParam String userName ,@RequestParam String taskName){
+        Scmoannofiles file  = filesServer.findFileByTaskName(taskName);
+        if (file != null) {  // 先判断 file 是否为空
+            if (file.getScRna_SeqFile() != null) {
+                String fileName = file.getScRna_SeqFile();
+                filesServer.updateFileHashNum(fileName, -1);
+                if (filesServer.getFileHashNum(fileName) == 0)
+                    deleteFile(getUploadLocation() + fileName);
             }
-
-            Scmoannoresult result = filesServer.findResultByTaskName(taskName); // BUG 没删掉
-            if (result != null) {  // 先判断 result 是否为空
-                if (result.getConfigFile() != null) {
-                    deleteFile(getResultLocation(userName, taskName) + result.getConfigFile());
-                }
-                if (result.getDataFile() != null) {
-                    deleteFile(getResultLocation(userName, taskName) + result.getDataFile());
-                }
-                if (result.getLableFile() != null) {
-                    deleteFile(getResultLocation(userName, taskName) + result.getLableFile());
-                }
+            if (file.getScAtac_SeqFile() != null) {
+                String fileName = file.getScAtac_SeqFile();
+                filesServer.updateFileHashNum(fileName, -1);
+                if (filesServer.getFileHashNum(fileName) == 0)
+                    deleteFile(getUploadLocation() + fileName);
             }
-
-//            taskServer.deleteTasksByTaskId(taskID);
-            taskServer.deleteTasksByTaskName(taskName);
-            return Result.success();
+            if (file.getTagFile() != null) {
+                String fileName = file.getTagFile();
+                filesServer.updateFileHashNum(fileName, -1);
+                if (filesServer.getFileHashNum(fileName) == 0)
+                    deleteFile(getUploadLocation() + fileName);
+            }
         }
+        taskServer.deleteTasksByTaskName(taskName);
+
+        try{
+            String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
+            deleteFolder(Path.of(baseDir + "/temp/Result/" + userName + "/" + taskName + "/"));
+        }catch (Exception e){
+            System.out.println("删除文件（夹）时发生错误：" + e.getMessage());
+        }
+        return Result.success();
+    }
 
 
     @RequestMapping("/findAllTasksWithUserInformation")

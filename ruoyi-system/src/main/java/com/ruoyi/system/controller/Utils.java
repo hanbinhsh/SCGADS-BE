@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public class Utils {
     public static String getResultLocation(String userName, String taskName){
@@ -22,5 +25,21 @@ public class Utils {
             tempDir.mkdirs(); // 递归创建目录
         }
         return tempDirPath + "/";
+    }
+
+    public static void deleteFolder(Path folderPath) throws IOException {
+        Files.walkFileTree(folderPath, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file); // 先删除文件
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir); // 再删除文件夹
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 }

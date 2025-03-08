@@ -38,7 +38,7 @@ create table `scMoAnnoTask`(
   `status` tinyint DEFAULT 0					NOT NULL	COMMENT '标志位',
   `details` text											COMMENT '详情',
   `uploader_id` int 							NOT NULL	COMMENT '上传者ID',
-  `type` VARCHAR(30) 										COMMENT '任务类型',       # not null
+  `type` VARCHAR(30) 										COMMENT '任务类型',       # not null -- 约定格式：(Annotation/Trainning/Denoising):(multi/single/deno)
   `parameters` TEXT 										COMMENT '任务参数',
   `model` VARCHAR(30) 										COMMENT '模型',           # not null
   `model_id` INT 											COMMENT '模型id',         # not null

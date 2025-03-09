@@ -1,6 +1,7 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.system.domain.entity.Feedback;
+import com.ruoyi.system.domain.entity.FeedbackReply;
 import com.ruoyi.system.mapper.FeedbackMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,12 @@ public class FeedbackServer implements com.ruoyi.system.service.FeedbackServer {
     public void insert(Feedback feedback) {
         feedback.setCreateTime(new Timestamp(System.currentTimeMillis()));
         feedbackMapper.insert(feedback);
+    }
+
+    @Override
+    public void insertFeedbackReply(FeedbackReply feedbackReply) {
+        feedbackReply.setReplyTime(new Timestamp(System.currentTimeMillis()));
+        feedbackMapper.insertFeedbackReply(feedbackReply);
     }
 
     @Override

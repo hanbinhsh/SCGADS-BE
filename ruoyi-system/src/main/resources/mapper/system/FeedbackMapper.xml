@@ -8,6 +8,10 @@
         insert into feedback(user_id, subject, message, created_time)
         values (#{userId}, #{subject}, #{message}, #{createTime})
     </insert>
+    <insert id="insertFeedbackReply">
+        insert into feedbackReply(feedback_id, user_id, reply_content, reply_time)
+        values (#{feedbackId}, #{userId}, #{replyContent}, #{replyTime})
+    </insert>
     <delete id="deleteFeedback">
         delete from feedback where feedback_id = #{feedbackId}
     </delete>

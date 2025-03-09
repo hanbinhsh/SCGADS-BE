@@ -1,6 +1,7 @@
 package com.ruoyi.system.controller;
 
 import com.ruoyi.system.domain.entity.Feedback;
+import com.ruoyi.system.domain.entity.FeedbackReply;
 import com.ruoyi.system.domain.entity.Result;
 import com.ruoyi.system.service.FeedbackServer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,4 +46,11 @@ public class FeedbackController {
         feedbackServer.deleteFeedback(feedbackId);
         return Result.success();
     }
+
+    @PostMapping("/replyFeedback")
+    public Result<String> feedback(@RequestBody FeedbackReply feedbackReply) {
+        feedbackServer.insertFeedbackReply(feedbackReply);
+        return Result.success();
+    }
+
 }

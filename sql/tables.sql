@@ -18,6 +18,19 @@ CREATE TABLE `models` (
     `default_parameters` TEXT NOT NULL						COMMENT '默认参数' -- 格式： '参数1:值1,参数2:值2,...'
 );
 
+INSERT INTO models (model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters) VALUES 
+    ('scLTH', 'multi', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05,batch_size:128,patience:8,input_dim:512,num_layers:8,nhead:16,lr:5e-4,weight_decay:5e-3'),
+    ('scMoAnno', 'single', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05'),
+    ('scTCHCN', 'multi', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05');
+    
+-- 公司表：管理用户所属的公司
+drop table if exists `company`;
+CREATE TABLE `company` (
+    `company_id` INT AUTO_INCREMENT PRIMARY KEY     NOT NULL COMMENT '公司ID',
+    `company_name` VARCHAR(255) UNIQUE             NOT NULL COMMENT '公司名称',
+    `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+);
+
 drop table if exists `scMoAnnoUser`;
 create table `scMoAnnoUser`(
   `user_id` int AUTO_INCREMENT PRIMARY KEY  	NOT NULL	COMMENT '用户ID',
@@ -26,7 +39,9 @@ create table `scMoAnnoUser`(
   `email` varchar(32) UNIQUE 					NOT NULL	COMMENT '电子邮件',
   `is_admin` boolean DEFAULT false	 			NOT NULL	COMMENT '是否是管理员',
   `phone` varchar(32) UNIQUE				 	NOT NULL	COMMENT '电话号码',
-  `avatar` LONGBLOB											COMMENT '用户头像'
+  `avatar` LONGBLOB											COMMENT '用户头像',
+  `company_id` INT 											COMMENT '所属公司ID',
+  FOREIGN KEY (`company_id`) REFERENCES company(`company_id`)
 );
 
 drop table if exists `scMoAnnoTask`;
@@ -78,9 +93,37 @@ CREATE TABLE `scMoAnnoResult` (
 
 drop table if exists `fileHashReference`;
 CREATE TABLE `fileHashReference` (
-  `hash` VARCHAR(64)                                 COMMENT '文件哈希值（xxhash）',
-  `file_name` VARCHAR(255)  PRIMARY KEY              NOT NULL    comment '文件名',
-  `reference_count` INT DEFAULT 1                    NOT NULL     COMMENT '引用计数'
+  `hash` VARCHAR(64)                                 			 COMMENT '文件哈希值',
+  `file_name` VARCHAR(255)  PRIMARY KEY              NOT NULL    COMMENT '文件名',
+  `reference_count` INT DEFAULT 1                    NOT NULL    COMMENT '引用计数'
+);
+
+-- 分享表：记录用户分享任务的信息
+drop table if exists `share`;
+CREATE TABLE `share` (
+    `share_id` INT AUTO_INCREMENT PRIMARY KEY        NOT NULL COMMENT '分享ID',
+    `task_id` INT                                    NOT NULL COMMENT '任务ID',
+    `sharer_id` INT                                  NOT NULL COMMENT '分享者ID',
+    `receiver_id` INT                                		  COMMENT '接收者ID',		-- 同下↓↓↓
+    `company_id` INT                                 		  COMMENT '接收公司ID',		-- 仅存在一个或0个值，若另一个值为空则此行有效，两个为空则所有人可查看
+    `password` varchar(64)									  COMMENT '密码',
+    `shared_time` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '分享时间',
+    `due_time` DATETIME 									  COMMENT '到期时间',		-- 为空永久
+    FOREIGN KEY (`task_id`) REFERENCES `scMoAnnoTask`(`task_id`),
+    FOREIGN KEY (`sharer_id`) REFERENCES `scMoAnnoUser`(`user_id`),
+    FOREIGN KEY (`company_id`) REFERENCES `company`(`company_id`),
+    FOREIGN KEY (`receiver_id`) REFERENCES `scMoAnnoUser`(`user_id`)
+);
+
+-- 日志表：记录系统日志
+drop table if exists `log`;
+CREATE TABLE `log` (
+    `log_id` INT AUTO_INCREMENT PRIMARY KEY        NOT NULL COMMENT '日志ID',
+    `user_id` INT                                  NOT NULL COMMENT '用户ID',
+    `action` VARCHAR(255)                          NOT NULL COMMENT '操作内容',
+    `importance` INT                               NOT NULL COMMENT '操作内容',
+    `timestamp` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '时间戳',
+    FOREIGN KEY (`user_id`) REFERENCES `scMoAnnoUser`(`user_id`)
 );
 
 -- TRIGGER --

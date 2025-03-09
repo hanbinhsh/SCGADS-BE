@@ -1,0 +1,25 @@
+package com.ruoyi.system.service.impl;
+
+import com.ruoyi.system.domain.entity.Share;
+import com.ruoyi.system.mapper.ShareMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class ShareService implements com.ruoyi.system.service.ShareService {
+    @Autowired
+    private ShareMapper shareMapper;
+
+    @Override
+    public Map<Object, Object> findSharesByUserId(Long userId) {
+        return shareMapper.findSharesByUserId(userId);
+    }
+
+    @Override
+    public Map<Object, Object> findSharesReceivedByUserId(Long userId) {
+        return shareMapper.findSharesReceivedByUserId(userId);
+    }
+}

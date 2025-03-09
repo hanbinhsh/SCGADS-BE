@@ -126,6 +126,18 @@ CREATE TABLE `log` (
     FOREIGN KEY (`user_id`) REFERENCES `scMoAnnoUser`(`user_id`)
 );
 
+-- 创建反馈回复表
+drop table if exists `feedbackReply`;
+CREATE TABLE `feedbackReply` (
+  `reply_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `feedback_id` INT NOT NULL COMMENT '关联反馈ID',
+  `user_id` INT NOT NULL COMMENT '用户ID（关联用户表）',
+  `reply_content` TEXT NOT NULL COMMENT '回复内容',
+  `reply_time` DATETIME NOT NULL COMMENT '回复时间',
+  FOREIGN KEY (feedback_id) REFERENCES feedback(feedback_id),
+  FOREIGN KEY (user_id) REFERENCES scMoAnnoUser(user_id)
+);
+
 -- TRIGGER --
 -- 用户密码加密
 DELIMITER $$

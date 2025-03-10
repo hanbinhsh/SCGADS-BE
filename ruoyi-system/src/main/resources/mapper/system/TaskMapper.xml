@@ -4,8 +4,8 @@
 
 <mapper namespace="com.ruoyi.system.mapper.TaskMapper">
     <insert id="insertTask">
-        insert into scMoAnnoTask(task_name, start_time, uploader_id, details, type, parameters, model, model_id)
-        values(#{taskName}, #{startTime}, #{uploaderId}, #{details}, #{type}, #{parameters}, #{model}, #{modelId} )
+        insert into scMoAnnoTask(task_name, start_time, uploader_id, details, type, parameters, model_id)
+        values(#{taskName}, #{startTime}, #{uploaderId}, #{details}, #{type}, #{parameters}, #{modelId} )
     </insert>
     <update id="updateTaskStatus">
         update scmoannotask
@@ -23,13 +23,17 @@
     <delete id="deleteTasksByTaskName">
         delete scmoannotask from scmoannotask where task_name = #{taskName}
     </delete>
-    <select id="findTasksByUserId" resultType="com.ruoyi.system.domain.entity.Scmoannotask">
-        select * from scmoannotask where uploader_id = #{id}
+    <select id="findTasksByUserId" resultType="java.util.Map">
+        SELECT *
+                FROM scmoannotask t
+                JOIN models m ON t.model_id = m.model_id
+                WHERE t.uploader_id = #{id};
     </select>
     <select id="findAllTasksWithUserInformation" resultType="java.util.Map">
-        SELECT u.*, t.*
+        SELECT *
             FROM scMoAnnoUser u
-            JOIN scMoAnnoTask t ON u.user_id = t.uploader_id;
+            JOIN scMoAnnoTask t ON u.user_id = t.uploader_id
+            JOIN models m ON t.model_id = m.model_id;
     </select>
     <select id="findTaskByTaskName" resultType="com.ruoyi.system.domain.entity.Scmoannofiles">
         select * from scmoannotask where task_name = #{taskName}

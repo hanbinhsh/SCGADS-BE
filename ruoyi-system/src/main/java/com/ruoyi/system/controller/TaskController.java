@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,12 @@ public class TaskController {
 
     @RequestMapping("/findTasksByUserID")
     @CrossOrigin(origins = "*")
-    public Result<List<Scmoannotask>> findTasksByUserID(@RequestParam long userID) {
-        return Result.success(taskServer.findTasksByUserId(userID));
+    public Result<List<Object>> findTasksByUserID(@RequestParam long userID) {
+    Map<Object, Object> taskMap = taskServer.findTasksByUserId(userID);
+        List<Object> taskList = new ArrayList<>(taskMap.values()); // 提取值转换为列表
+        return Result.success(taskList);
     }
+
 
     @RequestMapping("/findTaskByTaskName")
     @CrossOrigin(origins = "*")

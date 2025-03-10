@@ -12,7 +12,8 @@ import java.util.Map;
 
 @Mapper
 public interface TaskMapper {
-    List<Scmoannotask> findTasksByUserId(@Param("id") Long id);
+    @MapKey("task_id")
+    Map<Object,Object> findTasksByUserId(@Param("id") Long id);
     void deleteTasksByTaskId(@Param("id") Long id);
     Scmoannofiles findTaskByTaskName(@Param("taskName") String taskName);
     void insertTask(Scmoannotask task);

@@ -53,10 +53,9 @@ create table `scMoAnnoTask`(
   `status` tinyint DEFAULT 0					NOT NULL	COMMENT '标志位',
   `details` text											COMMENT '详情',
   `uploader_id` int 							NOT NULL	COMMENT '上传者ID',
-  `type` VARCHAR(30) 										COMMENT '任务类型',       # not null -- 约定格式：(Annotation/Trainning/Denoising):(multi/single/deno)
+  `type` VARCHAR(30) 							NOT NULL	COMMENT '任务类型', -- 约定格式：(annotation/trainning/denoising):(multi/single/deno)
   `parameters` TEXT 										COMMENT '任务参数',
-  `model` VARCHAR(30) 										COMMENT '模型',           # not null
-  `model_id` INT 											COMMENT '模型id',         # not null
+  `model_id` INT 								NOT NULL	COMMENT '模型id',
   FOREIGN KEY (`uploader_id`) REFERENCES scMoAnnoUser(`user_id`),
   FOREIGN KEY (`model_id`) REFERENCES models(`model_id`)
 );
@@ -151,25 +150,68 @@ END;
 $$
 DELIMITER ;
 
-DROP TRIGGER IF EXISTS before_user_delete;
-DELIMITER //
-CREATE TRIGGER before_user_delete
-    BEFORE DELETE ON scMoAnnoUser
-    FOR EACH ROW
+-- 删除 models 表的触发器
+DELIMITER $$
+DROP TRIGGER IF EXISTS before_delete_models;
+CREATE TRIGGER before_delete_models
+BEFORE DELETE ON models
+FOR EACH ROW
 BEGIN
-    -- 删除即将被删除的用户ID的所有任务
-    DELETE FROM scMoAnnoTask WHERE uploader_id = OLD.user_id;
-    -- 删除即将被删除的用户ID的所有反馈
-    DELETE FROM feedback WHERE user_id = OLD.user_id;
-END //
+    DELETE FROM scMoAnnoTask WHERE model_id = OLD.model_id;
+END;
+$$
 DELIMITER ;
 
-DROP TRIGGER IF EXISTS before_task_delete;
+-- 删除 company 表的触发器
 DELIMITER $$
-CREATE TRIGGER `before_task_delete` BEFORE DELETE ON `scMoAnnoTask` FOR EACH ROW
+DROP TRIGGER IF EXISTS before_delete_company;
+CREATE TRIGGER before_delete_company
+BEFORE DELETE ON company
+FOR EACH ROW
 BEGIN
-    -- 删除scMoAnnoResult表中所有与即将被删除的任务名对应的记录
-    DELETE FROM `scMoAnnoResult` WHERE `task_name` = OLD.task_name;
-    DELETE FROM `scMoAnnoFiles` WHERE `task_name` = OLD.task_name;
-    END$$
+    UPDATE scMoAnnoUser SET company_id = NULL WHERE company_id = OLD.company_id;
+END;
+$$
+DELIMITER ;
+
+-- 删除 scMoAnnoUser 表的触发器
+DELIMITER $$
+DROP TRIGGER IF EXISTS before_delete_user;
+CREATE TRIGGER before_delete_user
+BEFORE DELETE ON scMoAnnoUser
+FOR EACH ROW
+BEGIN
+    DELETE FROM scMoAnnoTask WHERE uploader_id = OLD.user_id;
+    DELETE FROM feedback WHERE user_id = OLD.user_id;
+    DELETE FROM share WHERE sharer_id = OLD.user_id OR receiver_id = OLD.user_id;
+    DELETE FROM log WHERE user_id = OLD.user_id;
+    DELETE FROM feedbackReply WHERE user_id = OLD.user_id;
+END;
+$$
+DELIMITER ;
+
+-- 删除 scMoAnnoTask 表的触发器
+DELIMITER $$
+DROP TRIGGER IF EXISTS before_delete_task;
+CREATE TRIGGER before_delete_task
+BEFORE DELETE ON scMoAnnoTask
+FOR EACH ROW
+BEGIN
+    DELETE FROM scMoAnnoFiles WHERE task_name = OLD.task_name;
+    DELETE FROM scMoAnnoResult WHERE task_name = OLD.task_name;
+    DELETE FROM share WHERE task_id = OLD.task_id;
+END;
+$$
+DELIMITER ;
+
+-- 删除 feedback 表的触发器
+DELIMITER $$
+DROP TRIGGER IF EXISTS before_delete_feedback;
+CREATE TRIGGER before_delete_feedback
+BEFORE DELETE ON feedback
+FOR EACH ROW
+BEGIN
+    DELETE FROM feedbackReply WHERE feedback_id = OLD.feedback_id;
+END;
+$$
 DELIMITER ;

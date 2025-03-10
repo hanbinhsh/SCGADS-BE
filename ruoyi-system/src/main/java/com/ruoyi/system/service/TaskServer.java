@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface TaskServer {
     void insertTask(Scmoannotask task);
-    List<Scmoannotask> findTasksByUserId(Long id);
+    Map<Object,Object> findTasksByUserId(Long id);
     void deleteTasksByTaskId(Long id);
     Map<Object,Object> findAllTasksWithUserInformation();
     void updateTaskStatus(Long id, Long status,String details);

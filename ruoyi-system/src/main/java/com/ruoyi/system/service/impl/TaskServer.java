@@ -18,7 +18,7 @@ public class TaskServer implements com.ruoyi.system.service.TaskServer {
 
     @Override
     @Transactional
-    public List<Scmoannotask> findTasksByUserId(Long id) {
+    public Map<Object,Object> findTasksByUserId(Long id) {
         return taskMapper.findTasksByUserId(id);
     }
 

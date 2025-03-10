@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/share")
 public class ShareController {
@@ -16,13 +20,17 @@ public class ShareController {
 
     @RequestMapping("/findSharesByUserId")
     @CrossOrigin(origins = "*")
-    public Result findSharesByUserId(@RequestParam long userID) {
-        return Result.success(shareService.findSharesByUserId(userID));
+    public Result<List<Object>> findSharesByUserId(@RequestParam long userID) {
+        Map<Object, Object> map = shareService.findSharesByUserId(userID);
+        List<Object> maplist = new ArrayList<>(map.values()); // 提取值转换为列表
+        return Result.success(maplist);
     }
 
     @RequestMapping("/findSharesReceivedByUserId")
     @CrossOrigin(origins = "*")
-    public Result findSharesReceivedByUserId(@RequestParam long userID) {
-        return Result.success(shareService.findSharesReceivedByUserId(userID));
+    public Result<List<Object>> findSharesReceivedByUserId(@RequestParam long userID) {
+        Map<Object, Object> map = shareService.findSharesReceivedByUserId(userID);
+        List<Object> maplist = new ArrayList<>(map.values()); // 提取值转换为列表
+        return Result.success(maplist);
     }
 }

@@ -12,7 +12,6 @@ public class Scmoannotask {
   private long uploaderId;
   private String type;
   private String parameters;
-  private String model;
   private long modelId;
 
 
@@ -94,15 +93,6 @@ public class Scmoannotask {
 
   public void setParameters(String parameters) {
     this.parameters = parameters;
-  }
-
-
-  public String getModel() {
-    return model;
-  }
-
-  public void setModel(String model) {
-    this.model = model;
   }
 
 

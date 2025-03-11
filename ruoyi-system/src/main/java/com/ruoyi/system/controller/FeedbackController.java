@@ -53,4 +53,12 @@ public class FeedbackController {
         return Result.success();
     }
 
+    @RequestMapping("/findFeedbackReply")
+    @CrossOrigin(origins = "*")
+    public Result<Map<Object,Object>> findFeedbackReply(@RequestParam long userId){
+        Map<Object, Object> findFeedbackReplies = feedbackServer.findFeedbackReply(userId);
+        return Result.success(findFeedbackReplies);
+    }
+
+
 }

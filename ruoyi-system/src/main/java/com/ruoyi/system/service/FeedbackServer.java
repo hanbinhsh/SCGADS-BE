@@ -10,4 +10,5 @@ public interface FeedbackServer {
     void deleteFeedback(long feedbackId);
     void insertFeedbackReply(FeedbackReply feedbackReply);
     Map<Object, Object> findAllFeedbackWithUserInformation();
+    Map<Object, Object> findFeedbackReply(long userId);
 }

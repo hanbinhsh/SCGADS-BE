@@ -23,4 +23,7 @@
         FROM scMoAnnoUser u
                  JOIN feedback t ON u.user_id = t.user_id;
     </select>
+    <select id="findFeedbackReply" resultType="java.util.Map">
+        select * from feedbackreply where user_id=#{userId}
+    </select>
 </mapper>

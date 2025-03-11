@@ -35,4 +35,9 @@ public class FeedbackServer implements com.ruoyi.system.service.FeedbackServer {
     public Map<Object, Object> findAllFeedbackWithUserInformation() {
         return feedbackMapper.findAllFeedbackWithUserInformation();
     }
+
+    @Override
+    public Map<Object, Object> findFeedbackReply(long userId) {
+        return feedbackMapper.findFeedbackReply(userId);
+    }
 }

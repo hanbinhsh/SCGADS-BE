@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,56 +53,18 @@ public class FileController {
                                 @RequestParam("taskName") String taskName,
                                 @RequestParam("fileType") String fileType,
                                 @RequestParam("userName") String userName) throws IOException {
-        String fileName = file.getOriginalFilename();  // 文件名
-        String contentType = file.getContentType();  // 内容类型
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());  // 文件名
+        // 验证文件名有效性
+        if (fileName.contains("..")) {
+            return Result.error("文件名包含非法路径序列");
+        }
+//        String contentType = file.getContentType();  // 内容类型
         String name = file.getName();  // 表单域名
-        System.out.println(name+" "+fileName+" "+contentType);
-        Timestamp timestamp = Timestamp.from(ZonedDateTime.now().toInstant());
-        // 支持重复上传，uuid重新命名
-        String randomFileName = UUID.randomUUID().toString();
-        // 路径获取
-        int suffixIndex = fileName.lastIndexOf(".");
-        if(suffixIndex > 0){  // 有后缀名
-            randomFileName = randomFileName + fileName.substring(suffixIndex);
-        }
-        String realFilePath = getResultLocation(userName, taskName) + randomFileName;
-        // 数据库包装
-        Scmoannoresult result2=filesServer.findResultByTaskName(taskName);
-        Scmoannoresult result = new Scmoannoresult();
-        if(Objects.equals(fileType, "configjsFile")){
-            if (result2.getConfigFile() != null) {
-                deleteFile(getResultLocation(userName, taskName) + result2.getConfigFile());
-//                result2.deleteFile(getResultLocation() + result2.getConfigFile());
-            } else{
-                System.out.println("configjsFile update failed");
-            }
-            result.setConfigFile(randomFileName);
-            filesServer.updateResult1(result, taskName);
-        }
-        else if(Objects.equals(fileType, "datajsFile")){
-            if (result2.getDataFile() != null) {
-                deleteFile(getResultLocation(userName, taskName) + result2.getConfigFile());
-//                result2.deleteFile(getResultLocation() + result2.getDataFile());
-            } else{
-                System.out.println("datajsFile update failed");
-            }
-            result.setDataFile(randomFileName);
-            filesServer.updateResult2(result, taskName);
-        }
-        else if(Objects.equals(fileType, "lablejsFile")){
-            if (result2.getLableFile() != null) {
-                deleteFile(getResultLocation(userName, taskName) + result2.getConfigFile());
-//                result2.deleteFile(getResultLocation() + result2.getLableFile());
-            } else{
-                System.out.println("lablejsFile update failed");
-            }
-            result.setLableFile(randomFileName);
-            filesServer.updateResult3(result, taskName);
-        }
+//        System.out.println(name+" "+fileName+" "+contentType);
+        String realFilePath = getResultLocation(userName, taskName) + fileName;
         // 文件操作
         file.transferTo(new File(realFilePath));  // 移动到目标文件
         return Result.success();
-
     }
 
 

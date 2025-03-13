@@ -15,6 +15,6 @@ public interface FeedbackMapper {
     void insertFeedbackReply(FeedbackReply feedbackReply);
     @MapKey("feedback_id")
     Map<Object, Object> findAllFeedbackWithUserInformation();
-    @MapKey("user_id")
+    @MapKey("reply_id")
     Map<Object, Object> findFeedbackReply(long userID);
 }

@@ -9,8 +9,8 @@
         values (#{userId}, #{subject}, #{message}, #{createTime})
     </insert>
     <insert id="insertFeedbackReply">
-        insert into feedbackReply(feedback_id, user_id, reply_content, reply_time)
-        values (#{feedbackId}, #{userId}, #{replyContent}, #{replyTime})
+        insert into feedbackReply(feedback_id, user_id, reply_content, reply_time, subject)
+        values (#{feedbackId}, #{userId}, #{replyContent}, #{replyTime}, #{subject})
     </insert>
     <delete id="deleteFeedback">
         delete from feedback where feedback_id = #{feedbackId}
@@ -24,6 +24,6 @@
                  JOIN feedback t ON u.user_id = t.user_id;
     </select>
     <select id="findFeedbackReply" resultType="java.util.Map">
-        select * from feedbackreply where user_id=#{userId}
+        select * from feedbackreply where user_id = #{userId}
     </select>
 </mapper>

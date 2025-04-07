@@ -139,6 +139,7 @@ CREATE TABLE `feedbackReply` (
   `user_id` INT NOT NULL COMMENT '用户ID（关联用户表）',
   `reply_content` TEXT NOT NULL COMMENT '回复内容',
   `reply_time` DATETIME NOT NULL COMMENT '回复时间',
+  `subject` VARCHAR(32) NOT NULL COMMENT '反馈主题',
   FOREIGN KEY (feedback_id) REFERENCES feedback(feedback_id),
   FOREIGN KEY (user_id) REFERENCES scMoAnnoUser(user_id)
 );

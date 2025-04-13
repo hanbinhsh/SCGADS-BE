@@ -15,4 +15,6 @@ public interface TaskServer {
     Scmoannotask findTaskByTaskName(String taskName);
 
     void deleteTasksByTaskName(String taskName);
+
+    void updateTaskStatusByTaskName(String taskName, Long status);
 }

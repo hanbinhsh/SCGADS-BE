@@ -20,7 +20,7 @@ def main(args):
     requests.post(
         f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH任务{args.task_name}正在处理，结果生成到{args.output_path}")
     try:
-        ensure_directory(args.output_path)
+        ensure_directory(os.path.dirname(args.output_path))
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
         # 加载 checkpoint
@@ -85,15 +85,16 @@ def main(args):
         np.save(args.output_num_path, all_output_num)
         np.save(args.output_path, np.array(all_output, dtype=object))
 
-        requests.post(
-            f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH任务{args.task_name}预测完成，输出已保存至 {args.output_path} 和 {args.output_num_path}")
+        requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH任务{args.task_name}预测完成，输出已保存至 {args.output_path} 和 {args.output_num_path}")
+        requests.post(f"http://localhost:8868/tsneUmapChartProgress?type={args.task_type}&taskName={args.task_name}&userName={args.user_name}&seq_dir={args.rna_path}&label_dir={args.label_path}&outputnpyPath={args.output_path}")
     except Exception as e:
-        requests.post(
-            f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH任务{args.task_name}出错：{e}")
+        requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH任务{args.task_name}出错：{e}")
+        # 设置任务为错误
+        requests.post(f"http://localhost:8868/updateTaskStatusByTaskName?taskName={args.task_name}&status=-1")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 8:
+    if len(sys.argv) < 9:
         print("参数错误")
         sys.exit(1)
 
@@ -110,6 +111,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--user_name', type=str, required=True, help='User name.')
     parser.add_argument('--task_name', type=str, required=True, help='Task name.')
+    parser.add_argument('--task_type', type=str, required=True, help='Task type.')
 
     # 具有默认值的超参数
     parser.add_argument('--n_epochs', type=int, default=96, help='Number of epochs.')
@@ -123,4 +125,7 @@ if __name__ == "__main__":
     parser.add_argument('--weight_decay', type=float, default=5e-3, help='Weight decay.')
 
     args = parser.parse_args()
+
+    # 设置任务为处理中
+    requests.post(f"http://localhost:8868/updateTaskStatusByTaskName?taskName={args.task_name}&status=1")
     main(args)

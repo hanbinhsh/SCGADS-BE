@@ -7,6 +7,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
 public class Utils {
+    // 定位当前用户结果目录
     public static String getResultLocation(String userName, String taskName){
         String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
         String tempDirPath = Paths.get(baseDir, "temp", "Result", userName, taskName).toString();
@@ -14,9 +15,10 @@ public class Utils {
         if (!tempDir.exists()) {
             tempDir.mkdirs(); // 递归创建目录
         }
-        return tempDirPath + "/";
+        return (tempDirPath + "/").replace("\\", "/");
     }
 
+    // 定位当前用户上传文件的目录
     public static String getUploadLocation(){
         String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
         String tempDirPath = baseDir + "/temp/Files";
@@ -24,7 +26,14 @@ public class Utils {
         if (!tempDir.exists()) {
             tempDir.mkdirs(); // 递归创建目录
         }
-        return tempDirPath + "/";
+        return (tempDirPath + "/").replace("\\", "/");
+    }
+
+    // 获取算法文件目录
+    public static String getAlgorithmLocation() {
+        String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
+        String tempDirPath = baseDir + "/algorithm";
+        return (tempDirPath + "/").replace("\\", "/");
     }
 
     public static void deleteFolder(Path folderPath) throws IOException {

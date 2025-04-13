@@ -63,4 +63,9 @@ public class FilesServer implements com.ruoyi.system.service.FilesServer {
     public int getFileHashNum(String fileName) {
         return filesMapper.getFileHashNum(fileName);
     }
+
+    @Override
+    public Scmoannofiles findFilesByTaskName(String taskName) {
+        return filesMapper.findFilesByTaskName(taskName);
+    }
 }

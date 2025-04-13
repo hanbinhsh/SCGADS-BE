@@ -30,5 +30,8 @@
     <select id="getFileHashNum" resultType="java.lang.Integer">
         select reference_count from filehashreference where file_name = #{fileName}
     </select>
+    <select id="findFilesByTaskName" resultType="com.ruoyi.system.domain.entity.Scmoannofiles">
+        select * from scmoannofiles where task_name = #{taskName}
+    </select>
 
 </mapper>

@@ -24,7 +24,7 @@ public class TaskServer implements com.ruoyi.system.service.TaskServer {
 
     @Override
     @Transactional
-    public Scmoannofiles findTaskByTaskName(String taskName) {
+    public Scmoannotask findTaskByTaskName(String taskName) {
         return taskMapper.findTaskByTaskName(taskName);
     }
 

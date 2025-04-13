@@ -1,6 +1,9 @@
 package com.ruoyi.system.controller;
 
+import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.entity.Result;
+import com.ruoyi.system.domain.entity.Scmoannotask;
+import com.ruoyi.system.service.TaskServer;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,37 +18,40 @@ public class TaskProgress {
     @CrossOrigin(origins = "*")
     public Result predict(@RequestParam("taskName") String taskName,
                           @RequestParam("userName") String userName) throws IOException {
-        // Python 脚本路径
-        String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
-        String pythonScriptPath = baseDir + "/algorithm/annotation/predict.py"; // TODO: 预测脚本路径
-
-        // 输入数据路径
-        String atacPath = "G:/Projects/seqData/mouse_skin_shareseq_rna_10k/atac.h5ad"; // TODO
-        String rnaPath = "G:/Projects/seqData/mouse_skin_shareseq_rna_10k/rna.h5ad"; // TODO
-        String labelPath = "G:/Projects/seqData/mouse_skin_shareseq_rna_10k/Label.csv"; // TODO
-
-        // 模型文件路径
-        String checkpointPath = "./models/mouse_skin_shareseq_rna_10k/train_best_1919810.ckpt"; // TODO
-
-        // 预测结果输出路径
-        String outputNumPath = baseDir + "/temp/Result/" + userName + '/' + taskName + "/output_num.npy";
-        String outputPath = baseDir + "/temp/Result/" + userName + '/' + taskName + "/output.npy";
-
-        // 构造 ProcessBuilder
-        ProcessBuilder processBuilder = new ProcessBuilder(
-                "python", pythonScriptPath,
-                "--atac_path", atacPath,
-                "--rna_path", rnaPath,
-                "--label_path", labelPath,
-                "--checkpoint", checkpointPath,
-                "--output_num_path", outputNumPath,
-                "--output_path", outputPath
-        );
-
-        // 启动进程
-        Process process = processBuilder.start();
-        System.out.println("预测任务 " + taskName + " 处理中");
-
+        TaskServer taskServer = SpringUtils.getBean(TaskServer.class);
+        Scmoannotask task = taskServer.findTaskByTaskName(taskName);
+        System.out.println(task.getTaskName());
+//        // Python 脚本路径
+//        String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
+//        String pythonScriptPath = baseDir + "/algorithm/annotation/predict.py"; // TODO: 预测脚本路径
+//
+//        // 输入数据路径
+//        String atacPath = "G:/Projects/seqData/mouse_skin_shareseq_rna_10k/atac.h5ad"; // TODO
+//        String rnaPath = "G:/Projects/seqData/mouse_skin_shareseq_rna_10k/rna.h5ad"; // TODO
+//        String labelPath = "G:/Projects/seqData/mouse_skin_shareseq_rna_10k/Label.csv"; // TODO
+//
+//        // 模型文件路径
+//        String checkpointPath = "./models/mouse_skin_shareseq_rna_10k/train_best_1919810.ckpt"; // TODO
+//
+//        // 预测结果输出路径
+//        String outputNumPath = baseDir + "/temp/Result/" + userName + '/' + taskName + "/output_num.npy";
+//        String outputPath = baseDir + "/temp/Result/" + userName + '/' + taskName + "/output.npy";
+//
+//        // 构造 ProcessBuilder
+//        ProcessBuilder processBuilder = new ProcessBuilder(
+//                "python", pythonScriptPath,
+//                "--atac_path", atacPath,
+//                "--rna_path", rnaPath,
+//                "--label_path", labelPath,
+//                "--checkpoint", checkpointPath,
+//                "--output_num_path", outputNumPath,
+//                "--output_path", outputPath
+//        );
+//
+//        // 启动进程
+//        Process process = processBuilder.start();
+//        System.out.println("预测任务 " + taskName + " 处理中");
+//
         return Result.success();
     }
 

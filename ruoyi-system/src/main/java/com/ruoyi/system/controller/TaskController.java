@@ -45,10 +45,9 @@ public class TaskController {
         return Result.success(taskList);
     }
 
-
     @RequestMapping("/findTaskByTaskName")
     @CrossOrigin(origins = "*")
-    public Result findTasksByUserID(@RequestParam String taskName) {
+    public Result findTaskByTaskName(@RequestParam String taskName) {
         if(taskServer.findTaskByTaskName(taskName) == null) {
             return Result.success();
         }

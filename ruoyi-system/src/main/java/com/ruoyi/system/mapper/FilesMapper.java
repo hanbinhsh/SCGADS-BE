@@ -20,4 +20,6 @@ public interface FilesMapper {
     void insertFileHash(@Param("hash") String hash, @Param("randomFileName") String randomFileName);
 
     int getFileHashNum(@Param("fileName") String fileName);
+
+    Scmoannofiles findFilesByTaskName(@Param("taskName") String taskName);
 }

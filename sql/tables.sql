@@ -1,6 +1,5 @@
 use scMoAnnoDB;
 
-drop table if exists `scMoAnnoResult`;
 drop table if exists `fileHashReference`;
 drop table if exists `scMoAnnoFiles`;
 drop table if exists `share`;
@@ -60,7 +59,7 @@ create table `scMoAnnoTask`(
   `details` text											COMMENT '详情',
   `uploader_id` int 							NOT NULL	COMMENT '上传者ID',
   `type` VARCHAR(30) 							NOT NULL	COMMENT '任务类型', -- 约定格式：(annotation/trainning/denoising):(multi/single/deno)
-  `parameters` TEXT 										COMMENT '任务参数',
+  `parameters` TEXT 										COMMENT '任务参数', -- 参数名1:参数1,参数名2:参数2...
   `model_id` INT 								NOT NULL	COMMENT '模型id',
   FOREIGN KEY (`uploader_id`) REFERENCES scMoAnnoUser(`user_id`),
   FOREIGN KEY (`model_id`) REFERENCES models(`model_id`)

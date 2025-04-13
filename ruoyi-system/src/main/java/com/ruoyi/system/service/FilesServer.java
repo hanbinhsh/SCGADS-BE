@@ -17,4 +17,6 @@ public interface FilesServer {
     void insertFileHash(String hash, String randomFileName);
 
     int getFileHashNum(String fileName);
+
+    Scmoannofiles findFilesByTaskName(String taskName);
 }

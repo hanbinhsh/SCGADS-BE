@@ -38,15 +38,6 @@ public class FileController {
     @Autowired
     private FilesServer filesServer;
 
-    @RequestMapping("/findResultByTaskName")
-    @CrossOrigin(origins = "*")
-    public Result findResultByTaskName(@RequestParam String taskName) {
-        if(filesServer.findResultByTaskName(taskName)==null){
-            return Result.success();
-        }
-        return Result.error("the taskName already exists");
-    }
-
     @PostMapping("/uploadResult")
     @CrossOrigin(origins = "*")  // 跨域
     public Result uploadResult(@RequestParam("file") MultipartFile file,
@@ -150,15 +141,6 @@ public class FileController {
         Scmoannofiles files = new Scmoannofiles();
         files.setTaskName(map.get("taskName"));
         filesServer.insertFiles(files);
-        return Result.success();
-    }
-
-    @RequestMapping("/insertResult")
-    @CrossOrigin(origins = "*")
-    public Result insertResult(@RequestBody Map<String,String> map) {
-        Scmoannoresult result = new Scmoannoresult();
-        result.setTaskName(map.get("taskName"));
-        filesServer.insertResult(result);
         return Result.success();
     }
 

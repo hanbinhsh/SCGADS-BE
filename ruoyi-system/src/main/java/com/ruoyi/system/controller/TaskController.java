@@ -2,15 +2,12 @@ package com.ruoyi.system.controller;
 
 import com.ruoyi.system.domain.entity.Result;
 import com.ruoyi.system.domain.entity.Scmoannofiles;
-import com.ruoyi.system.domain.entity.Scmoannoresult;
 import com.ruoyi.system.domain.entity.Scmoannotask;
 import com.ruoyi.system.service.FilesServer;
 import com.ruoyi.system.service.TaskServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;

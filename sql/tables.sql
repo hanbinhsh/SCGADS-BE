@@ -86,15 +86,15 @@ create table `feedback`(
   FOREIGN KEY (user_id) REFERENCES scMoAnnoUser(user_id)
 );
 
-drop table if exists `scMoAnnoResult`;
-CREATE TABLE `scMoAnnoResult` (  
-    `result_id` INT AUTO_INCREMENT PRIMARY KEY         NOT NULL   COMMENT '文件的唯一标识符',  
-    `config_file` VARCHAR(255)                                    COMMENT 'config.js文件',
-    `data_file` VARCHAR(255)                                      COMMENT 'data.js文件',
-    `lable_file` VARCHAR(255)                                     COMMENT 'lable.js文件',
-    `task_name` VARCHAR(255) UNIQUE                               COMMENT '对应任务',
-    FOREIGN KEY (`task_name`) REFERENCES scMoAnnoTask(`task_name`)
-);
+-- drop table if exists `scMoAnnoResult`;
+-- CREATE TABLE `scMoAnnoResult` (  
+--     `result_id` INT AUTO_INCREMENT PRIMARY KEY         NOT NULL   COMMENT '文件的唯一标识符',  
+--     `config_file` VARCHAR(255)                                    COMMENT 'config.js文件',
+--     `data_file` VARCHAR(255)                                      COMMENT 'data.js文件',
+--     `lable_file` VARCHAR(255)                                     COMMENT 'lable.js文件',
+--     `task_name` VARCHAR(255) UNIQUE                               COMMENT '对应任务',
+--     FOREIGN KEY (`task_name`) REFERENCES scMoAnnoTask(`task_name`)
+-- );
 
 drop table if exists `fileHashReference`;
 CREATE TABLE `fileHashReference` (
@@ -198,18 +198,18 @@ $$
 DELIMITER ;
 
 -- 删除 scMoAnnoTask 表的触发器
-DELIMITER $$
-DROP TRIGGER IF EXISTS before_delete_task $$
-CREATE TRIGGER before_delete_task
-BEFORE DELETE ON scMoAnnoTask
-FOR EACH ROW
-BEGIN
-    DELETE FROM scMoAnnoFiles WHERE task_name = OLD.task_name;
-    DELETE FROM scMoAnnoResult WHERE task_name = OLD.task_name;
-    DELETE FROM share WHERE task_id = OLD.task_id;
-END;
-$$
-DELIMITER ;
+-- DELIMITER $$
+-- DROP TRIGGER IF EXISTS before_delete_task $$
+-- CREATE TRIGGER before_delete_task
+-- BEFORE DELETE ON scMoAnnoTask
+-- FOR EACH ROW
+-- BEGIN
+--     DELETE FROM scMoAnnoFiles WHERE task_name = OLD.task_name;
+--     DELETE FROM scMoAnnoResult WHERE task_name = OLD.task_name;
+--     DELETE FROM share WHERE task_id = OLD.task_id;
+-- END;
+-- $$
+-- DELIMITER ;
 
 -- 删除 feedback 表的触发器
 DELIMITER $$

@@ -55,7 +55,7 @@ create table `scMoAnnoTask`(
   `task_name` varchar(20) UNIQUE				NOT NULL	COMMENT '任务名',
   `start_time` datetime				 			NOT NULL	COMMENT '开始时间',
   `end_time` datetime					 					COMMENT '结束时间',
-  `status` tinyint DEFAULT 0					NOT NULL	COMMENT '标志位',
+  `status` tinyint DEFAULT 0					NOT NULL	COMMENT '标志位',   -- 排队：0    处理中：1    已完成：2    错误：-1
   `details` text											COMMENT '详情',
   `uploader_id` int 							NOT NULL	COMMENT '上传者ID',
   `type` VARCHAR(30) 							NOT NULL	COMMENT '任务类型', -- 约定格式：(annotation/trainning/denoising):(multi/single/deno)
@@ -84,16 +84,6 @@ create table `feedback`(
   `created_time` datetime				 			NOT NULL	COMMENT '反馈时间',
   FOREIGN KEY (user_id) REFERENCES scMoAnnoUser(user_id)
 );
-
--- drop table if exists `scMoAnnoResult`;
--- CREATE TABLE `scMoAnnoResult` (  
---     `result_id` INT AUTO_INCREMENT PRIMARY KEY         NOT NULL   COMMENT '文件的唯一标识符',  
---     `config_file` VARCHAR(255)                                    COMMENT 'config.js文件',
---     `data_file` VARCHAR(255)                                      COMMENT 'data.js文件',
---     `lable_file` VARCHAR(255)                                     COMMENT 'lable.js文件',
---     `task_name` VARCHAR(255) UNIQUE                               COMMENT '对应任务',
---     FOREIGN KEY (`task_name`) REFERENCES scMoAnnoTask(`task_name`)
--- );
 
 drop table if exists `fileHashReference`;
 CREATE TABLE `fileHashReference` (
@@ -195,20 +185,6 @@ BEGIN
 END;
 $$
 DELIMITER ;
-
--- 删除 scMoAnnoTask 表的触发器
--- DELIMITER $$
--- DROP TRIGGER IF EXISTS before_delete_task $$
--- CREATE TRIGGER before_delete_task
--- BEFORE DELETE ON scMoAnnoTask
--- FOR EACH ROW
--- BEGIN
---     DELETE FROM scMoAnnoFiles WHERE task_name = OLD.task_name;
---     DELETE FROM scMoAnnoResult WHERE task_name = OLD.task_name;
---     DELETE FROM share WHERE task_id = OLD.task_id;
--- END;
--- $$
--- DELIMITER ;
 
 -- 删除 feedback 表的触发器
 DELIMITER $$

@@ -54,7 +54,7 @@ public class TaskProgress {
         String predScriptPath  = pythonScriptPath + model.getPredictFilePath();
         String trainScriptPath = pythonScriptPath + model.getTrainFilePath();
         // 模型文件
-        String checkpointPath = pythonScriptPath + model.getModelPath();
+        String checkpointPath = pythonScriptPath + "models/" + model.getModelPath();
 
         // 预测结果输出路径
         String outputNumPath = getResultLocation(userName, taskName) + "output_num.npy";
@@ -63,7 +63,6 @@ public class TaskProgress {
         // 参数解析
         String parameters = task.getParameters();
         System.out.println(parameters);
-
 
         // 基本命令参数
         List<String> command = new ArrayList<>(Arrays.asList(
@@ -75,7 +74,8 @@ public class TaskProgress {
                 "--output_num_path", outputNumPath,
                 "--output_path", outputPath,
                 "--user_name", userName,
-                "--task_name", taskName
+                "--task_name", taskName,
+                "--task_type", task.getType()
         ));
 
         // 动态添加所有有值的参数
@@ -95,79 +95,44 @@ public class TaskProgress {
         }
 
         // 启动进程
-        System.out.println(command);
+        System.out.println("预测任务 " + taskName + " 处理中"+task.getType());
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         Process process = processBuilder.start();
-        // 输出错误信息（如果有）
-        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        String line;
-        System.out.println("---- Python 错误输出 ----");
-        while ((line = errorReader.readLine()) != null) {
-            System.out.println(line);
-        }
-        System.out.println("预测任务 " + taskName + " 处理中");
+//        // 输出错误信息（如果有）
+//        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+//        String line;
+//        System.out.println("---- 注释任务 Python 错误输出 ----");
+//        while ((line = errorReader.readLine()) != null) {
+//            System.out.println(line);
+//        }
+
+        /// 生成图表和设置任务完成或者失败的代码在python中实现
+        /// 由于预测和图表生成是顺序执行，避免重复设置任务状态
 
         return Result.success();
     }
 
-    // 降维图生成
-    @RequestMapping("/chartProgress")
+    // 数据清洗任务处理
+
+    // 模型训练任务处理
+
+    /// 以下方法原则上不在前端调用 ///
+
+    @RequestMapping("/tsneUmapChartProgress")
     @CrossOrigin(origins = "*")
     public Result chartProgress(@RequestParam("type") String type,
                                  @RequestParam("taskName") String taskName,
-                                 @RequestParam("userName") String userName) throws IOException {
-        tsneProgress(type, taskName, userName);
-        umapProgress(type, taskName, userName);
-        return Result.success();
-    }
-
-    @RequestMapping("/tsneProgress")
-    @CrossOrigin(origins = "*")
-    public Result tsneProgress(@RequestParam("type") String type,
-                                 @RequestParam("taskName") String taskName,
-                                 @RequestParam("userName") String userName) throws IOException {
+                                 @RequestParam("userName") String userName,
+                                 @RequestParam("seq_dir") String seq_dir,
+                                 @RequestParam("label_dir") String label_dir,
+                                 @RequestParam("outputnpyPath") String outputnpyPath) throws IOException {
         // 确定是否有真实标签
-        String hasLabels = "training".equals(type) ? "true" : "false";
+        String typePrefix = type != null && type.contains(":") ? type.split(":")[0] : "";
+        String hasLabels = "training".equalsIgnoreCase(typePrefix) ? "true" : "false";
         // Python 脚本路径
         String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
-        String pythonScriptPath = baseDir + "/algorithm/visualization/tsne_chart/tsne_chart.py";
+        String pythonScriptPath = baseDir + "/algorithm/visualization/dimension_reduction/dimension_reduction.py";
         String outputPath = baseDir + "/temp/Result/" + userName + '/' + taskName + '/';
-        // 降维图文件路径
-        String seq_dir = "G:/Projects/seqData/mouse_skin_shareseq_rna_10k/rna.h5ad"; // TODO
-        String label_dir = "G:/Projects/seqData/mouse_skin_shareseq_rna_10k/Label.csv"; // TODO
-        String outputnpyPath = "G:/JAVA/RuoYi-Vue-master/algorithm/visualization/tsne_chart/output.npy"; // TODO
-        // 构造 ProcessBuilder
-        ProcessBuilder processBuilder = new ProcessBuilder(
-                "python", pythonScriptPath,
-                userName,
-                taskName,
-                hasLabels,
-                outputnpyPath,
-                outputPath,
-                label_dir,
-                seq_dir
-        );
-        // 启动进程
-        Process process = processBuilder.start();
-        System.out.println("生成tsne降维图任务 " + taskName + " 处理中");
-        return Result.success();
-    }
-
-    @RequestMapping("/umapProgress")
-    @CrossOrigin(origins = "*")
-    public Result umapProgress(@RequestParam("type") String type,
-                                 @RequestParam("taskName") String taskName,
-                                 @RequestParam("userName") String userName) throws IOException {
-        // 确定是否有真实标签
-        String hasLabels = "training".equals(type) ? "true" : "false";
-        // Python 脚本路径
-        String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
-        String pythonScriptPath = baseDir + "/algorithm/visualization/umap_chart/umap_chart.py";
-        String outputPath = baseDir + "/temp/Result/" + userName + '/' + taskName + '/';
-        // 降维图文件路径
-        String seq_dir = "G:/Projects/seqData/mouse_skin_shareseq_rna_10k/rna.h5ad"; // TODO
-        String label_dir = "G:/Projects/seqData/mouse_skin_shareseq_rna_10k/Label.csv"; // TODO
-        String outputnpyPath = "G:/JAVA/RuoYi-Vue-master/algorithm/visualization/tsne_chart/output.npy"; // TODO
         // 构造 ProcessBuilder
         ProcessBuilder processBuilder = new ProcessBuilder(
                 "python", pythonScriptPath,
@@ -182,13 +147,15 @@ public class TaskProgress {
         // 启动进程
         Process process = processBuilder.start();
         System.out.println("生成umap降维图任务 " + taskName + " 处理中");
+//        // 输出错误信息（如果有）
+//        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+//        String line;
+//        System.out.println("---- 降维图生成任务 Python 错误输出 ----");
+//        while ((line = errorReader.readLine()) != null) {
+//            System.out.println(line);
+//        }
         return Result.success();
     }
-
-
-    // 数据清洗任务处理
-
-    // 模型训练任务处理
 
     // 任务处理完成
     @RequestMapping("/complete")

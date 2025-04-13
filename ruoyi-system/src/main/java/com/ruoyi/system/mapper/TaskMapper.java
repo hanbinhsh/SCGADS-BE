@@ -23,4 +23,6 @@ public interface TaskMapper {
     void updateTaskEndTime(@Param("id") Long id, @Param("time") Date time);
 
     void deleteTasksByTaskName(@Param("taskName") String taskName);
+
+    void updateTaskStatusByTaskName(@Param("taskName") String taskName, @Param("status") Long status);
 }

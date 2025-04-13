@@ -17,6 +17,11 @@
         set end_time = #{time}
         where task_id = #{id}
     </update>
+    <update id="updateTaskStatusByTaskName">
+        update scmoannotask
+        set status = #{status}
+        where task_name = #{taskName}
+    </update>
     <delete id="deleteTasksByTaskId">
         delete scmoannotask from scmoannotask where task_id = #{id}
     </delete>

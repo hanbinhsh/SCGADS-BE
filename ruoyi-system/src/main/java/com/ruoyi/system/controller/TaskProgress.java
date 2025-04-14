@@ -98,6 +98,8 @@ public class TaskProgress {
         System.out.println("预测任务 " + taskName + " 处理中"+task.getType());
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         Process process = processBuilder.start();
+
+        // TODO 错误信息写入日志
 //        // 输出错误信息（如果有）
 //        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 //        String line;

@@ -133,6 +133,13 @@ CREATE TABLE `feedbackReply` (
   FOREIGN KEY (user_id) REFERENCES scMoAnnoUser(user_id)
 );
 
+drop table if exists `encryption_keys`;
+CREATE TABLE encryption_keys (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `aes_key` VARCHAR(64) NOT NULL,  -- 存储Hex字符串（如32字节AES密钥对应64字符）
+    `iv` VARCHAR(24) NOT NULL        -- 存储Hex字符串（如12字节IV对应24字符）
+);
+
 -- TRIGGER --
 -- 用户密码加密
 DELIMITER $$

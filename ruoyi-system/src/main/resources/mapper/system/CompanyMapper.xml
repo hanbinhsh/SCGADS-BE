@@ -7,5 +7,12 @@
         insert into company(company_name)
         values (#{companyName})
     </insert>
+    <delete id="deleteCompanyByID">
+        delete from company
+        where company_id = #{companyID}
+    </delete>
+    <select id="selectAllCompany" resultType="com.ruoyi.system.domain.entity.Company">
+        select * from company
+    </select>
 
 </mapper>

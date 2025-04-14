@@ -6,9 +6,6 @@
     <insert id="insertFiles">
         insert into scMoAnnoFiles (task_name) values(#{taskName} )
     </insert>
-    <insert id="insertResult">
-        insert into scMoAnnoResult (task_name) values(#{taskName})
-    </insert>
     <insert id="insertFileHash">
         insert into fileHashReference(hash, file_name) values (#{hash}, #{randomFileName})
     </insert>
@@ -21,29 +18,20 @@
     <update id="updateFiles3">
         update scMoAnnoFiles set Tag_file = #{randomFileName} where task_name = #{taskName}
     </update>
-    <update id="updateResult1">
-        update scMoAnnoResult set config_file = #{result.configFile} where task_name = #{taskName}
-    </update>
-    <update id="updateResult2">
-        update scMoAnnoResult set data_file = #{result.dataFile} where task_name = #{taskName}
-    </update>
-    <update id="updateResult3">
-        update scMoAnnoResult set lable_file = #{result.lableFile} where task_name = #{taskName}
-    </update>
     <update id="updateFileHashNum">
         update fileHashReference set reference_count = reference_count + #{index} where file_name = #{fileName}
     </update>
     <select id="findFileByTaskName" resultType="com.ruoyi.system.domain.entity.Scmoannofiles">
         select * from scmoannofiles where task_name = #{taskName}
     </select>
-    <select id="findResultByTaskName" resultType="com.ruoyi.system.domain.entity.Scmoannoresult">
-        select * from scMoAnnoResult where task_name = #{taskName}
-    </select>
     <select id="findFileByHash" resultType="java.lang.String">
         select file_name from fileHashReference where hash = #{hash}
     </select>
     <select id="getFileHashNum" resultType="java.lang.Integer">
         select reference_count from filehashreference where file_name = #{fileName}
+    </select>
+    <select id="findFilesByTaskName" resultType="com.ruoyi.system.domain.entity.Scmoannofiles">
+        select * from scmoannofiles where task_name = #{taskName}
     </select>
     <select id="getEncryptionKeys" resultType="com.ruoyi.system.domain.entity.EncryptionKeys">
         select * from encryption_keys where id = #{id}

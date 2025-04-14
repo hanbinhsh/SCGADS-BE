@@ -37,7 +37,7 @@ import java.util.*;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
-
+import static com.ruoyi.common.utils.file.FileUtils.*;
 import static com.ruoyi.system.controller.Utils.getResultLocation;
 import static com.ruoyi.system.controller.Utils.getUploadLocation;
 
@@ -46,15 +46,6 @@ public class FileController {
 
     @Autowired
     private FilesServer filesServer;
-
-    @RequestMapping("/findResultByTaskName")
-    @CrossOrigin(origins = "*")
-    public Result findResultByTaskName(@RequestParam String taskName) {
-        if (filesServer.findResultByTaskName(taskName) == null) {
-            return Result.success();
-        }
-        return Result.error("the taskName already exists");
-    }
 
     @PostMapping("/uploadResult")
     @CrossOrigin(origins = "*")  // 跨域
@@ -83,22 +74,16 @@ public class FileController {
                                                  @RequestParam("type") String type,
                                                  @RequestParam("userName") String userName) throws IOException {
         // 调用业务层接口的方法
-        Scmoannoresult result = filesServer.findResultByTaskName(taskName);
+        //Scmoannoresult result = filesServer.findResultByTaskName(taskName);
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();  // 设置响应对象为二进制流
         builder.contentType(MediaType.APPLICATION_OCTET_STREAM);
-        String fileName = URLEncoder.encode(result.getTaskName(), "UTF-8");  // 设置下载的文件名
+        String fileName = URLEncoder.encode(taskName,"UTF-8");  // 设置下载的文件名
         builder.header("Access-Control-Expose-Headers", "Content-Disposition");
         builder.header("Content-Disposition", "attachment;filename*=UTF-8''" + fileName);
         builder.header("Accept-Ranges", "bytes");
 
         String filePaths = "paths";
-        if (type.equals("config")) {
-            filePaths = getResultLocation(userName, taskName) + result.getConfigFile();
-        } else if (type.equals("label")) {
-            filePaths = getResultLocation(userName, taskName) + result.getLableFile();
-        } else if (type.equals("data")) {
-            filePaths = getResultLocation(userName, taskName) + result.getDataFile();
-        }
+        filePaths = getResultLocation(userName, taskName)+ type + ".js";
         File dFile = new File(filePaths);
         return builder.body(FileUtils.readFileToByteArray(dFile));
     }
@@ -134,7 +119,6 @@ public class FileController {
         }
         // 文件操作
         file.transferTo(new File(realFilePath));  // 移动到目标文件
-
         return Result.success();
     }
 
@@ -159,11 +143,13 @@ public class FileController {
         String fileName = filesServer.findFileByHash(map.get("hash"));
         if (fileName != null) {
             filesServer.updateFileHashNum(fileName, 1);
-            if (Objects.equals(map.get("fileType"), "scRNASeqFile")) {
+            if(Objects.equals(map.get("fileType"), "scRNASeqFile")){
                 filesServer.updateFiles1(fileName, map.get("taskName"));
-            } else if (Objects.equals(map.get("fileType"), "scATACSeqFile")) {
+            }
+            else if(Objects.equals(map.get("fileType"), "scATACSeqFile")){
                 filesServer.updateFiles2(fileName, map.get("taskName"));
-            } else if (Objects.equals(map.get("fileType"), "tagFile")) {
+            }
+            else if(Objects.equals(map.get("fileType"), "tagFile")){
                 filesServer.updateFiles3(fileName, map.get("taskName"));
             }
             return Result.error("文件已存在");
@@ -173,19 +159,10 @@ public class FileController {
 
     @RequestMapping("/insertFile")
     @CrossOrigin(origins = "*")
-    public Result insertFile(@RequestBody Map<String, String> map) {
+    public Result insertFile(@RequestBody Map<String,String> map) {
         Scmoannofiles files = new Scmoannofiles();
         files.setTaskName(map.get("taskName"));
         filesServer.insertFiles(files);
-        return Result.success();
-    }
-
-    @RequestMapping("/insertResult")
-    @CrossOrigin(origins = "*")
-    public Result insertResult(@RequestBody Map<String, String> map) {
-        Scmoannoresult result = new Scmoannoresult();
-        result.setTaskName(map.get("taskName"));
-        filesServer.insertResult(result);
         return Result.success();
     }
 

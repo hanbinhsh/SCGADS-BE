@@ -2,7 +2,6 @@ package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.entity.EncryptionKeys;
 import com.ruoyi.system.domain.entity.Scmoannofiles;
-import com.ruoyi.system.domain.entity.Scmoannoresult;
 
 public interface FilesServer {
     void insertFiles(Scmoannofiles files);
@@ -12,12 +11,6 @@ public interface FilesServer {
 
     Scmoannofiles findFileByTaskName(String taskName);
 
-    void insertResult(Scmoannoresult result);
-    void updateResult1(Scmoannoresult result, String taskName);
-    void updateResult2(Scmoannoresult result, String taskName);
-    void updateResult3(Scmoannoresult result, String taskName);
-    Scmoannoresult findResultByTaskName(String taskName);
-
     String findFileByHash(String hash);
 
     void updateFileHashNum(String fileName, int index);
@@ -25,6 +18,8 @@ public interface FilesServer {
     void insertFileHash(String hash, String randomFileName);
 
     int getFileHashNum(String fileName);
+
+    Scmoannofiles findFilesByTaskName(String taskName);
 
     EncryptionKeys getEncryptionKeys(int id);
 }

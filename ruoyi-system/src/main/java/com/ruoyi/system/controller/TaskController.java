@@ -2,15 +2,12 @@ package com.ruoyi.system.controller;
 
 import com.ruoyi.system.domain.entity.Result;
 import com.ruoyi.system.domain.entity.Scmoannofiles;
-import com.ruoyi.system.domain.entity.Scmoannoresult;
 import com.ruoyi.system.domain.entity.Scmoannotask;
 import com.ruoyi.system.service.FilesServer;
 import com.ruoyi.system.service.TaskServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
@@ -48,15 +45,21 @@ public class TaskController {
         return Result.success(taskList);
     }
 
-
-    @RequestMapping("/findTaskByTaskName")
+    @RequestMapping("/checkExistsTaskByTaskName")
     @CrossOrigin(origins = "*")
-    public Result findTasksByUserID(@RequestParam String taskName) {
+    public Result checkExistsTaskByTaskName(@RequestParam String taskName) {
         if(taskServer.findTaskByTaskName(taskName) == null) {
             return Result.success();
         }
         else
             return Result.error("the taskName already exists");
+    }
+
+    @RequestMapping("/findTaskByTaskName")
+    @CrossOrigin(origins = "*")
+    public Result findTaskByTaskName(@RequestParam String taskName) {
+         Scmoannotask task = taskServer.findTaskByTaskName(taskName);
+         return Result.success(task);
     }
 
     @RequestMapping("/deleteTaskByTaskName")
@@ -120,6 +123,13 @@ public class TaskController {
     @CrossOrigin(origins = "*")
     public Result updateTaskStatus(@RequestParam("taskID") Long taskID, @RequestParam("status") Long status, @RequestParam("details") String details) {
         taskServer.updateTaskStatus(taskID, status, details);
+        return Result.success();
+    }
+
+    @RequestMapping("/updateTaskStatusByTaskName")
+    @CrossOrigin(origins = "*")
+    public Result updateTaskStatusByTaskName(@RequestParam("taskName") String taskName, @RequestParam("status") Long status) {
+        taskServer.updateTaskStatusByTaskName(taskName, status);
         return Result.success();
     }
 }

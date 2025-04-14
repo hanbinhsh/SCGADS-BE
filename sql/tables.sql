@@ -1,10 +1,15 @@
 use scMoAnnoDB;
 
-drop table if exists `feedback`;
+drop table if exists `fileHashReference`;
 drop table if exists `scMoAnnoFiles`;
+drop table if exists `share`;
 drop table if exists `scMoAnnoTask`;
+drop table if exists `feedbackReply`;
+drop table if exists `feedback`;
+drop table if exists `log`;
 drop table if exists `scMoAnnoUser`;
 drop table if exists `models`;
+drop table if exists `company`;
 
 drop table if exists `models`;
 CREATE TABLE `models` (
@@ -50,11 +55,11 @@ create table `scMoAnnoTask`(
   `task_name` varchar(20) UNIQUE				NOT NULL	COMMENT '任务名',
   `start_time` datetime				 			NOT NULL	COMMENT '开始时间',
   `end_time` datetime					 					COMMENT '结束时间',
-  `status` tinyint DEFAULT 0					NOT NULL	COMMENT '标志位',
+  `status` tinyint DEFAULT 0					NOT NULL	COMMENT '标志位',   -- 排队：0    处理中：1    已完成：2    错误：-1
   `details` text											COMMENT '详情',
   `uploader_id` int 							NOT NULL	COMMENT '上传者ID',
   `type` VARCHAR(30) 							NOT NULL	COMMENT '任务类型', -- 约定格式：(annotation/trainning/denoising):(multi/single/deno)
-  `parameters` TEXT 										COMMENT '任务参数',
+  `parameters` TEXT 										COMMENT '任务参数', -- 参数名1:参数1,参数名2:参数2...
   `model_id` INT 								NOT NULL	COMMENT '模型id',
   FOREIGN KEY (`uploader_id`) REFERENCES scMoAnnoUser(`user_id`),
   FOREIGN KEY (`model_id`) REFERENCES models(`model_id`)
@@ -78,16 +83,6 @@ create table `feedback`(
   `message` text									NOT NULL	COMMENT '反馈信息',
   `created_time` datetime				 			NOT NULL	COMMENT '反馈时间',
   FOREIGN KEY (user_id) REFERENCES scMoAnnoUser(user_id)
-);
-
-drop table if exists `scMoAnnoResult`;
-CREATE TABLE `scMoAnnoResult` (  
-    `result_id` INT AUTO_INCREMENT PRIMARY KEY         NOT NULL   COMMENT '文件的唯一标识符',  
-    `config_file` VARCHAR(255)                                    COMMENT 'config.js文件',
-    `data_file` VARCHAR(255)                                      COMMENT 'data.js文件',
-    `lable_file` VARCHAR(255)                                     COMMENT 'lable.js文件',
-    `task_name` VARCHAR(255) UNIQUE                               COMMENT '对应任务',
-    FOREIGN KEY (`task_name`) REFERENCES scMoAnnoTask(`task_name`)
 );
 
 drop table if exists `fileHashReference`;
@@ -133,6 +128,7 @@ CREATE TABLE `feedbackReply` (
   `user_id` INT NOT NULL COMMENT '用户ID（关联用户表）',
   `reply_content` TEXT NOT NULL COMMENT '回复内容',
   `reply_time` DATETIME NOT NULL COMMENT '回复时间',
+  `subject` VARCHAR(32) NOT NULL COMMENT '反馈主题',
   FOREIGN KEY (feedback_id) REFERENCES feedback(feedback_id),
   FOREIGN KEY (user_id) REFERENCES scMoAnnoUser(user_id)
 );
@@ -152,7 +148,7 @@ DELIMITER ;
 
 -- 删除 models 表的触发器
 DELIMITER $$
-DROP TRIGGER IF EXISTS before_delete_models;
+DROP TRIGGER IF EXISTS before_delete_models $$
 CREATE TRIGGER before_delete_models
 BEFORE DELETE ON models
 FOR EACH ROW
@@ -164,7 +160,7 @@ DELIMITER ;
 
 -- 删除 company 表的触发器
 DELIMITER $$
-DROP TRIGGER IF EXISTS before_delete_company;
+DROP TRIGGER IF EXISTS before_delete_company $$
 CREATE TRIGGER before_delete_company
 BEFORE DELETE ON company
 FOR EACH ROW
@@ -176,7 +172,7 @@ DELIMITER ;
 
 -- 删除 scMoAnnoUser 表的触发器
 DELIMITER $$
-DROP TRIGGER IF EXISTS before_delete_user;
+DROP TRIGGER IF EXISTS before_delete_user $$
 CREATE TRIGGER before_delete_user
 BEFORE DELETE ON scMoAnnoUser
 FOR EACH ROW
@@ -190,23 +186,9 @@ END;
 $$
 DELIMITER ;
 
--- 删除 scMoAnnoTask 表的触发器
-DELIMITER $$
-DROP TRIGGER IF EXISTS before_delete_task;
-CREATE TRIGGER before_delete_task
-BEFORE DELETE ON scMoAnnoTask
-FOR EACH ROW
-BEGIN
-    DELETE FROM scMoAnnoFiles WHERE task_name = OLD.task_name;
-    DELETE FROM scMoAnnoResult WHERE task_name = OLD.task_name;
-    DELETE FROM share WHERE task_id = OLD.task_id;
-END;
-$$
-DELIMITER ;
-
 -- 删除 feedback 表的触发器
 DELIMITER $$
-DROP TRIGGER IF EXISTS before_delete_feedback;
+DROP TRIGGER IF EXISTS before_delete_feedback $$
 CREATE TRIGGER before_delete_feedback
 BEFORE DELETE ON feedback
 FOR EACH ROW

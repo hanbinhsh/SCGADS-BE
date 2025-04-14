@@ -24,7 +24,7 @@ public class TaskServer implements com.ruoyi.system.service.TaskServer {
 
     @Override
     @Transactional
-    public Scmoannofiles findTaskByTaskName(String taskName) {
+    public Scmoannotask findTaskByTaskName(String taskName) {
         return taskMapper.findTaskByTaskName(taskName);
     }
 
@@ -60,5 +60,10 @@ public class TaskServer implements com.ruoyi.system.service.TaskServer {
             Date currentTime = new Date();
             taskMapper.updateTaskEndTime(id, currentTime);
         }
+    }
+
+    @Override
+    public void updateTaskStatusByTaskName(String taskName, Long status) {
+        taskMapper.updateTaskStatusByTaskName(taskName, status);
     }
 }

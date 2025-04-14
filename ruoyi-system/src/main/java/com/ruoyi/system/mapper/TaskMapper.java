@@ -15,7 +15,7 @@ public interface TaskMapper {
     @MapKey("task_id")
     Map<Object,Object> findTasksByUserId(@Param("id") Long id);
     void deleteTasksByTaskId(@Param("id") Long id);
-    Scmoannofiles findTaskByTaskName(@Param("taskName") String taskName);
+    Scmoannotask findTaskByTaskName(@Param("taskName") String taskName);
     void insertTask(Scmoannotask task);
     @MapKey("task_id")
     Map<Object,Object> findAllTasksWithUserInformation();
@@ -23,4 +23,6 @@ public interface TaskMapper {
     void updateTaskEndTime(@Param("id") Long id, @Param("time") Date time);
 
     void deleteTasksByTaskName(@Param("taskName") String taskName);
+
+    void updateTaskStatusByTaskName(@Param("taskName") String taskName, @Param("status") Long status);
 }

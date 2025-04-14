@@ -12,7 +12,9 @@ public interface TaskServer {
     void deleteTasksByTaskId(Long id);
     Map<Object,Object> findAllTasksWithUserInformation();
     void updateTaskStatus(Long id, Long status,String details);
-    Scmoannofiles findTaskByTaskName(String taskName);
+    Scmoannotask findTaskByTaskName(String taskName);
 
     void deleteTasksByTaskName(String taskName);
+
+    void updateTaskStatusByTaskName(String taskName, Long status);
 }

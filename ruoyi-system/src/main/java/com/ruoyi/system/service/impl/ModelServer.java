@@ -33,4 +33,9 @@ public class ModelServer implements ModelService {
     public void updateModel(Models model) {
         modelMapper.updateModel(model);
     }
+
+    @Override
+    public Models getModelById(Long modelId) {
+        return modelMapper.getModelById(modelId);
+    }
 }

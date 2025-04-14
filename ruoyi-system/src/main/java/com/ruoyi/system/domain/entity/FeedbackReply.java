@@ -9,8 +9,17 @@ public class FeedbackReply {
     private long feedbackId;
     private long userId;
     private String replyContent;
+    private String subject;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private java.sql.Timestamp replyTime;
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
 
     public Timestamp getReplyTime() {
         return replyTime;

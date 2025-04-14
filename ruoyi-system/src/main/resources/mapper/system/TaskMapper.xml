@@ -17,6 +17,11 @@
         set end_time = #{time}
         where task_id = #{id}
     </update>
+    <update id="updateTaskStatusByTaskName">
+        update scmoannotask
+        set status = #{status}
+        where task_name = #{taskName}
+    </update>
     <delete id="deleteTasksByTaskId">
         delete scmoannotask from scmoannotask where task_id = #{id}
     </delete>
@@ -35,7 +40,7 @@
             JOIN scMoAnnoTask t ON u.user_id = t.uploader_id
             JOIN models m ON t.model_id = m.model_id;
     </select>
-    <select id="findTaskByTaskName" resultType="com.ruoyi.system.domain.entity.Scmoannofiles">
+    <select id="findTaskByTaskName" resultType="com.ruoyi.system.domain.entity.Scmoannotask">
         select * from scmoannotask where task_name = #{taskName}
     </select>
 </mapper>

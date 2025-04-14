@@ -11,4 +11,6 @@ public interface ModelService {
     void addModel(Models model);
 
     void updateModel(Models model);
+
+    Models getModelById(Long modelId);
 }

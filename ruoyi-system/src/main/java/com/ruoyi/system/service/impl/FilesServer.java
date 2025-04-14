@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import com.ruoyi.system.domain.entity.EncryptionKeys;
 import com.ruoyi.system.domain.entity.Scmoannofiles;
 import com.ruoyi.system.domain.entity.Scmoannoresult;
 import com.ruoyi.system.mapper.FilesMapper;
@@ -93,5 +94,10 @@ public class FilesServer implements com.ruoyi.system.service.FilesServer {
     @Override
     public int getFileHashNum(String fileName) {
         return filesMapper.getFileHashNum(fileName);
+    }
+
+    @Override
+    public EncryptionKeys getEncryptionKeys(int id) {
+        return filesMapper.getEncryptionKeys(id);
     }
 }

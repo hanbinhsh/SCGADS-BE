@@ -1,5 +1,6 @@
 package com.ruoyi.system.mapper;
 
+import com.ruoyi.system.domain.entity.EncryptionKeys;
 import com.ruoyi.system.domain.entity.Scmoannofiles;
 import com.ruoyi.system.domain.entity.Scmoannoresult;
 import org.apache.ibatis.annotations.Mapper;
@@ -28,4 +29,6 @@ public interface FilesMapper {
     void insertFileHash(@Param("hash") String hash, @Param("randomFileName") String randomFileName);
 
     int getFileHashNum(@Param("fileName") String fileName);
+
+    EncryptionKeys getEncryptionKeys(@Param("id") int id);
 }

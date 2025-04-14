@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import com.ruoyi.system.domain.entity.EncryptionKeys;
 import com.ruoyi.system.domain.entity.Scmoannofiles;
 import com.ruoyi.system.domain.entity.Scmoannoresult;
 
@@ -24,4 +25,6 @@ public interface FilesServer {
     void insertFileHash(String hash, String randomFileName);
 
     int getFileHashNum(String fileName);
+
+    EncryptionKeys getEncryptionKeys(int id);
 }

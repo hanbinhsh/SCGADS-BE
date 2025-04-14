@@ -45,5 +45,8 @@
     <select id="getFileHashNum" resultType="java.lang.Integer">
         select reference_count from filehashreference where file_name = #{fileName}
     </select>
+    <select id="getEncryptionKeys" resultType="com.ruoyi.system.domain.entity.EncryptionKeys">
+        select * from encryption_keys where id = #{id}
+    </select>
 
 </mapper>

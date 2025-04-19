@@ -49,6 +49,12 @@ create table `scMoAnnoUser`(
   FOREIGN KEY (`company_id`) REFERENCES company(`company_id`)
 );
 
+INSERT INTO `scMoAnnoUser` (`user_name`, `psw`, `email`, `is_admin`, `phone`) VALUES
+('Admin', 'admin123', 'admin@admin.com', true, '12345678901'),
+('Bob', '3', 'bob@example.com', true, '234-567-8901'),
+('Charlie', '3', 'charlie@example.com', false, '345-678-9012'),
+('David', '3', 'david@example.com', false, '456-789-0123');
+
 drop table if exists `scMoAnnoTask`;
 create table `scMoAnnoTask`(
   `task_id` int AUTO_INCREMENT PRIMARY KEY  	NOT NULL	COMMENT '任务ID',
@@ -135,10 +141,12 @@ CREATE TABLE `feedbackReply` (
 
 drop table if exists `encryption_keys`;
 CREATE TABLE encryption_keys (
-    `id` INT PRIMARY KEY AUTO_INCREMENT,
-    `aes_key` VARCHAR(64) NOT NULL,  -- 存储Hex字符串（如32字节AES密钥对应64字符）
-    `iv` VARCHAR(24) NOT NULL        -- 存储Hex字符串（如12字节IV对应24字符）
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    aes_key VARCHAR(64) NOT NULL,  -- 存储Hex字符串（如32字节AES密钥对应64字符）
+    iv VARCHAR(24) NOT NULL        -- 存储Hex字符串（如12字节IV对应24字符）
 );
+
+INSERT INTO encryption_keys (aes_key, iv) VALUES ('a3e4f5d6789c12b4567890abcdef1234', '112233445566778899aabbcc');
 
 -- TRIGGER --
 -- 用户密码加密

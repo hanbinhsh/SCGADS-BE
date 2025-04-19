@@ -30,7 +30,7 @@ public class TaskProgress {
     @CrossOrigin(origins = "*")
     public Result predict(@RequestParam("taskName") String taskName,
                           @RequestParam("userName") String userName) throws IOException {
-        // TODO 只做了注释处理，训练没做
+        // TODO 只做了注释处理，训练没做，且现在只有pbmc的sclth模型
         // 获取seq文件名
         FilesServer filesServer = SpringUtils.getBean(FilesServer.class);
         Scmoannofiles files = filesServer.findFilesByTaskName(taskName);
@@ -123,7 +123,7 @@ public class TaskProgress {
 
     // 模型训练任务处理
 
-    /// 以下方法原则上不在前端调用 ///
+    /// 以下方法不在前端调用 ///
 
     @RequestMapping("/tsneUmapChartProgress")
     @CrossOrigin(origins = "*")

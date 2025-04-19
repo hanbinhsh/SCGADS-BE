@@ -94,6 +94,7 @@ def main(args):
 
 
 if __name__ == "__main__":
+    # 设置任务为处理中->模型预测->tsne->umap->设置任务为成功
     if len(sys.argv) < 9:
         print("参数错误")
         sys.exit(1)

@@ -170,6 +170,7 @@ def main_tsne(username, taskname, has_labels, outputnpy_dir, output_dir, label_d
         requests.post(f"http://localhost:8868/updateTaskStatusByTaskName?taskName={taskname}&status=-1")
 
 if __name__ == "__main__":
+    # tsne->umap->设置任务为成功
     if len(sys.argv) != 8:
         print("使用方法: python script.py <用户名> <任务名> <是否有真实标签(true/false)> <预测文件outputnpy路径> <输出路径> <真实标签路径> <seq序列路径>")
         sys.exit(1)

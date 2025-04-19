@@ -99,6 +99,11 @@ public class TaskProgress {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         Process process = processBuilder.start();
 
+        // (设置任务为处理中->模型预测->tsne->umap->设置任务为成功)
+        //                        ^^^^^^^^^^^^^
+        //                Python端调用tsneUmapChartProgress
+        // 以上内容在python代码中完成处理
+
         // TODO 错误信息写入日志
 //        // 输出错误信息（如果有）
 //        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));

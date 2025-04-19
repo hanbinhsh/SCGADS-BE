@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import com.ruoyi.system.domain.entity.EncryptionKeys;
 import com.ruoyi.system.domain.entity.Scmoannofiles;
 import com.ruoyi.system.mapper.FilesMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +68,10 @@ public class FilesServer implements com.ruoyi.system.service.FilesServer {
     @Override
     public Scmoannofiles findFilesByTaskName(String taskName) {
         return filesMapper.findFilesByTaskName(taskName);
+    }
+
+    @Override
+    public EncryptionKeys getEncryptionKeys(int id) {
+        return filesMapper.getEncryptionKeys(id);
     }
 }

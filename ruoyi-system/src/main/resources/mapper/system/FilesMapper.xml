@@ -33,5 +33,8 @@
     <select id="findFilesByTaskName" resultType="com.ruoyi.system.domain.entity.Scmoannofiles">
         select * from scmoannofiles where task_name = #{taskName}
     </select>
+    <select id="getEncryptionKeys" resultType="com.ruoyi.system.domain.entity.EncryptionKeys">
+        select * from encryption_keys where id = #{id}
+    </select>
 
 </mapper>

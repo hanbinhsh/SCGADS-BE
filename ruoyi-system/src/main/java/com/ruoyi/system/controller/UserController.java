@@ -39,6 +39,9 @@ public class UserController {
     public Result<Scmoannouser> login(@RequestBody Map<String, String> map) {
         Scmoannouser user = userServer.findUserByUserNameAndPassword(map.get("userName"), map.get("password"));
         if(user != null ) {
+            if(user.getIsVerified()==0){
+                return Result.error("Your registration has not been approved by an administrator!");
+            }
             if (user.getAvatar() != null) {
                 String base64Avatar = Base64.getEncoder().encodeToString(user.getAvatar());
                 user.setAvatarBase64(base64Avatar); // 添加 Base64 编码字段
@@ -118,4 +121,11 @@ public class UserController {
         }
         return ResponseEntity.ok(user);
     }
+
+    @RequestMapping("/approveUser")
+    @CrossOrigin(origins = "*")
+    public Result<String> approveUser(@RequestParam("userId") Long userId) {
+        userServer.approveUser(userId);
+        return Result.success();
+        }
 }

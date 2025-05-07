@@ -14,4 +14,5 @@ public interface UserServer {
     Scmoannouser findUserByPhone(String phone);
     void updateUser(Scmoannouser scmoannouser);
     Scmoannouser findUserByUserId(long userId);
+    void approveUser(long userId);
 }

@@ -9,6 +9,7 @@ public class Scmoannouser {
   private String phone;
   private byte[] avatar;
   private long companyId;
+  private long isVerified;
   // New
   private String avatarBase64; // 头像的 Base64 编码字符串
 
@@ -23,6 +24,15 @@ public class Scmoannouser {
   public void setEmail(String email) {this.email = email;}
   public long getIsAdmin() {return isAdmin;}
   public void setIsAdmin(long isAdmin) {this.isAdmin = isAdmin;}
+
+  public long getIsVerified() {
+    return isVerified;
+  }
+
+  public void setIsVerified(long isVerified) {
+    this.isVerified = isVerified;
+  }
+
   public String getPhone() {return phone;}
   public void setPhone(String phone) {this.phone = phone;}
   public byte[] getAvatar() {return avatar;}
@@ -31,5 +41,4 @@ public class Scmoannouser {
   public void setAvatarBase64(String avatarBase64) {this.avatarBase64 = avatarBase64;}
   public long getCompanyId() {return companyId;}
   public void setCompanyId(long companyId) {this.companyId = companyId;}
-
 }

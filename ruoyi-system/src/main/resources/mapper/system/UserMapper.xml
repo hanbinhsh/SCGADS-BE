@@ -22,6 +22,9 @@
         </if>
         WHERE user_id = #{userId};
     </update>
+    <update id="approveUser">
+        update scMoAnnoUser set is_verified=1 where user_id = #{userId};
+    </update>
     <delete id="deleteUserByUserID">
         delete scmoannouser from scmoannouser where user_id = #{userID}
     </delete>

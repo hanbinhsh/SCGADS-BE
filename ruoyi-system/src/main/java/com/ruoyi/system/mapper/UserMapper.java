@@ -17,4 +17,5 @@ public interface UserMapper {
     void deleteUserByUserID(long userID);
     void updateUser(Scmoannouser scmoannouser);
     Scmoannouser findUserByUserId(long userId);
+    void approveUser(long userId);
 }

@@ -7,12 +7,31 @@
         insert into company(company_name)
         values (#{companyName})
     </insert>
+    <update id="addUserToCompany">
+        update scMoAnnoUser
+        set company_id = #{companyID}
+        where user_id = #{userID}
+    </update>
+    <update id="updateCompany">
+        update company
+        set company_name = #{companyName}
+        where company_id = #{companyId}
+    </update>
+    <update id="removeUserFromCompany">
+        update scMoAnnoUser
+        set company_id = NULL
+        where user_id = #{userID}
+    </update>
     <delete id="deleteCompanyByID">
         delete from company
         where company_id = #{companyID}
     </delete>
     <select id="selectAllCompany" resultType="com.ruoyi.system.domain.entity.Company">
         select * from company
+    </select>
+    <select id="getCompanyUsers" resultType="com.ruoyi.system.domain.entity.Scmoannouser">
+        select * from scmoannouser
+        where company_id = #{companyID}
     </select>
 
 </mapper>

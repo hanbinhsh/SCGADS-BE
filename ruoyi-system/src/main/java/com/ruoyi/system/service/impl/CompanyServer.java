@@ -1,6 +1,7 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.system.domain.entity.Company;
+import com.ruoyi.system.domain.entity.Scmoannouser;
 import com.ruoyi.system.mapper.CompanyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,25 @@ public class CompanyServer implements com.ruoyi.system.service.CompanyServer {
     @Override
     public void deleteCompanyByID(long companyID) {
         companyMapper.deleteCompanyByID(companyID);
+    }
+
+    @Override
+    public void updateCompany(Company company) {
+        companyMapper.updateCompany(company);
+    }
+
+    @Override
+    public void addUserToCompany(long userID, long companyID) {
+        companyMapper.addUserToCompany(userID, companyID);
+    }
+
+    @Override
+    public void removeUserFromCompany(long userID, long companyID) {
+        companyMapper.removeUserFromCompany(userID, companyID);
+    }
+
+    @Override
+    public List<Scmoannouser> getCompanyUsers(long companyID) {
+        return companyMapper.getCompanyUsers(companyID);
     }
 }

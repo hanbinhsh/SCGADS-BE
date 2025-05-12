@@ -46,6 +46,7 @@ create table `scMoAnnoUser`(
   `phone` varchar(32) UNIQUE				 	NOT NULL	COMMENT '电话号码',
   `avatar` LONGBLOB											COMMENT '用户头像',
   `company_id` INT 											COMMENT '所属公司ID',
+  `is_verified` BOOLEAN  DEFAULT FALSE 			NOT NULL	COMMENT '是否注册成功',
   FOREIGN KEY (`company_id`) REFERENCES company(`company_id`)
 );
 

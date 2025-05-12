@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.ruoyi.system.controller.FileController.decryptFile;
 import static com.ruoyi.system.controller.Utils.*;
 
 @RestController
@@ -42,9 +43,17 @@ public class TaskProgress {
         Models model = ModelServer.getModelById(task.getModelId());
 
         // 用户需要注释或训练的文件路径
-        String atacPath  = getUploadLocation() + files.getScAtac_SeqFile();
-        String rnaPath   = getUploadLocation() + files.getScRna_SeqFile();
-        String labelPath = getUploadLocation() + files.getTagFile();
+        String atacPathBD   = getUploadLocation() + files.getScAtac_SeqFile();
+        String rnaPathBD    = getUploadLocation() + files.getScRna_SeqFile();
+        String labelPathBD  = getUploadLocation() + files.getTagFile();
+        String atacPath     = getUploadLocation() + "temp/" + files.getScAtac_SeqFile();
+        String rnaPath      = getUploadLocation() + "temp/" + files.getScRna_SeqFile();
+        String labelPath    = getUploadLocation() + "temp/" + files.getTagFile();
+
+        // 解密数据 TODO 如果开启了无需加密
+        decryptFile(atacPathBD  , atacPath);
+        decryptFile(rnaPathBD   , rnaPath);
+        decryptFile(labelPathBD , labelPath);
 
         // Python 脚本路径
         String algorithmPath = getAlgorithmLocation();
@@ -170,5 +179,6 @@ public class TaskProgress {
     public Result<String> complete(@RequestParam String info) {
         System.out.println(info);
         return Result.success();
+        // TODO 删除解密文件
     }
 }

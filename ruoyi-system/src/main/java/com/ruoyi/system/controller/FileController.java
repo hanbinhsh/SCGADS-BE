@@ -1,5 +1,6 @@
 package com.ruoyi.system.controller;
 
+import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.entity.*;
 import com.ruoyi.system.service.FilesServer;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
@@ -224,7 +225,7 @@ public class FileController {
     }
 
     // 解密方法
-    private byte[] decrypt(byte[] encryptedData, byte[] key, byte[] iv) throws Exception {
+    private static byte[] decrypt(byte[] encryptedData, byte[] key, byte[] iv) throws Exception {
         // 密钥必须为16/24/32字节
         if (key.length != 16 && key.length != 24 && key.length != 32) {
             throw new IllegalArgumentException(
@@ -275,5 +276,44 @@ public class FileController {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();
+    }
+
+
+    /**
+     * 解密加密文件并保存为新文件
+     *
+     * @param encryptedFilePath 加密文件路径（绝对路径）
+     * @param decryptedFilePath 解密后文件保存路径（绝对路径）
+     */
+    public static void decryptFile(String encryptedFilePath, String decryptedFilePath) {
+        try {
+            FilesServer filesServer = SpringUtils.getBean(FilesServer.class);
+            // 检查解密目录是否存在，不存在则创建
+            File decryptedFile = new File(decryptedFilePath);
+            File parentDir = decryptedFile.getParentFile();
+            if (!parentDir.exists()) {
+                boolean created = parentDir.mkdirs();
+                if (!created) {
+                    System.err.println("无法创建目录: " + parentDir.getAbsolutePath());
+                    return;
+                }
+            }
+
+            // 读取加密文件内容
+            byte[] encryptedData = Files.readAllBytes(Paths.get(encryptedFilePath));
+
+            EncryptionKeys keys = filesServer.getEncryptionKeys(1);
+            byte[] aesKey = DatatypeConverter.parseHexBinary(keys.getAesKey());  // Hex转字节
+            byte[] iv = DatatypeConverter.parseHexBinary(keys.getIv());          // Hex转字节
+
+            // 执行解密操作
+            byte[] decryptedData = decrypt(encryptedData, aesKey, iv);
+
+            // 写入解密后的数据到文件
+            Files.write(Paths.get(decryptedFilePath), decryptedData);
+        } catch (Exception e) {
+            System.err.println("解密文件失败: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

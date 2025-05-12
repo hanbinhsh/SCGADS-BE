@@ -160,7 +160,7 @@ public class TaskProgress {
                 label_dir,
                 seq_dir
         );
-        // 启动进程
+        // 启动进程 cs
         Process process = processBuilder.start();
         System.out.println("生成umap降维图任务 " + taskName + " 处理中");
 //        // 输出错误信息（如果有）

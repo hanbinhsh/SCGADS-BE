@@ -145,7 +145,7 @@ public class TaskProgress {
         // 确定是否有真实标签
         String typePrefix = type != null && type.contains(":") ? type.split(":")[0] : "";
         String hasLabels = "training".equalsIgnoreCase(typePrefix) ? "true" : "false";
-        // Python 脚本路径 好好好
+        // Python 脚本路径
         String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
         String pythonScriptPath = baseDir + "/algorithm/visualization/dimension_reduction/dimension_reduction.py";
         String outputPath = baseDir + "/temp/Result/" + userName + '/' + taskName + '/';

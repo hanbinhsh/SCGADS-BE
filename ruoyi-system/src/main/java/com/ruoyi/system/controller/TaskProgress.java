@@ -58,7 +58,7 @@ public class TaskProgress {
         // Python 脚本路径
         String algorithmPath = getAlgorithmLocation();
         String pythonScriptPath = algorithmPath + ((model.getModelType().equals("single") || model.getModelType().equals("multi")) ? "annotation" : "denoising")
-               + '/' + model.getModelName() + '/';
+                + '/' + model.getModelName() + '/';
         // 脚本文件
         String predScriptPath  = pythonScriptPath + model.getPredictFilePath();
         String trainScriptPath = pythonScriptPath + model.getTrainFilePath();
@@ -137,11 +137,11 @@ public class TaskProgress {
     @RequestMapping("/tsneUmapChartProgress")
     @CrossOrigin(origins = "*")
     public Result chartProgress(@RequestParam("type") String type,
-                                 @RequestParam("taskName") String taskName,
-                                 @RequestParam("userName") String userName,
-                                 @RequestParam("seq_dir") String seq_dir,
-                                 @RequestParam("label_dir") String label_dir,
-                                 @RequestParam("outputnpyPath") String outputnpyPath) throws IOException {
+                                @RequestParam("taskName") String taskName,
+                                @RequestParam("userName") String userName,
+                                @RequestParam("seq_dir") String seq_dir,
+                                @RequestParam("label_dir") String label_dir,
+                                @RequestParam("outputnpyPath") String outputnpyPath) throws IOException {
         // 确定是否有真实标签
         String typePrefix = type != null && type.contains(":") ? type.split(":")[0] : "";
         String hasLabels = "training".equalsIgnoreCase(typePrefix) ? "true" : "false";

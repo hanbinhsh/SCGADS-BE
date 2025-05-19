@@ -22,7 +22,10 @@ CREATE TABLE `models` (
     `figure_path` TEXT               						COMMENT '模型图存储路径',
     `default_parameters` TEXT NOT NULL						COMMENT '默认参数', -- 格式： '参数1:值1,参数2:值2,...'
     `remark` TEXT 											COMMENT '备注',
-    `extract_labels` TEXT NOT NULL							COMMENT '标签映射存储路径'
+    `extract_labels` TEXT NOT NULL							COMMENT '标签映射存储路径',
+	`created_time` DATETIME DEFAULT CURRENT_TIMESTAMP 		COMMENT '创建时间',
+    `user_name` varchar(20) 								COMMENT '用户名',
+    `company_name` VARCHAR(255)              				COMMENT '公司名'
 );
 
 INSERT INTO models (model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters) VALUES 

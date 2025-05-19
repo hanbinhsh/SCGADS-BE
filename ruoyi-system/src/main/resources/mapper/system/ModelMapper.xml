@@ -4,8 +4,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.ModelMapper">
     <insert id="addModel">
-        insert into models(model_name, model_type, model_path, predict_file_path, train_file_path, default_parameters, figure_path, remark, extract_labels)
-        VALUES (#{modelName}, #{modelType}, #{modelPath}, #{predictFilePath}, #{trainFilePath}, #{defaultParameters}, #{figurePath}, #{remark}, #{extractLabels})
+        insert into models(model_name, model_type, model_path, predict_file_path, train_file_path, default_parameters, figure_path, remark, extract_labels, user_name, company_name)
+        VALUES (#{modelName}, #{modelType}, #{modelPath}, #{predictFilePath}, #{trainFilePath}, #{defaultParameters}, #{figurePath}, #{remark}, #{extractLabels}, #{userName}, #{companyName})
     </insert>
     <update id="updateModel">
         update models
@@ -19,6 +19,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="modelName!=null"> default_parameters = #{defaultParameters}, </if>
             <if test="modelName!=null"> remark = #{remark}, </if>
             <if test="modelName!=null"> extract_labels = #{extractLabels}, </if>
+            <if test="modelName!=null"> user_name = #{userName}, </if>
+            <if test="modelName!=null"> company_name = #{companyName}, </if>
         </set>
         where model_id = #{modelId}
     </update>

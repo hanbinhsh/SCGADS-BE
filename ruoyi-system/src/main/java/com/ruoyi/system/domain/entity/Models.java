@@ -1,6 +1,10 @@
 package com.ruoyi.system.domain.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.sql.Timestamp;
+
 public class Models {
 
   private long modelId;
@@ -13,6 +17,10 @@ public class Models {
   private String defaultParameters;
   private String remark;
   private String extractLabels;
+  private String userName;
+  private String companyName;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+  private java.sql.Timestamp createdTime;
 
   private byte[] figureByte;
 
@@ -105,5 +113,29 @@ public class Models {
 
     public void setExtractLabels(String extractLabels) {
         this.extractLabels = extractLabels;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Timestamp getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Timestamp createdTime) {
+        this.createdTime = createdTime;
     }
 }

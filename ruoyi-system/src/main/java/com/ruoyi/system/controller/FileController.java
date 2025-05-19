@@ -260,6 +260,8 @@ public class FileController {
                 System.out.println("[解密成功] 数据头: " + bytesToHex(Arrays.copyOfRange(decrypted, 0, Math.min(16, decrypted.length))));
             }
 
+
+
             return decrypted;
         } catch (AEADBadTagException e) {
             System.err.println("[解密失败] 认证标签不匹配：" + e.getMessage());
@@ -279,12 +281,14 @@ public class FileController {
     }
 
 
+
     /**
      * 解密加密文件并保存为新文件
      *
      * @param encryptedFilePath 加密文件路径（绝对路径）
      * @param decryptedFilePath 解密后文件保存路径（绝对路径）
      */
+
     public static void decryptFile(String encryptedFilePath, String decryptedFilePath) {
         try {
             FilesServer filesServer = SpringUtils.getBean(FilesServer.class);
@@ -299,15 +303,20 @@ public class FileController {
                 }
             }
 
+
             // 读取加密文件内容
             byte[] encryptedData = Files.readAllBytes(Paths.get(encryptedFilePath));
+
 
             EncryptionKeys keys = filesServer.getEncryptionKeys(1);
             byte[] aesKey = DatatypeConverter.parseHexBinary(keys.getAesKey());  // Hex转字节
             byte[] iv = DatatypeConverter.parseHexBinary(keys.getIv());          // Hex转字节
 
+
+
             // 执行解密操作
             byte[] decryptedData = decrypt(encryptedData, aesKey, iv);
+
 
             // 写入解密后的数据到文件
             Files.write(Paths.get(decryptedFilePath), decryptedData);

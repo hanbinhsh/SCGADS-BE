@@ -127,5 +127,5 @@ public class UserController {
     public Result<String> approveUser(@RequestParam("userId") Long userId) {
         userServer.approveUser(userId);
         return Result.success();
-        }
+    }
 }

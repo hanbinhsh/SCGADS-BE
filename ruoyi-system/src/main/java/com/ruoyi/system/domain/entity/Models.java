@@ -12,6 +12,7 @@ public class Models {
   private String figurePath;
   private String defaultParameters;
   private String remark;
+  private String extractLabels;
 
   private byte[] figureByte;
 
@@ -97,4 +98,12 @@ public class Models {
   public String getRemark() {return remark;}
 
   public void setRemark(String remark) {this.remark = remark;}
+
+    public String getExtractLabels() {
+        return extractLabels;
+    }
+
+    public void setExtractLabels(String extractLabels) {
+        this.extractLabels = extractLabels;
+    }
 }

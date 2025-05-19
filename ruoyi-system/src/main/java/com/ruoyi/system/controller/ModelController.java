@@ -68,7 +68,8 @@ public class ModelController {
                               @RequestParam("trainFilePath") String trainFilePath,
                               @RequestParam("figurePath") String figurePath,
                               @RequestParam("defaultParameters") String defaultParameters,
-                              @RequestParam("remark") String remark) {
+                              @RequestParam("remark") String remark,
+                              @RequestParam("extractLabels") String extractLabels) {
         Models model = new Models();
         model.setModelId(modelId);
         model.setModelName(modelName);
@@ -79,6 +80,7 @@ public class ModelController {
         model.setFigurePath(figurePath);
         model.setDefaultParameters(defaultParameters);
         model.setRemark(remark);
+        model.setExtractLabels(extractLabels);
         modelService.updateModel(model);
         return Result.success();
     }
@@ -91,7 +93,8 @@ public class ModelController {
                            @RequestParam("trainFilePath") String trainFilePath,
                            @RequestParam("figurePath") String figurePath,
                            @RequestParam("defaultParameters") String defaultParameters,
-                           @RequestParam("remark") String remark) {
+                           @RequestParam("remark") String remark,
+                           @RequestParam("extractLabels") String extractLabels) {
         Models model = new Models();
         model.setModelName(modelName);
         model.setModelType(modelType);
@@ -101,6 +104,7 @@ public class ModelController {
         model.setFigurePath(figurePath);
         model.setDefaultParameters(defaultParameters);
         model.setRemark(remark);
+        model.setExtractLabels(extractLabels);
         modelService.addModel(model);
         return Result.success();
     }

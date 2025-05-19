@@ -26,7 +26,7 @@ import static com.ruoyi.system.controller.Utils.*;
 
 @RestController
 public class TaskProgress {
-    // 注释任务处理
+    // 自动任务处理
     @RequestMapping("/predictProgress")
     @CrossOrigin(origins = "*")
     public Result predict(@RequestParam("taskName") String taskName,
@@ -42,23 +42,36 @@ public class TaskProgress {
         ModelServer ModelServer = SpringUtils.getBean(ModelServer.class);
         Models model = ModelServer.getModelById(task.getModelId());
 
-        // 用户需要注释或训练的文件路径
-        String atacPathBD   = getUploadLocation() + files.getScAtac_SeqFile();
-        String rnaPathBD    = getUploadLocation() + files.getScRna_SeqFile();
-        String labelPathBD  = getUploadLocation() + files.getTagFile();
-        String atacPath     = getUploadLocation() + "temp/" + files.getScAtac_SeqFile();
-        String rnaPath      = getUploadLocation() + "temp/" + files.getScRna_SeqFile();
-        String labelPath    = getUploadLocation() + "temp/" + files.getTagFile();
-
-        // 解密数据 TODO 如果开启了无需加密
-        decryptFile(atacPathBD  , atacPath);
-        decryptFile(rnaPathBD   , rnaPath);
-        decryptFile(labelPathBD , labelPath);
-
         // Python 脚本路径
         String algorithmPath = getAlgorithmLocation();
         String pythonScriptPath = algorithmPath + ((model.getModelType().equals("single") || model.getModelType().equals("multi")) ? "annotation" : "denoising")
                 + '/' + model.getModelName() + '/';
+
+        // 用户需要注释或训练的文件路径
+        String atacPathBD   = getUploadLocation() + files.getScAtac_SeqFile();
+        String rnaPathBD    = getUploadLocation() + files.getScRna_SeqFile();
+        String labelPathBD  = getUploadLocation() + files.getTagFile();
+        // 解密文件路径
+        String atacPath     = getUploadLocation() + "temp/" + files.getScAtac_SeqFile();
+        String rnaPath      = getUploadLocation() + "temp/" + files.getScRna_SeqFile();
+        String labelPath    = getUploadLocation() + "temp/" + files.getTagFile();
+
+        // 约定格式：(annotation/trainning/denoising):(multi/single/deno)
+        if(task.getType().split(":")[0].equals("annotation")){ // 注释任务
+            // 无标签，改用模型内置标签映射
+            labelPath = pythonScriptPath + model.getExtractLabels();
+        } else if (task.getType().split(":")[0].equals("trainning")) { // 训练
+            // 有标签使用标签训练
+            // 需要解密标签 TODO 如果开启了无需加密
+            decryptFile(labelPathBD , labelPath);
+        } else { // 降噪
+
+        }
+
+        // 解密数据 TODO 如果开启了无需加密
+        decryptFile(atacPathBD  , atacPath);
+        decryptFile(rnaPathBD   , rnaPath);
+
         // 脚本文件
         String predScriptPath  = pythonScriptPath + model.getPredictFilePath();
         String trainScriptPath = pythonScriptPath + model.getTrainFilePath();
@@ -179,6 +192,10 @@ public class TaskProgress {
     public Result<String> complete(@RequestParam String info) {
         System.out.println(info);
         return Result.success();
-        // TODO 删除解密文件
+    }
+
+    // TODO 删除解密文件
+    public Result<String> deleteTempFiles(){
+        return Result.success();
     }
 }

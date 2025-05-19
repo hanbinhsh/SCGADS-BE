@@ -11,6 +11,7 @@ public class Models {
   private String trainFilePath;
   private String figurePath;
   private String defaultParameters;
+  private String remark;
 
   private byte[] figureByte;
 
@@ -93,4 +94,7 @@ public class Models {
     this.defaultParameters = defaultParameters;
   }
 
+  public String getRemark() {return remark;}
+
+  public void setRemark(String remark) {this.remark = remark;}
 }

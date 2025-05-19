@@ -67,7 +67,8 @@ public class ModelController {
                               @RequestParam("predictFilePath") String predictFilePath,
                               @RequestParam("trainFilePath") String trainFilePath,
                               @RequestParam("figurePath") String figurePath,
-                              @RequestParam("defaultParameters") String defaultParameters) {
+                              @RequestParam("defaultParameters") String defaultParameters,
+                              @RequestParam("remark") String remark) {
         Models model = new Models();
         model.setModelId(modelId);
         model.setModelName(modelName);
@@ -77,6 +78,7 @@ public class ModelController {
         model.setTrainFilePath(trainFilePath);
         model.setFigurePath(figurePath);
         model.setDefaultParameters(defaultParameters);
+        model.setRemark(remark);
         modelService.updateModel(model);
         return Result.success();
     }
@@ -88,7 +90,8 @@ public class ModelController {
                            @RequestParam("predictFilePath") String predictFilePath,
                            @RequestParam("trainFilePath") String trainFilePath,
                            @RequestParam("figurePath") String figurePath,
-                           @RequestParam("defaultParameters") String defaultParameters) {
+                           @RequestParam("defaultParameters") String defaultParameters,
+                           @RequestParam("remark") String remark) {
         Models model = new Models();
         model.setModelName(modelName);
         model.setModelType(modelType);
@@ -97,6 +100,7 @@ public class ModelController {
         model.setTrainFilePath(trainFilePath);
         model.setFigurePath(figurePath);
         model.setDefaultParameters(defaultParameters);
+        model.setRemark(remark);
         modelService.addModel(model);
         return Result.success();
     }

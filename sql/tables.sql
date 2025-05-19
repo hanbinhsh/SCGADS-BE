@@ -20,7 +20,8 @@ CREATE TABLE `models` (
     `predict_file_path` TEXT NOT NULL         				COMMENT '预测文件存储路径',
     `train_file_path` TEXT NOT NULL               			COMMENT '训练文件存储路径',
     `figure_path` TEXT               						COMMENT '模型图存储路径',
-    `default_parameters` TEXT NOT NULL						COMMENT '默认参数' -- 格式： '参数1:值1,参数2:值2,...'
+    `default_parameters` TEXT NOT NULL						COMMENT '默认参数', -- 格式： '参数1:值1,参数2:值2,...'
+    `remark` TEXT 											COMMENT '备注'
 );
 
 INSERT INTO models (model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters) VALUES 

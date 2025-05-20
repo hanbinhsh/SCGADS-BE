@@ -7,8 +7,11 @@ spring:
             # 主库数据源
             master:
                 url: jdbc:mysql://127.0.0.1:3306/scmoannodb?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+#                url: jdbc:mysql://47.109.88.112:3306/scmoannodb?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: scmoannoadmin
                 password: 114514
+
+#                /www/server/java/jdk-17.0.8/bin/java -jar  -Xmx1024M -Xms256M /www/wwwroot/SCGADS-BE/ruoyi-admin.jar --server.port=8868
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭

@@ -1,10 +1,10 @@
 use scMoAnnoDB;
 
-INSERT INTO `scMoAnnoUser` (`user_name`, `psw`, `email`, `is_admin`, `phone`) VALUES
-('Alice', '3', 'alice@example.com', true, '123-456-7890'),
-('Bob', '3', 'bob@example.com', true, '234-567-8901'),
-('Charlie', '3', 'charlie@example.com', false, '345-678-9012'),
-('David', '3', 'david@example.com', false, '456-789-0123');
+INSERT INTO `scMoAnnoUser` (`user_name`, `psw`, `email`, `is_admin`, `phone`, `is_verified`) VALUES
+('Alice', '3', 'alice@example.com', true, '123-456-7890', '1'),
+('Bob', '3', 'bob@example.com', true, '234-567-8901', '1'),
+('Charlie', '3', 'charlie@example.com', false, '345-678-9012', '1'),
+('David', '3', 'david@example.com', false, '456-789-0123', '1');
 
 INSERT INTO encryption_keys (aes_key, iv) VALUES ('a3e4f5d6789c12b4567890abcdef1234', '112233445566778899aabbcc');
 

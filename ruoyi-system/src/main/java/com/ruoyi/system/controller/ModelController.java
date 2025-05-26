@@ -60,7 +60,7 @@ public class ModelController {
     }
 
     @PostMapping("/updateModel")
-    public Result updateModel(@RequestParam("modelId") int modelId,
+    public Result updateModel(@RequestParam("modelId") long modelId,
                               @RequestParam("modelName") String modelName,
                               @RequestParam("modelType") String modelType,
                               @RequestParam("modelPath") String modelPath,
@@ -86,6 +86,13 @@ public class ModelController {
         model.setUserName(userName);
         model.setCompanyName(companyName);
         modelService.updateModel(model);
+        return Result.success();
+    }
+
+    @PostMapping("/updateModelRemark")
+    public Result updateModelRemark(@RequestParam("modelId") long modelId,
+                              @RequestParam("remark") String remark) {
+        modelService.updateModelRemark(modelId, remark);
         return Result.success();
     }
 

@@ -24,6 +24,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </set>
         where model_id = #{modelId}
     </update>
+    <update id="updateModelRemark">
+        update models
+            set remark = #{remark}
+        where model_id = #{modelId}
+    </update>
     <delete id="deleteModel">
         delete models from models where model_id = #{modelId}
     </delete>

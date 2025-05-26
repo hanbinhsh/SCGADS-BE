@@ -13,4 +13,6 @@ public interface ModelService {
     void updateModel(Models model);
 
     Models getModelById(Long modelId);
+
+    void updateModelRemark(Long modelId, String remark);
 }

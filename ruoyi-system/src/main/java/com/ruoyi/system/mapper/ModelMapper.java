@@ -15,4 +15,6 @@ public interface ModelMapper {
     void updateModel(Models model);
 
     Models getModelById(Long modelId);
+
+    void updateModelRemark(@Param("modelId") long modelId, @Param("remark") String remark);
 }

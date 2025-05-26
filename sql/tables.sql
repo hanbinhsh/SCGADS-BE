@@ -13,25 +13,25 @@ drop table if exists `company`;
 
 drop table if exists `models`;
 CREATE TABLE `models` (
-    `model_id` INT AUTO_INCREMENT PRIMARY KEY  				COMMENT '模型ID',
-    `model_name` VARCHAR(255) NOT NULL         				COMMENT '模型名称',
-    `model_type` VARCHAR(100) NOT NULL         				COMMENT '模型类型', -- single(单模态注释) -- multi(双模态注释) -- deno(降噪)
-    `model_path` TEXT NOT NULL                 				COMMENT '模型存储路径',
-    `predict_file_path` TEXT NOT NULL         				COMMENT '预测文件存储路径',
-    `train_file_path` TEXT NOT NULL               			COMMENT '训练文件存储路径',
-    `figure_path` TEXT               						COMMENT '模型图存储路径',
-    `default_parameters` TEXT NOT NULL						COMMENT '默认参数', -- 格式： '参数1:值1,参数2:值2,...'
-    `remark` TEXT 											COMMENT '备注',
-    `extract_labels` TEXT NOT NULL							COMMENT '标签映射存储路径',
-	`created_time` DATETIME DEFAULT CURRENT_TIMESTAMP 		COMMENT '创建时间',
-    `user_name` varchar(20) 								COMMENT '用户名',
-    `company_name` VARCHAR(255)              				COMMENT '公司名'
+    `model_id` INT AUTO_INCREMENT PRIMARY KEY  				            COMMENT '模型ID',
+    `model_name` VARCHAR(255) NOT NULL         				            COMMENT '模型名称',
+    `model_type` VARCHAR(100) NOT NULL         				            COMMENT '模型类型', -- single(单模态注释) -- multi(双模态注释) -- deno(降噪)
+    `model_path` TEXT NOT NULL                 				            COMMENT '模型存储路径',
+    `predict_file_path` TEXT NOT NULL         				            COMMENT '预测文件存储路径',
+    `train_file_path` TEXT NOT NULL               			            COMMENT '训练文件存储路径',
+    `figure_path` TEXT               						            COMMENT '模型图存储路径',
+    `default_parameters` TEXT NOT NULL						            COMMENT '默认参数', -- 格式： '参数1:值1,参数2:值2,...'
+    `remark` TEXT 											            COMMENT '备注',
+    `extract_labels` TEXT NOT NULL			                            COMMENT '标签映射存储路径',
+	`created_time` DATETIME DEFAULT CURRENT_TIMESTAMP 		            COMMENT '创建时间',
+    `user_name` varchar(20) 								            COMMENT '用户名',
+    `company_name` VARCHAR(255)              				            COMMENT '公司名'
 );
 
-INSERT INTO models (model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters) VALUES 
-    ('scLTH', 'multi', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05,batch_size:128,patience:8,input_dim:512,num_layers:8,nhead:16,lr:5e-4,weight_decay:5e-3'),
-    ('scMoAnno', 'single', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05'),
-    ('scTCHCN', 'multi', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05');
+INSERT INTO models (model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters, extract_labels) VALUES
+    ('scLTH', 'multi', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05,batch_size:128,patience:8,input_dim:512,num_layers:8,nhead:16,lr:5e-4,weight_decay:5e-3', 'extract_labels.csv'),
+    ('scMoAnno', 'single', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05', 'extract_labels.csv'),
+    ('scTCHCN', 'multi', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05', 'extract_labels.csv');
     
 -- 公司表：管理用户所属的公司
 drop table if exists `company`;
@@ -55,11 +55,11 @@ create table `scMoAnnoUser`(
   FOREIGN KEY (`company_id`) REFERENCES company(`company_id`)
 );
 
-INSERT INTO `scMoAnnoUser` (`user_name`, `psw`, `email`, `is_admin`, `phone`) VALUES
-('Admin', 'admin123', 'admin@admin.com', true, '12345678901'),
-('Bob', '3', 'bob@example.com', true, '234-567-8901'),
-('Charlie', '3', 'charlie@example.com', false, '345-678-9012'),
-('David', '3', 'david@example.com', false, '456-789-0123');
+INSERT INTO `scMoAnnoUser` (`user_name`, `psw`, `email`, `is_admin`, `phone`,`is_verified`) VALUES
+('Admin', 'admin123', 'admin@admin.com', true, '12345678901', '1'),
+('Bob', '3', 'bob@example.com', true, '234-567-8901', '1'),
+('Charlie', '3', 'charlie@example.com', false, '345-678-9012', '1'),
+('David', '3', 'david@example.com', false, '456-789-0123', '1');
 
 drop table if exists `scMoAnnoTask`;
 create table `scMoAnnoTask`(

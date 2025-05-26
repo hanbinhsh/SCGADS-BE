@@ -17,4 +17,9 @@ public class LogServer implements com.ruoyi.system.service.LogServer{
     public Map<Object, Object> findAllLogs() {
         return logMapper.findAllLogs();
     }
+
+    @Override
+    public void insertLog(long userId,String act ,long importance){
+        logMapper.insertLog(userId, act,importance);
+    }
 }

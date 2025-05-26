@@ -4,6 +4,7 @@ import com.ruoyi.system.domain.entity.Result;
 import com.ruoyi.system.service.impl.LogServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,5 +36,8 @@ public class LogController {
         return Result.success(LogsWithUserInfo);
     }
 
-
+    @RequestMapping("/insertLog")
+    public void insertDeleteFileLog(@RequestBody Map<String, String> map) {
+        this.logServer.insertLog(Long.parseLong(map.get("userId")),map.get("act"),Long.parseLong(map.get("importance")));
+    }
 }

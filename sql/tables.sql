@@ -218,3 +218,15 @@ BEGIN
 END;
 $$
 DELIMITER ;
+
+-- 删除 task 表的触发器
+DELIMITER $$
+DROP TRIGGER IF EXISTS before_delete_task $$
+CREATE TRIGGER before_delete_task
+BEFORE DELETE ON scmoannotask
+FOR EACH ROW
+BEGIN
+    DELETE FROM scmoannofiles WHERE task_name = OLD.task_name;
+END;
+$$
+DELIMITER ;

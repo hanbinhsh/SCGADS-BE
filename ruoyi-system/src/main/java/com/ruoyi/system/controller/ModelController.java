@@ -64,6 +64,7 @@ public class ModelController {
                               @RequestParam("modelName") String modelName,
                               @RequestParam("modelType") String modelType,
                               @RequestParam("modelPath") String modelPath,
+                              @RequestParam("pretrainModelPath") String pretrainModelPath,
                               @RequestParam("predictFilePath") String predictFilePath,
                               @RequestParam("trainFilePath") String trainFilePath,
                               @RequestParam("figurePath") String figurePath,
@@ -71,12 +72,14 @@ public class ModelController {
                               @RequestParam("remark") String remark,
                               @RequestParam("extractLabels") String extractLabels,
                               @RequestParam("userName") String userName,
-                              @RequestParam("companyName") String companyName) {
+                              @RequestParam("companyName") String companyName,
+                              @RequestParam("pretrainModel") boolean pretrainModel) {
         Models model = new Models();
         model.setModelId(modelId);
         model.setModelName(modelName);
         model.setModelType(modelType);
         model.setModelPath(modelPath);
+        model.setPretrainModelPath(pretrainModelPath);
         model.setPredictFilePath(predictFilePath);
         model.setTrainFilePath(trainFilePath);
         model.setFigurePath(figurePath);
@@ -85,6 +88,7 @@ public class ModelController {
         model.setExtractLabels(extractLabels);
         model.setUserName(userName);
         model.setCompanyName(companyName);
+        model.setPretrainModel(pretrainModel);
         modelService.updateModel(model);
         return Result.success();
     }
@@ -100,6 +104,7 @@ public class ModelController {
     public Result addModel(@RequestParam("modelName") String modelName,
                            @RequestParam("modelType") String modelType,
                            @RequestParam("modelPath") String modelPath,
+                           @RequestParam("pretrainModelPath") String pretrainModelPath,
                            @RequestParam("predictFilePath") String predictFilePath,
                            @RequestParam("trainFilePath") String trainFilePath,
                            @RequestParam("figurePath") String figurePath,
@@ -107,11 +112,13 @@ public class ModelController {
                            @RequestParam("remark") String remark,
                            @RequestParam("extractLabels") String extractLabels,
                            @RequestParam("userName") String userName,
-                           @RequestParam("companyName") String companyName) {
+                           @RequestParam("companyName") String companyName,
+                           @RequestParam("pretrainModel") boolean pretrainModel) {
         Models model = new Models();
         model.setModelName(modelName);
         model.setModelType(modelType);
         model.setModelPath(modelPath);
+        model.setPretrainModelPath(pretrainModelPath);
         model.setPredictFilePath(predictFilePath);
         model.setTrainFilePath(trainFilePath);
         model.setFigurePath(figurePath);
@@ -120,6 +127,7 @@ public class ModelController {
         model.setExtractLabels(extractLabels);
         model.setUserName(userName);
         model.setCompanyName(companyName);
+        model.setPretrainModel(pretrainModel);
         modelService.addModel(model);
         return Result.success();
     }

@@ -13,19 +13,21 @@ drop table if exists `company`;
 
 drop table if exists `models`;
 CREATE TABLE `models` (
-    `model_id` INT AUTO_INCREMENT PRIMARY KEY  				            COMMENT '模型ID',
-    `model_name` VARCHAR(255) NOT NULL         				            COMMENT '模型名称',
-    `model_type` VARCHAR(100) NOT NULL         				            COMMENT '模型类型', -- single(单模态注释) -- multi(双模态注释) -- deno(降噪)
-    `model_path` TEXT NOT NULL                 				            COMMENT '模型存储路径',
-    `predict_file_path` TEXT NOT NULL         				            COMMENT '预测文件存储路径',
-    `train_file_path` TEXT NOT NULL               			            COMMENT '训练文件存储路径',
-    `figure_path` TEXT               						            COMMENT '模型图存储路径',
-    `default_parameters` TEXT NOT NULL						            COMMENT '默认参数', -- 格式： '参数1:值1,参数2:值2,...'
-    `remark` TEXT 											            COMMENT '备注',
-    `extract_labels` TEXT NOT NULL			                            COMMENT '标签映射存储路径',
-	`created_time` DATETIME DEFAULT CURRENT_TIMESTAMP 		            COMMENT '创建时间',
-    `user_name` varchar(20) 								            COMMENT '用户名',
-    `company_name` VARCHAR(255)              				            COMMENT '公司名'
+    `model_id` INT AUTO_INCREMENT PRIMARY KEY  						    COMMENT '模型ID',
+    `model_name` VARCHAR(255)          						NOT NULL    COMMENT '模型名称',
+    `model_type` VARCHAR(100)          						NOT NULL    COMMENT '模型类型', -- single(单模态注释) -- multi(双模态注释) -- deno(降噪)
+    `model_path` TEXT                  						NOT NULL    COMMENT '模型存储路径',
+    `pretrain_model_path` TEXT                  					    COMMENT '预训练模型存储路径',
+    `predict_file_path` TEXT          						NOT NULL    COMMENT '预测文件存储路径',
+    `train_file_path` TEXT                					NOT NULL    COMMENT '训练文件存储路径',
+    `figure_path` TEXT               								    COMMENT '模型图存储路径',
+    `default_parameters` TEXT 										    COMMENT '默认参数', -- 格式： '参数1:值1,参数2:值2,...'
+    `remark` TEXT 													    COMMENT '备注',
+    `extract_labels` TEXT 					                NOT NULL    COMMENT '标签映射存储路径',
+	`created_time` DATETIME DEFAULT CURRENT_TIMESTAMP 		NOT NULL    COMMENT '创建时间',
+    `user_name` varchar(20) 										    COMMENT '用户名',
+    `company_name` VARCHAR(255)              						    COMMENT '公司名',
+	`pretrain_model` boolean default false					NOT NULL	COMMENT '预训练模型'
 );
 
 INSERT INTO models (model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters, extract_labels) VALUES
@@ -70,9 +72,10 @@ create table `scMoAnnoTask`(
   `status` tinyint DEFAULT 0					NOT NULL	COMMENT '标志位',   -- 排队：0    处理中：1    已完成：2    错误：-1
   `details` text											COMMENT '详情',
   `uploader_id` int 							NOT NULL	COMMENT '上传者ID',
-  `type` VARCHAR(30) 							NOT NULL	COMMENT '任务类型', -- 约定格式：(annotation/trainning/denoising):(multi/single/deno)
+  `type` VARCHAR(30) 							NOT NULL	COMMENT '任务类型', -- 约定格式：(annotation/training/denoising):(multi/single/deno)
   `parameters` TEXT 										COMMENT '任务参数', -- 参数名1:参数1,参数名2:参数2...
   `model_id` INT 								NOT NULL	COMMENT '模型id',
+  `re_pretrain` bool 										COMMENT '重新预训练',
   FOREIGN KEY (`uploader_id`) REFERENCES scMoAnnoUser(`user_id`),
   FOREIGN KEY (`model_id`) REFERENCES models(`model_id`)
 );

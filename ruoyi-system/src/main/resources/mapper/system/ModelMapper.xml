@@ -4,8 +4,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.ModelMapper">
     <insert id="addModel">
-        insert into models(model_name, model_type, model_path, predict_file_path, train_file_path, default_parameters, figure_path, remark, extract_labels, user_name, company_name)
-        VALUES (#{modelName}, #{modelType}, #{modelPath}, #{predictFilePath}, #{trainFilePath}, #{defaultParameters}, #{figurePath}, #{remark}, #{extractLabels}, #{userName}, #{companyName})
+        insert into models(model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters, remark, extract_labels, user_name, company_name, pretrain_model, pretrain_model_path)
+        VALUES (#{modelName}, #{modelType}, #{modelPath}, #{predictFilePath}, #{trainFilePath}, #{figurePath}, #{defaultParameters}, #{remark}, #{extractLabels}, #{userName}, #{companyName}, #{pretrainModel}, #{pretrainModelPath})
     </insert>
     <update id="updateModel">
         update models
@@ -21,6 +21,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="modelName!=null"> extract_labels = #{extractLabels}, </if>
             <if test="modelName!=null"> user_name = #{userName}, </if>
             <if test="modelName!=null"> company_name = #{companyName}, </if>
+            <if test="modelName!=null"> pretrain_model = #{pretrainModel}, </if>
+            <if test="modelName!=null"> pretrain_model_path = #{pretrainModelPath}, </if>
         </set>
         where model_id = #{modelId}
     </update>

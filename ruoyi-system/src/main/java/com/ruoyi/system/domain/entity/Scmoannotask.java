@@ -13,6 +13,7 @@ public class Scmoannotask {
   private String type;
   private String parameters;
   private long modelId;
+  private boolean rePretrain;
 
 
   public long getTaskId() {
@@ -104,4 +105,11 @@ public class Scmoannotask {
     this.modelId = modelId;
   }
 
+    public boolean isRePretrain() {
+        return rePretrain;
+    }
+
+    public void setRePretrain(boolean rePretrain) {
+        this.rePretrain = rePretrain;
+    }
 }

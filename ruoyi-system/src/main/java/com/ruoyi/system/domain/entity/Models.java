@@ -11,6 +11,7 @@ public class Models {
   private String modelName;
   private String modelType;
   private String modelPath;
+  private String pretrainModelPath;
   private String predictFilePath;
   private String trainFilePath;
   private String figurePath;
@@ -21,6 +22,7 @@ public class Models {
   private String companyName;
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private java.sql.Timestamp createdTime;
+  private boolean pretrainModel;
 
   private byte[] figureByte;
 
@@ -137,5 +139,21 @@ public class Models {
 
     public void setCreatedTime(Timestamp createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public boolean isPretrainModel() {
+        return pretrainModel;
+    }
+
+    public void setPretrainModel(boolean pretrainModel) {
+        this.pretrainModel = pretrainModel;
+    }
+
+    public String getPretrainModelPath() {
+        return pretrainModelPath;
+    }
+
+    public void setPretrainModelPath(String pretrainModelPath) {
+        this.pretrainModelPath = pretrainModelPath;
     }
 }

@@ -56,11 +56,11 @@ public class TaskProgress {
         String rnaPath      = getUploadLocation() + "temp/" + files.getScRna_SeqFile();
         String labelPath    = getUploadLocation() + "temp/" + files.getTagFile();
 
-        // 约定格式：(annotation/trainning/denoising):(multi/single/deno)
+        // 约定格式：(annotation/training/denoising):(multi/single/deno)
         if(task.getType().split(":")[0].equals("annotation")){ // 注释任务
             // 无标签，改用模型内置标签映射
             labelPath = pythonScriptPath + model.getExtractLabels();
-        } else if (task.getType().split(":")[0].equals("trainning")) { // 训练
+        } else if (task.getType().split(":")[0].equals("training")) { // 训练
             // 有标签使用标签训练
             // 需要解密标签 TODO 如果开启了无需加密
             decryptFile(labelPathBD , labelPath);

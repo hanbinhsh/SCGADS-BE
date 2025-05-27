@@ -16,4 +16,5 @@ public interface CompanyMapper {
     void addUserToCompany(@Param("userID") Long userID, @Param("companyID") Long companyID);
     void removeUserFromCompany(@Param("userID") Long userID, @Param("companyID") Long companyID);
     List<Scmoannouser> getCompanyUsers(long companyID);
+    Company findCompanyByUserID(@Param("userID") Long userID);
 }

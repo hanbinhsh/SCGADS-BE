@@ -68,4 +68,11 @@ public class CompanyController {
         List<Scmoannouser> userList = companyServer.getCompanyUsers(companyId);
         return Result.success(userList);
     }
+
+    @GetMapping("/findCompanyByUserID")
+    @CrossOrigin(origins = "*")
+    public Result<Company> findCompanyByUserID(@RequestParam long userId){
+        Company company = companyServer.findCompanyByUserID(userId);
+        return Result.success(company);
+    }
 }

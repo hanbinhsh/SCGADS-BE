@@ -47,4 +47,9 @@ public class CompanyServer implements com.ruoyi.system.service.CompanyServer {
     public List<Scmoannouser> getCompanyUsers(long companyID) {
         return companyMapper.getCompanyUsers(companyID);
     }
+
+    @Override
+    public Company findCompanyByUserID(Long userID) {
+        return companyMapper.findCompanyByUserID(userID);
+    }
 }

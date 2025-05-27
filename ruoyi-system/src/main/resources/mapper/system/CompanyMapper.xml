@@ -33,5 +33,15 @@
         select * from scmoannouser
         where company_id = #{companyID}
     </select>
+    <select id="findCompanyByUserID" resultType="com.ruoyi.system.domain.entity.Company">
+        SELECT
+            c.*
+        FROM
+            scMoAnnoUser u
+        LEFT JOIN
+            company c ON u.company_id = c.company_id
+        WHERE
+            u.user_id = #{ userID };
+    </select>
 
 </mapper>

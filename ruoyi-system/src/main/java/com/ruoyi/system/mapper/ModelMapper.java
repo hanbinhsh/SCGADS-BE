@@ -8,13 +8,11 @@ import java.util.List;
 
 @Mapper
 public interface ModelMapper {
-    public List<Models> getAllModels();
+    List<Models> getAllModels();
     void deleteModel(Long modelId);
-
     void addModel(Models model);
     void updateModel(Models model);
-
     Models getModelById(Long modelId);
-
     void updateModelRemark(@Param("modelId") long modelId, @Param("remark") String remark);
+    List<Models> findModelsByUserName(String userName);
 }

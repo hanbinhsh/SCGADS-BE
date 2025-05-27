@@ -43,4 +43,9 @@ public class ModelServer implements ModelService {
     public void updateModelRemark(Long modelId, String remark) {
         modelMapper.updateModelRemark(modelId, remark);
     }
+
+    @Override
+    public List<Models> findModelsByUserName(String userId) {
+        return modelMapper.findModelsByUserName(userId);
+    }
 }

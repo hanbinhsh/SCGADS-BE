@@ -38,4 +38,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getModelById" resultType="com.ruoyi.system.domain.entity.Models">
         select * from models where model_id = #{modelId}
     </select>
+    <select id="findModelsByUserName" resultType="com.ruoyi.system.domain.entity.Models">
+        SELECT *
+            FROM models
+            WHERE user_name = #{userName};
+    </select>
 </mapper>

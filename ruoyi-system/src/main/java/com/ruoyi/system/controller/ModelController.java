@@ -130,4 +130,9 @@ public class ModelController {
         return Result.success();
     }
 
+    @GetMapping("/findModelsByUserName")
+    public Result<List<Models>> findModelsByUserName(@RequestParam("userName") String userName) {
+        List<Models> models = modelService.findModelsByUserName(userName);
+        return Result.success(models);
+    }
 }

@@ -15,4 +15,5 @@ public interface ModelService {
     Models getModelById(Long modelId);
 
     void updateModelRemark(Long modelId, String remark);
+    List<Models> findModelsByUserName(String userId);
 }

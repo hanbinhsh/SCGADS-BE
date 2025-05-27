@@ -83,8 +83,7 @@ public class FileController {
         builder.header("Content-Disposition", "attachment;filename*=UTF-8''" + fileName);
         builder.header("Accept-Ranges", "bytes");
 
-        String filePaths = "paths";
-        filePaths = getResultLocation(userName, taskName)+ type + ".js";
+        String filePaths = getResultLocation(userName, taskName)+ type + ".js";
         File dFile = new File(filePaths);
         return builder.body(FileUtils.readFileToByteArray(dFile));
     }

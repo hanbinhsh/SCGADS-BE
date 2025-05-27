@@ -3,12 +3,13 @@ import os
 import sys
 import torch
 import numpy as np
-import scanpy as sc
-from torch.utils.data import DataLoader
+import csv
+from collections import OrderedDict
 from dataset import Dataset, MyDatasetTrain
 from pretrain import PreTrain
 from train import TrainModel
 import requests
+from pred import main as predict
 
 def ensure_directory(path):
     """ 确保目录存在，如果不存在则创建 """
@@ -80,16 +81,55 @@ def main(args):
         train_model.train()
 
         requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}训练完成，模型已保存至 {args.output_path}")
+
+        # 生成标签映射
+        extract_labels(args.label_path, args.output_path+"result/extract_labels.csv")
         # 通知训练完成
         requests.post(f"http://localhost:8868/updateTaskStatusByTaskName?taskName={args.task_name}&status=2")
 
-        # TODO 生成标签映射
+        # 预测生成降维图
+        # 修改模型为本模型
+        args.checkpoint = args.output_path+"result/train_best.ckpt"
+        predict(args)
+
+        # TODO 上传模型市场
+
+        # Todo 删除split文件
 
     except Exception as e:
         requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}出错：{e}")
         # 设置任务为错误
         requests.post(f"http://localhost:8868/updateTaskStatusByTaskName?taskName={args.task_name}&status=-1")
         raise e
+
+def extract_labels(input_path='label.csv', output_path='extract_labels.csv'):
+    try:
+        with open(input_path, 'r', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            header = next(reader)  # 跳过表头
+            labels = [row[0] for row in reader if row]  # 提取第一列标签
+
+        # 去重并保持顺序
+        unique_labels = list(OrderedDict.fromkeys(labels))
+
+        # 打印输出
+        print(f"共发现 {len(unique_labels)} 个唯一标签：")
+        for label in unique_labels:
+            print(f"- {label}")
+
+        # 保存到 extract_labels.csv
+        with open(output_path, 'w', encoding='utf-8', newline='') as f_out:
+            writer = csv.writer(f_out)
+            writer.writerow(['label'])  # 写表头
+            for label in unique_labels:
+                writer.writerow([label])
+
+        print(f"\n标签已保存到文件：{output_path}")
+
+    except FileNotFoundError:
+        print(f"文件 {input_path} 不存在。")
+    except Exception as e:
+        print(f"读取或写入文件时出错：{e}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 9:
@@ -103,6 +143,7 @@ if __name__ == "__main__":
     parser.add_argument('--atac_path', type=str, required=True, help='Path to the ATAC data file (h5ad).')
     parser.add_argument('--rna_path', type=str, required=True, help='Path to the RNA data file (h5ad).')
     parser.add_argument('--label_path', type=str, required=True, help='Path to the label CSV file.')
+    parser.add_argument('--checkpoint', type=str, required=True, help='Path to the model checkpoint file.')
     parser.add_argument('--output_path', type=str, required=True, help='Path to save the trained model.')
 
     parser.add_argument('--user_name', type=str, required=True, help='User name.')

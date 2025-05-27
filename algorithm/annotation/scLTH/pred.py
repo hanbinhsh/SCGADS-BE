@@ -20,6 +20,7 @@ def main(args):
     requests.post(
         f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH任务{args.task_name}正在处理，结果生成到{args.output_path}")
     try:
+        args.output_path = args.output_path + "output.npy"
         ensure_directory(os.path.dirname(args.output_path))
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -81,11 +82,9 @@ def main(args):
                 predicted_labels = [unique_labels[i] for i in predicted_indices]
                 all_output.extend(predicted_labels)
 
-        all_output_num = np.concatenate(all_output_num, axis=0)
-        np.save(args.output_num_path, all_output_num)
         np.save(args.output_path, np.array(all_output, dtype=object))
 
-        requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH任务{args.task_name}预测完成，输出已保存至 {args.output_path} 和 {args.output_num_path}")
+        requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH任务{args.task_name}预测完成，输出已保存至 {args.output_path}")
         requests.post(f"http://localhost:8868/tsneUmapChartProgress?type={args.task_type}&taskName={args.task_name}&userName={args.user_name}&seq_dir={args.rna_path}&label_dir={args.label_path}&outputnpyPath={args.output_path}")
     except Exception as e:
         requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH任务{args.task_name}出错：{e}")
@@ -107,12 +106,15 @@ if __name__ == "__main__":
     parser.add_argument('--rna_path', type=str, required=True, help='Path to the RNA data file (h5ad).')
     parser.add_argument('--label_path', type=str, required=True, help='Path to the label CSV file.')
     parser.add_argument('--checkpoint', type=str, required=True, help='Path to the model checkpoint file.')
-    parser.add_argument('--output_num_path', type=str, required=True, help='Path to save numerical output (npy).')
     parser.add_argument('--output_path', type=str, required=True, help='Path to save label output (npy).')
 
     parser.add_argument('--user_name', type=str, required=True, help='User name.')
     parser.add_argument('--task_name', type=str, required=True, help='Task name.')
     parser.add_argument('--task_type', type=str, required=True, help='Task type.')
+
+    # 预训练相关参数
+    parser.add_argument('--use_pretrained', action='store_true', help='Whether to use existing pretrained model.')
+    parser.add_argument('--pretrain_path', type=str, default='', help='Path to existing pretrained model (required if use_pretrained is True).')
 
     # 训练超参数
     parser.add_argument('--seed', type=int, default=1224455, help='Random seed.')

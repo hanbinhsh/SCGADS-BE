@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,91 +49,65 @@ public class TaskProgress {
         // 用户需要注释或训练的文件路径
         String atacPathBD   = getUploadLocation() + files.getScAtac_SeqFile();
         String rnaPathBD    = getUploadLocation() + files.getScRna_SeqFile();
-        String labelPathBD  = getUploadLocation() + files.getTagFile();
         // 解密文件路径
         String atacPath     = getUploadLocation() + "temp/" + files.getScAtac_SeqFile();
         String rnaPath      = getUploadLocation() + "temp/" + files.getScRna_SeqFile();
-        String labelPath    = getUploadLocation() + "temp/" + files.getTagFile();
+
+        // 模型文件
+        String checkpointPath = pythonScriptPath + "models/" + model.getModelPath();
+        // 预测结果输出路径
+        String outputPath = getResultLocation(userName, taskName);
+
+        // 解密数据 TODO 如果开启了无需加密
+        decryptFile(atacPathBD, atacPath);
+        decryptFile(rnaPathBD , rnaPath);
+
+        // 参数解析
+        String parameters = task.getParameters();
+        // System.out.println(parameters);
 
         // 约定格式：(annotation/training/denoising):(multi/single/deno)
+        String labelPath = "";
+        String scriptPath = "";
+        String usePretrained = task.isRePretrain() ? "true" : "false";
+        String pretrainPath = model.getPretrainModelPath();
         if(task.getType().split(":")[0].equals("annotation")){ // 注释任务
             // 无标签，改用模型内置标签映射
             labelPath = pythonScriptPath + model.getExtractLabels();
-            // 解密数据 TODO 如果开启了无需加密
-            decryptFile(atacPathBD  , atacPath);
-            decryptFile(rnaPathBD   , rnaPath);
-
-            // 脚本文件
-            String predScriptPath  = pythonScriptPath + model.getPredictFilePath();
-            String trainScriptPath = pythonScriptPath + model.getTrainFilePath();
-            // 模型文件
-            String checkpointPath = pythonScriptPath + "models/" + model.getModelPath();
-
-            // 预测结果输出路径
-            String outputNumPath = getResultLocation(userName, taskName) + "output_num.npy";
-            String outputPath = getResultLocation(userName, taskName) + "output.npy";
-
-            // 参数解析
-            String parameters = task.getParameters();
-            System.out.println(parameters);
-
-            // 基本命令参数
-            List<String> command = new ArrayList<>(Arrays.asList(
-                    "python", predScriptPath,
-                    "--atac_path", atacPath,
-                    "--rna_path", rnaPath,
-                    "--label_path", labelPath,
-                    "--checkpoint", checkpointPath,
-                    "--output_num_path", outputNumPath,
-                    "--output_path", outputPath,
-                    "--user_name", userName,
-                    "--task_name", taskName,
-                    "--task_type", task.getType()
-            ));
-
-            // 动态添加所有有值的参数
-            if (parameters != null && !parameters.trim().isEmpty()) {
-                String[] pairs = parameters.split(",");
-                for (String pair : pairs) {
-                    String[] kv = pair.split(":", 2);
-                    if (kv.length == 2) {
-                        String key = kv[0].trim();
-                        String value = kv[1].trim();
-                        if (!key.isEmpty() && !value.isEmpty()) {
-                            command.add("--" + key);
-                            command.add(value);
-                        }
-                    }
-                }
-            }
-
-            // 启动进程
-            System.out.println("预测任务 " + taskName + " 处理中"+task.getType());
-            ProcessBuilder processBuilder = new ProcessBuilder(command);
-            Process process = processBuilder.start();
-
-            // (设置任务为处理中->模型预测->tsne->umap->设置任务为成功)
-            //                        ^^^^^^^^^^^^^
-            //                Python端调用tsneUmapChartProgress
-            // 以上内容在python代码中完成处理
-
-            // TODO 错误信息写入日志
-    //        // 输出错误信息（如果有）
-    //        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-    //        String line;
-    //        System.out.println("---- 注释任务 Python 错误输出 ----");
-    //        while ((line = errorReader.readLine()) != null) {
-    //            System.out.println(line);
-    //        }
+            scriptPath = pythonScriptPath + model.getPredictFilePath();
         } else if (task.getType().split(":")[0].equals("training")) { // 训练
             // 有标签使用标签训练
             // 需要解密标签 TODO 如果开启了无需加密
+            String labelPathBD  = getUploadLocation() + files.getTagFile();
+            labelPath = getUploadLocation() + "temp/" + files.getTagFile();
             decryptFile(labelPathBD , labelPath);
+            scriptPath = pythonScriptPath + model.getTrainFilePath();
         } else { // 降噪
 
         }
 
+        List<String> command = buildCommand(scriptPath, atacPath, rnaPath, labelPath,
+                                        checkpointPath, outputPath, userName, taskName,
+                                        task.getType(), parameters, usePretrained, pretrainPath);
 
+        // 启动进程
+        System.out.println("任务 " + taskName + " 处理中" + task.getType());
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        Process process = processBuilder.start();
+
+        // TODO 错误信息写入日志
+        // 输出错误信息（如果有）
+        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        String line;
+        System.out.println("---- 注释任务 Python 错误输出 ----");
+        while ((line = errorReader.readLine()) != null) {
+            System.out.println(line);
+        }
+
+        // (设置任务为处理中->模型预测->tsne->umap->设置任务为成功)
+        //                        ^^^^^^^^^^^^^
+        //                Python端调用tsneUmapChartProgress
+        // 以上内容在python代码中完成处理
 
         /// 生成图表和设置任务完成或者失败的代码在python中实现
         /// 由于预测和图表生成是顺序执行，避免重复设置任务状态
@@ -195,5 +171,46 @@ public class TaskProgress {
     // TODO 删除解密文件
     public Result<String> deleteTempFiles(){
         return Result.success();
+    }
+
+    // 构造命令表
+    private List<String> buildCommand(String scriptPath, String atacPath, String rnaPath, String labelPath,
+                                      String checkpointPath, String outputPath, String userName, String taskName,
+                                      String taskType, String parameters, String usePretrained, String pretrainPath) {
+        List<String> command = new ArrayList<>(Arrays.asList(
+            "python", scriptPath,
+            "--atac_path", atacPath,
+            "--rna_path", rnaPath,
+            "--label_path", labelPath,
+            "--checkpoint", checkpointPath,
+            "--output_path", outputPath,
+            "--user_name", userName,
+            "--task_name", taskName,
+            "--task_type", taskType,
+            "--pretrain_path", pretrainPath
+        ));
+
+        if ("true".equalsIgnoreCase(usePretrained)) {
+            command.add("--use_pretrained");
+            if (pretrainPath != null && !pretrainPath.trim().isEmpty()) {
+                command.add("--pretrain_path");
+                command.add(pretrainPath);
+            }
+        }
+
+        if (parameters != null && !parameters.trim().isEmpty()) {
+            for (String pair : parameters.split(",")) {
+                String[] kv = pair.split(":", 2);
+                if (kv.length == 2) {
+                    String key = kv[0].trim();
+                    String value = kv[1].trim();
+                    if (!key.isEmpty() && !value.isEmpty()) {
+                        command.add("--" + key);
+                        command.add(value);
+                    }
+                }
+            }
+        }
+        return command;
     }
 }

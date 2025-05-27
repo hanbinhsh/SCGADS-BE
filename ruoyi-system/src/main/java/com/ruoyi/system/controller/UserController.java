@@ -3,12 +3,14 @@ package com.ruoyi.system.controller;
 import com.ruoyi.system.domain.entity.Result;
 import com.ruoyi.system.domain.entity.Scmoannouser;
 import com.ruoyi.system.service.UserServer;
+import com.ruoyi.system.service.impl.LogServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
@@ -18,7 +20,8 @@ import java.util.Map;
 public class UserController {
     @Autowired
     UserServer userServer;
-
+    @Resource
+    private LogServer logServer;
     @RequestMapping("/findUsers")
     @CrossOrigin(origins = "*")
     public Result<List<Scmoannouser>> findUsers() {
@@ -105,6 +108,8 @@ public class UserController {
             return Result.error("The phone number is registered!");
         }else{
             userServer.register(scmoannouser);
+            Scmoannouser user = userServer.findUserByUserName(scmoannouser.getUserName());
+            this.logServer.insertLog(user.getUserId(),"注册账号",3);
             return Result.success();
         }
     }

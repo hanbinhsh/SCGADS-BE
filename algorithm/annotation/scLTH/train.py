@@ -9,7 +9,7 @@ from dataset import MyDatasetTrain
 from scLTH import SCLTHTrain
 
 class TrainModel:
-    def __init__(self, dataset_name,
+    def __init__(self, base_dir,
                  batch_size=128,
                  n_epochs=96,
                  patience=32,
@@ -20,15 +20,14 @@ class TrainModel:
                  num_layers=6,
                  nhead=8,
                  seed = 114514):
-        preprocess_folder = './data_split/' + dataset_name
+        preprocess_folder = base_dir + 'data_split/'
         self.batch_size = batch_size
         self.n_epochs = n_epochs
         self.patience = patience
         self.lr = lr
         self.weight_decay = weight_decay
         self.dp = dp
-        self.dataset_name = dataset_name
-        self.result_dir = f'./result/{dataset_name}/'
+        self.result_dir = f'{base_dir}result/'
         self.input_dim = input_dim
         self.num_layers = num_layers
         self.nhead = nhead
@@ -83,7 +82,7 @@ class TrainModel:
         stale = 0
         max_acc_onbestloss, max_f1_onbestloss, max_f1_onbestacc = None, None, None
 
-        with open(f"{self.result_dir}/trainresult_{self.seed}.txt", "w") as f:
+        with open(f"{self.result_dir}/trainresult.txt", "w") as f:
             f.write("Epoch\tTrain Loss\tTrain Acc\tTrain F1\tValidation Loss\tValidation Acc\tValidation F1\n")
 
         for epoch in range(self.n_epochs):
@@ -134,7 +133,7 @@ class TrainModel:
             print(
                 f"[ Valid | {epoch + 1:03d}/{self.n_epochs:03d} ] loss = {valid_loss:.5f}, acc = {val_acc:.5f}, f1 = {val_f1:.5f}")
 
-            with open(f"{self.result_dir}/trainresult_{self.seed}.txt", "a") as f:
+            with open(f"{self.result_dir}/trainresult.txt", "a") as f:
                 f.write(f"{epoch + 1}\t{train_loss:.5f}\t{train_acc:.5f}\t{train_f1:.5f}\t{valid_loss:.5f}\t{val_acc:.5f}\t{val_f1:.5f}\n")
 
             # best loss
@@ -145,7 +144,7 @@ class TrainModel:
                 print(f"--> (Best)")
                 max_acc_onbestloss = val_acc
                 max_f1_onbestloss = val_f1
-                torch.save(model.state_dict(), f"{self.result_dir}/train_best_{self.seed}.ckpt")
+                torch.save(model.state_dict(), f"{self.result_dir}/train_best.ckpt")
             # best acc
             if val_acc > max_acc:
                 max_acc = val_acc
@@ -166,9 +165,9 @@ class TrainModel:
                 stale = 0
 
         # Save results
-        with open(f"{self.result_dir}/trainresult_pred_{self.seed}.txt", "w") as f_pred:
+        with open(f"{self.result_dir}/trainresult_pred.txt", "w") as f_pred:
             f_pred.write("\n".join(map(str, best_pred_loss)))
-        with open(f"{self.result_dir}/trainresult_{self.seed}.txt", "a") as f:
+        with open(f"{self.result_dir}/trainresult.txt", "a") as f:
             f.write(f"Best Validation Loss: {min_loss:.5f} (Epoch {best_epoch_loss})\n")
             f.write(f"Best Validation Accuracy (Best Loss): {max_acc_onbestloss:.5f} (Epoch {best_epoch_loss})\n")
             f.write(f"Best Validation F1 (Best Loss): {max_f1_onbestloss:.5f} (Epoch {best_epoch_loss})\n\n")

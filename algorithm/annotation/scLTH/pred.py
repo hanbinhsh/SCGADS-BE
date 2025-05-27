@@ -114,7 +114,11 @@ if __name__ == "__main__":
     parser.add_argument('--task_name', type=str, required=True, help='Task name.')
     parser.add_argument('--task_type', type=str, required=True, help='Task type.')
 
-    # 具有默认值的超参数
+    # 训练超参数
+    parser.add_argument('--seed', type=int, default=1224455, help='Random seed.')
+    parser.add_argument('--pretrain_patience', type=int, default=32, help='Early stopping patience for pretraining.')
+    parser.add_argument('--pretrain_epochs', type=int, default=96, help='Number of epochs for pretraining.')
+    # 预测超参数
     parser.add_argument('--n_epochs', type=int, default=96, help='Number of epochs.')
     parser.add_argument('--dropout', type=float, default=0.05, help='Dropout rate.')
     parser.add_argument('--batch_size', type=int, default=128, help='Batch size.')

@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
 class PreTrain:
-    def __init__(self, dataset_name,
+    def __init__(self, base_dir,
                  dropout=0,
                  batch_size=128,
                  n_epochs=96,
@@ -18,7 +18,7 @@ class PreTrain:
                  nhead=8,
                  lr=5e-4,
                  weight_decay=1e-3):
-        preprocess_folder = './data_split/' + dataset_name
+        preprocess_folder = base_dir + 'data_split/'
         self.dropout = dropout
         self.batch_size = batch_size
         self.n_epochs = n_epochs
@@ -31,7 +31,7 @@ class PreTrain:
         self.source_data = np.load(train_rna_path)
         self.val_traget_data = np.load(test_atac_path)
         self.val_source_data = np.load(test_rna_path)
-        self.result_folder = './result/' + dataset_name + '/'  # Result folder
+        self.result_folder = f'{base_dir}result/'  # Result folder
         os.makedirs(self.result_folder, exist_ok=True)  # Create result folder if not exists
         self.input_dim = input_dim
         self.num_layers = num_layers

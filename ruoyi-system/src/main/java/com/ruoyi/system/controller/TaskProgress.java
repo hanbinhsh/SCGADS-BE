@@ -8,15 +8,12 @@ import com.ruoyi.system.domain.entity.Scmoannotask;
 import com.ruoyi.system.service.FilesServer;
 import com.ruoyi.system.service.TaskServer;
 import com.ruoyi.system.service.impl.ModelServer;
-import net.sf.jsqlparser.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,8 +26,8 @@ public class TaskProgress {
     // 自动任务处理
     @RequestMapping("/predictProgress")
     @CrossOrigin(origins = "*")
-    public Result predict(@RequestParam("taskName") String taskName,
-                          @RequestParam("userName") String userName) throws IOException {
+    public Result taskProgress(@RequestParam("taskName") String taskName,
+                               @RequestParam("userName") String userName) throws IOException {
         // TODO 只做了注释处理，训练没做，且现在只有pbmc的sclth模型
         // 获取seq文件名
         FilesServer filesServer = SpringUtils.getBean(FilesServer.class);
@@ -60,6 +57,72 @@ public class TaskProgress {
         if(task.getType().split(":")[0].equals("annotation")){ // 注释任务
             // 无标签，改用模型内置标签映射
             labelPath = pythonScriptPath + model.getExtractLabels();
+            // 解密数据 TODO 如果开启了无需加密
+            decryptFile(atacPathBD  , atacPath);
+            decryptFile(rnaPathBD   , rnaPath);
+
+            // 脚本文件
+            String predScriptPath  = pythonScriptPath + model.getPredictFilePath();
+            String trainScriptPath = pythonScriptPath + model.getTrainFilePath();
+            // 模型文件
+            String checkpointPath = pythonScriptPath + "models/" + model.getModelPath();
+
+            // 预测结果输出路径
+            String outputNumPath = getResultLocation(userName, taskName) + "output_num.npy";
+            String outputPath = getResultLocation(userName, taskName) + "output.npy";
+
+            // 参数解析
+            String parameters = task.getParameters();
+            System.out.println(parameters);
+
+            // 基本命令参数
+            List<String> command = new ArrayList<>(Arrays.asList(
+                    "python", predScriptPath,
+                    "--atac_path", atacPath,
+                    "--rna_path", rnaPath,
+                    "--label_path", labelPath,
+                    "--checkpoint", checkpointPath,
+                    "--output_num_path", outputNumPath,
+                    "--output_path", outputPath,
+                    "--user_name", userName,
+                    "--task_name", taskName,
+                    "--task_type", task.getType()
+            ));
+
+            // 动态添加所有有值的参数
+            if (parameters != null && !parameters.trim().isEmpty()) {
+                String[] pairs = parameters.split(",");
+                for (String pair : pairs) {
+                    String[] kv = pair.split(":", 2);
+                    if (kv.length == 2) {
+                        String key = kv[0].trim();
+                        String value = kv[1].trim();
+                        if (!key.isEmpty() && !value.isEmpty()) {
+                            command.add("--" + key);
+                            command.add(value);
+                        }
+                    }
+                }
+            }
+
+            // 启动进程
+            System.out.println("预测任务 " + taskName + " 处理中"+task.getType());
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            Process process = processBuilder.start();
+
+            // (设置任务为处理中->模型预测->tsne->umap->设置任务为成功)
+            //                        ^^^^^^^^^^^^^
+            //                Python端调用tsneUmapChartProgress
+            // 以上内容在python代码中完成处理
+
+            // TODO 错误信息写入日志
+    //        // 输出错误信息（如果有）
+    //        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+    //        String line;
+    //        System.out.println("---- 注释任务 Python 错误输出 ----");
+    //        while ((line = errorReader.readLine()) != null) {
+    //            System.out.println(line);
+    //        }
         } else if (task.getType().split(":")[0].equals("training")) { // 训练
             // 有标签使用标签训练
             // 需要解密标签 TODO 如果开启了无需加密
@@ -68,72 +131,7 @@ public class TaskProgress {
 
         }
 
-        // 解密数据 TODO 如果开启了无需加密
-        decryptFile(atacPathBD  , atacPath);
-        decryptFile(rnaPathBD   , rnaPath);
 
-        // 脚本文件
-        String predScriptPath  = pythonScriptPath + model.getPredictFilePath();
-        String trainScriptPath = pythonScriptPath + model.getTrainFilePath();
-        // 模型文件
-        String checkpointPath = pythonScriptPath + "models/" + model.getModelPath();
-
-        // 预测结果输出路径
-        String outputNumPath = getResultLocation(userName, taskName) + "output_num.npy";
-        String outputPath = getResultLocation(userName, taskName) + "output.npy";
-
-        // 参数解析
-        String parameters = task.getParameters();
-        System.out.println(parameters);
-
-        // 基本命令参数
-        List<String> command = new ArrayList<>(Arrays.asList(
-                "python", predScriptPath,
-                "--atac_path", atacPath,
-                "--rna_path", rnaPath,
-                "--label_path", labelPath,
-                "--checkpoint", checkpointPath,
-                "--output_num_path", outputNumPath,
-                "--output_path", outputPath,
-                "--user_name", userName,
-                "--task_name", taskName,
-                "--task_type", task.getType()
-        ));
-
-        // 动态添加所有有值的参数
-        if (parameters != null && !parameters.trim().isEmpty()) {
-            String[] pairs = parameters.split(",");
-            for (String pair : pairs) {
-                String[] kv = pair.split(":", 2);
-                if (kv.length == 2) {
-                    String key = kv[0].trim();
-                    String value = kv[1].trim();
-                    if (!key.isEmpty() && !value.isEmpty()) {
-                        command.add("--" + key);
-                        command.add(value);
-                    }
-                }
-            }
-        }
-
-        // 启动进程
-        System.out.println("预测任务 " + taskName + " 处理中"+task.getType());
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
-        Process process = processBuilder.start();
-
-        // (设置任务为处理中->模型预测->tsne->umap->设置任务为成功)
-        //                        ^^^^^^^^^^^^^
-        //                Python端调用tsneUmapChartProgress
-        // 以上内容在python代码中完成处理
-
-        // TODO 错误信息写入日志
-//        // 输出错误信息（如果有）
-//        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-//        String line;
-//        System.out.println("---- 注释任务 Python 错误输出 ----");
-//        while ((line = errorReader.readLine()) != null) {
-//            System.out.println(line);
-//        }
 
         /// 生成图表和设置任务完成或者失败的代码在python中实现
         /// 由于预测和图表生成是顺序执行，避免重复设置任务状态

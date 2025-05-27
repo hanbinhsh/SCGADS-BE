@@ -27,7 +27,7 @@ def read_label(label_path):
 
 class Dataset:
     @staticmethod
-    def split_dataset(dataset_name, rna_path, atac_path, label_path, seed = 5201314):
+    def split_dataset(rna_path, atac_path, label_path, base_dir, seed = 5201314):
         adata_rna = sc.read_h5ad(rna_path)
         adata_atac = sc.read_h5ad(atac_path)
         labels, cell_types = read_label(label_path)
@@ -52,18 +52,19 @@ class Dataset:
         for i in y_test:
             y_test_str.append(cell_types[i])
 
-        directory = os.path.join('./data_split', dataset_name)
+        directory = os.path.join(base_dir, 'data_split')
         if not os.path.exists(directory):
             os.makedirs(directory)
-        np.save('./data_split/' + dataset_name + '/x_rna_train.npy', x_rna_train)
-        np.save('./data_split/' + dataset_name + '/x_rna_test.npy', x_rna_test)
-        np.save('./data_split/' + dataset_name + '/x_atac_train.npy', x_atac_train)
-        np.save('./data_split/' + dataset_name + '/x_atac_test.npy', x_atac_test)
-        np.save('./data_split/' + dataset_name + '/y_train_str.npy', y_train_str)
-        np.save('./data_split/' + dataset_name + '/y_test_str.npy', y_test_str)
-        np.save('./data_split/' + dataset_name + '/y_train.npy', y_train)
-        np.save('./data_split/' + dataset_name + '/y_test.npy', y_test)
-        np.save('./data_split/' + dataset_name + '/cell_types.npy', cell_types)
+
+        np.save(base_dir + 'data_split' + '/x_rna_train.npy'    , x_rna_train)
+        np.save(base_dir + 'data_split' + '/x_rna_test.npy'     , x_rna_test)
+        np.save(base_dir + 'data_split' + '/x_atac_train.npy'   , x_atac_train)
+        np.save(base_dir + 'data_split' + '/x_atac_test.npy'    , x_atac_test)
+        np.save(base_dir + 'data_split' + '/y_train_str.npy'    , y_train_str)
+        np.save(base_dir + 'data_split' + '/y_test_str.npy'     , y_test_str)
+        np.save(base_dir + 'data_split' + '/y_train.npy'        , y_train)
+        np.save(base_dir + 'data_split' + '/y_test.npy'         , y_test)
+        np.save(base_dir + 'data_split' + '/cell_types.npy'     , cell_types)
 
 class MyDataset(torch.utils.data.Dataset):
     def __init__(self, rna, atac):

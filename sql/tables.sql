@@ -31,7 +31,7 @@ CREATE TABLE `models` (
 );
 
 INSERT INTO models (model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters, extract_labels) VALUES
-    ('scLTH', 'multi', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05,batch_size:128,patience:8,input_dim:512,num_layers:8,nhead:16,lr:5e-4,weight_decay:5e-3', 'extract_labels.csv'),
+    ('scLTH', 'multi', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05,batch_size:128,patience:8,input_dim:512,num_layers:8,nhead:16,lr:5e-4,weight_decay:5e-3,seed:1224455,pretrain_patience:32,pretrain_epochs:96', 'extract_labels.csv'),
     ('scMoAnno', 'single', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05', 'extract_labels.csv'),
     ('scTCHCN', 'multi', 'a', 'b', 'c', 'model.png', 'n_epochs:96,dropout:0.05', 'extract_labels.csv');
     

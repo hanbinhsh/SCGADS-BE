@@ -111,6 +111,7 @@ if __name__ == "__main__":
     parser.add_argument('--user_name', type=str, required=True, help='User name.')
     parser.add_argument('--task_name', type=str, required=True, help='Task name.')
     parser.add_argument('--task_type', type=str, required=True, help='Task type.')
+    parser.add_argument('--base_model', type=int, required=True, help='Base Model.')
 
     # 训练超参数
     parser.add_argument('--seed', type=int, default=1224455, help='Random seed.')

@@ -4,8 +4,8 @@
 
 <mapper namespace="com.ruoyi.system.mapper.TaskMapper">
     <insert id="insertTask">
-        insert into scMoAnnoTask(task_name, start_time, uploader_id, details, type, parameters, model_id)
-        values(#{taskName}, #{startTime}, #{uploaderId}, #{details}, #{type}, #{parameters}, #{modelId} )
+        insert into scMoAnnoTask(task_name, start_time, uploader_id, details, type, parameters, model_id, re_pretrain)
+        values(#{taskName}, #{startTime}, #{uploaderId}, #{details}, #{type}, #{parameters}, #{modelId}, #{rePretrain} )
     </insert>
     <update id="updateTaskStatus">
         update scmoannotask

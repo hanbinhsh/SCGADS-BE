@@ -20,75 +20,74 @@ def main(args):
     requests.post(
         f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}正在处理")
     try:
-        # # 设置随机种子
-        # np.random.seed(args.seed)
-        # torch.manual_seed(args.seed)
-        # torch.backends.cudnn.deterministic = True
-        # torch.backends.cudnn.benchmark = False
-        # if torch.cuda.is_available():
-        #     torch.cuda.manual_seed_all(args.seed)
-        #
-        # # 确保输出目录存在
-        # ensure_directory(os.path.dirname(args.output_path))
-        # device = "cuda" if torch.cuda.is_available() else "cpu"
-        #
-        # # 数据预处理和分割 保存到用户名/任务名/data_split/
-        # requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}正在进行数据预处理")
-        # Dataset.split_dataset(
-        #     rna_path=args.rna_path,
-        #     atac_path=args.atac_path,
-        #     label_path=args.label_path,
-        #     seed=args.seed,
-        #     base_dir=args.output_path,
-        # )
-        #
-        # # 预训练阶段 保存到用户名/任务名/result/
-        # if not args.use_pretrained:
-        #     requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}正在进行预训练")
-        #     pretrain = PreTrain(
-        #         base_dir=args.output_path,
-        #         n_epochs=args.pretrain_epochs,
-        #         dropout=args.dropout,
-        #         batch_size=args.batch_size,
-        #         patience=args.pretrain_patience,
-        #         input_dim=args.input_dim,
-        #         num_layers=args.num_layers,
-        #         nhead=args.nhead,
-        #         lr=args.lr,
-        #         weight_decay=args.weight_decay
-        #     )
-        #     pretrain.pretrain()
-        # else:
-        #     # 使用提供的预训练模型
-        #     if not os.path.exists(args.pretrain_path):
-        #         raise FileNotFoundError(f"预训练模型文件不存在: {args.pretrain_path}")
-        #
-        # # 训练分类器 保存到用户名/任务名/result/
-        # requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}正在训练分类器")
-        # train_model = TrainModel(
-        #     base_dir=args.output_path,
-        #     batch_size=args.batch_size,
-        #     n_epochs=args.n_epochs,
-        #     patience=args.patience,
-        #     lr=args.lr,
-        #     weight_decay=args.weight_decay,
-        #     dp=args.dropout,
-        #     input_dim=args.input_dim,
-        #     num_layers=args.num_layers,
-        #     nhead=args.nhead,
-        #     seed=args.seed
-        # )
-        # train_model.train()
-        #
-        # requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}训练完成，模型已保存至 {args.output_path}")
-        #
-        # # 生成标签映射
-        # extract_labels(args.label_path, args.output_path+"result/extract_labels.csv")
-        #
-        # # 预测生成降维图
-        # # 修改模型为本模型
-        # args.checkpoint = args.output_path+"result/train_best.ckpt"
-        # predict(args) # 自动生成标签列表，故无需更改标签
+        # 设置随机种子
+        np.random.seed(args.seed)
+        torch.manual_seed(args.seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(args.seed)
+
+        # 确保输出目录存在
+        ensure_directory(os.path.dirname(args.output_path))
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+
+        # 数据预处理和分割 保存到用户名/任务名/data_split/
+        requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}正在进行数据预处理")
+        Dataset.split_dataset(
+            rna_path=args.rna_path,
+            atac_path=args.atac_path,
+            label_path=args.label_path,
+            seed=args.seed,
+            base_dir=args.output_path,
+        )
+
+        # 预训练阶段 保存到用户名/任务名/result/
+        if not args.use_pretrained:
+            requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}正在进行预训练")
+            pretrain = PreTrain(
+                base_dir=args.output_path,
+                n_epochs=args.pretrain_epochs,
+                dropout=args.dropout,
+                batch_size=args.batch_size,
+                patience=args.pretrain_patience,
+                input_dim=args.input_dim,
+                num_layers=args.num_layers,
+                nhead=args.nhead,
+                lr=args.lr,
+                weight_decay=args.weight_decay
+            )
+            pretrain.pretrain()
+        else:
+            # 使用提供的预训练模型
+            if not os.path.exists(args.pretrain_path):
+                raise FileNotFoundError(f"预训练模型文件不存在: {args.pretrain_path}")
+
+        # 训练分类器 保存到用户名/任务名/result/
+        requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}正在训练分类器")
+        pretrain_model_path = args.pretrain_path
+        if not args.use_pretrained:
+            pretrain_model_path = f"{args.output_path}result/pretrain_best.ckpt"
+        train_model = TrainModel(
+            base_dir=args.output_path,
+            batch_size=args.batch_size,
+            n_epochs=args.n_epochs,
+            patience=args.patience,
+            lr=args.lr,
+            weight_decay=args.weight_decay,
+            dp=args.dropout,
+            input_dim=args.input_dim,
+            num_layers=args.num_layers,
+            nhead=args.nhead,
+            seed=args.seed,
+            pretrain_model_path = pretrain_model_path
+        )
+        train_model.train()
+
+        requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}训练完成，模型已保存至 {args.output_path}")
+
+        # 生成标签映射
+        extract_labels(args.label_path, args.output_path+"result/extract_labels.csv")
 
         # 上传模型市场
         # 设置参数
@@ -127,10 +126,15 @@ def main(args):
         except Exception as e:
             print(f"请求异常：{e}")
 
+        # 预测生成降维图
+        # 修改模型为本模型
+        args.checkpoint = args.output_path+"result/train_best.ckpt"
+        predict(args) # 自动生成标签列表，故无需更改标签
+
         # Todo 删除split文件
 
-        # 通知训练完成
-        requests.post(f"http://localhost:8868/updateTaskStatusByTaskName?taskName={args.task_name}&status=2")
+        # 通知训练完成 这里在预测中已经实现
+        # requests.post(f"http://localhost:8868/updateTaskStatusByTaskName?taskName={args.task_name}&status=2")
 
     except Exception as e:
         requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}出错：{e}")

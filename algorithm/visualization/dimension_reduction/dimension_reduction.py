@@ -46,19 +46,19 @@ def main_umap(username, taskname, has_labels, outputnpy_dir, output_dir, label_d
                 file.write("export const labels = " + str(y_g.tolist()).replace("'", '"') + ";")
 
             # 生成真实标签的颜色映射
-            unique_ground_truth = np.unique(y_g)
-            base_colors = list(mcolors.TABLEAU_COLORS.values())
-            color_list = base_colors[:len(unique_ground_truth)] if len(unique_ground_truth) <= len(base_colors) else base_colors + ['#%06X' % random.randint(0, 0xFFFFFF) for _ in range(len(unique_ground_truth) - len(base_colors))]
-
-            final_mapping = {ct: color_list[i] for i, ct in enumerate(unique_ground_truth)}
-            pieces = [{"value": i, "label": ct, "color": final_mapping[ct]} for i, ct in enumerate(unique_ground_truth)]
-            js_config = f"""
-    export const CATEGORY_COUNT = {len(unique_ground_truth)};
-    export const COLOR_LIST = {color_list};
-    export const pieces = {pieces};
-    """
-            with open(os.path.join(output_dir, 'config_umap.js'), 'w') as file:
-                file.write(js_config)
+#             unique_ground_truth = np.unique(y_g)
+#             base_colors = list(mcolors.TABLEAU_COLORS.values())
+#             color_list = base_colors[:len(unique_ground_truth)] if len(unique_ground_truth) <= len(base_colors) else base_colors + ['#%06X' % random.randint(0, 0xFFFFFF) for _ in range(len(unique_ground_truth) - len(base_colors))]
+#
+#             final_mapping = {ct: color_list[i] for i, ct in enumerate(unique_ground_truth)}
+#             pieces = [{"value": i, "label": ct, "color": final_mapping[ct]} for i, ct in enumerate(unique_ground_truth)]
+#             js_config = f"""
+#     export const CATEGORY_COUNT = {len(unique_ground_truth)};
+#     export const COLOR_LIST = {color_list};
+#     export const pieces = {pieces};
+#     """
+#             with open(os.path.join(output_dir, 'config_umap.js'), 'w') as file:
+#                 file.write(js_config)
 
         # 处理预测标签
         y_p_1 = np.load(outputnpy_dir, allow_pickle=True)
@@ -76,7 +76,7 @@ def main_umap(username, taskname, has_labels, outputnpy_dir, output_dir, label_d
     export const COLOR_LIST = {color_list_pred};
     export const pieces = {pieces_pred};
     """
-        with open(os.path.join(output_dir, 'config_pred_umap.js'), 'w') as file:
+        with open(os.path.join(output_dir, 'config_umap.js'), 'w') as file: # config_pred_umap.js
             file.write(js_config_pred)
 
         print("运行成功，文件已生成至:", output_dir)
@@ -122,21 +122,21 @@ def main_tsne(username, taskname, has_labels, outputnpy_dir, output_dir, label_d
                 file.write("export const labels = " + str(y_g.tolist()).replace("'", '"') + ";")
 
             # 生成真实标签的颜色映射
-            unique_ground_truth = np.unique(y_g)
-            base_colors = list(mcolors.TABLEAU_COLORS.values())
-            color_list = base_colors[:len(unique_ground_truth)] if len(unique_ground_truth) <= len(
-                base_colors) else base_colors + ['#%06X' % random.randint(0, 0xFFFFFF) for _ in
-                                                 range(len(unique_ground_truth) - len(base_colors))]
-
-            final_mapping = {ct: color_list[i] for i, ct in enumerate(unique_ground_truth)}
-            pieces = [{"value": i, "label": ct, "color": final_mapping[ct]} for i, ct in enumerate(unique_ground_truth)]
-            js_config = f"""
-    export const CATEGORY_COUNT = {len(unique_ground_truth)};
-    export const COLOR_LIST = {color_list};
-    export const pieces = {pieces};
-    """
-            with open(os.path.join(output_dir, 'config_tsne.js'), 'w') as file:
-                file.write(js_config)
+#             unique_ground_truth = np.unique(y_g)
+#             base_colors = list(mcolors.TABLEAU_COLORS.values())
+#             color_list = base_colors[:len(unique_ground_truth)] if len(unique_ground_truth) <= len(
+#                 base_colors) else base_colors + ['#%06X' % random.randint(0, 0xFFFFFF) for _ in
+#                                                  range(len(unique_ground_truth) - len(base_colors))]
+#
+#             final_mapping = {ct: color_list[i] for i, ct in enumerate(unique_ground_truth)}
+#             pieces = [{"value": i, "label": ct, "color": final_mapping[ct]} for i, ct in enumerate(unique_ground_truth)]
+#             js_config = f"""
+#     export const CATEGORY_COUNT = {len(unique_ground_truth)};
+#     export const COLOR_LIST = {color_list};
+#     export const pieces = {pieces};
+#     """
+#             with open(os.path.join(output_dir, 'config_tsne.js'), 'w') as file:
+#                 file.write(js_config)
 
         # 处理预测标签
         y_p_1 = np.load(outputnpy_dir, allow_pickle=True)
@@ -156,7 +156,7 @@ def main_tsne(username, taskname, has_labels, outputnpy_dir, output_dir, label_d
     export const COLOR_LIST = {color_list_pred};
     export const pieces = {pieces_pred};
     """
-        with open(os.path.join(output_dir, 'config_pred_tsne.js'), 'w') as file:
+        with open(os.path.join(output_dir, 'config_tsne.js'), 'w') as file: # config_pred_tsne.js
             file.write(js_config_pred)
 
         print("运行成功，文件已生成至:", output_dir)

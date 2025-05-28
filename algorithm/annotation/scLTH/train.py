@@ -19,7 +19,8 @@ class TrainModel:
                  input_dim=512,
                  num_layers=6,
                  nhead=8,
-                 seed = 114514):
+                 seed = 114514,
+                 pretrain_model_path = ""):
         preprocess_folder = base_dir + 'data_split/'
         self.batch_size = batch_size
         self.n_epochs = n_epochs
@@ -49,6 +50,7 @@ class TrainModel:
         self.y_train = np.load(train_label_path)
         self.y_test = np.load(test_label_path)
         self.labels = np.load(label_path)
+        self.pretrain_model_path = pretrain_model_path
 
     def train(self):
         device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -56,7 +58,7 @@ class TrainModel:
         num_classes = len(self.labels)
 
         model = SCLTHTrain(sourse_size=input_dim, num_classes=num_classes, dropout=self.dp, input_dim = self.input_dim, num_layers=self.num_layers, nhead=self.nhead).to(device)
-        model_state_dict = torch.load(f"{self.result_dir}/pretrain_best.ckpt")
+        model_state_dict = torch.load(self.pretrain_model_path)
         model.encoder_rna.load_state_dict(
             {k.replace('encoder_rna.', ''): v for k, v in model_state_dict.items() if k.startswith('encoder_rna.')},
             strict=False)

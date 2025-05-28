@@ -17,4 +17,5 @@ public interface ModelService {
     void updateModelRemark(Long modelId, String remark);
     List<Models> findModelsByUserName(String userId);
     void addChildModel(Models model);
+    String getBaseModelName(Long baseModel);
 }

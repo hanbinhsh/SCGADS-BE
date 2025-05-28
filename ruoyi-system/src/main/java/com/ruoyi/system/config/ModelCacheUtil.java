@@ -1,7 +1,6 @@
 package com.ruoyi.system.config;
 
 import com.ruoyi.system.domain.entity.Models;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +9,6 @@ import java.time.Duration;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
 public class ModelCacheUtil {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;

@@ -1,7 +1,9 @@
 package com.ruoyi.system.config;
 
+import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.entity.ModelImage;
 import com.ruoyi.system.domain.entity.Models;
+import com.ruoyi.system.service.ModelService;
 import com.ruoyi.system.service.impl.ModelImageCacheService;
 import com.ruoyi.system.service.impl.ModelImageService;
 import org.slf4j.Logger;
@@ -59,18 +61,24 @@ public class ModelImageDataLoader implements ApplicationRunner {
 
     public List<ModelImage> changeModelImage(List<ModelImage> modelImages) {
         String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
-
+        ModelService modelService = SpringUtils.getBean(ModelService.class);
         for (ModelImage model : modelImages) {
+
+            String modelName = model.getModelName();
+            if(model.getBaseModel()!=0){ // 读取父模型的名称
+                modelName = modelService.getBaseModelName(model.getBaseModel());
+            }
+
             String figurePath = "";
             StringBuilder figDir  = new StringBuilder(baseDir + "/algorithm/");
             if(model.getModelType().equals("single")){
-                figurePath = "annotation/" + model.getModelName() + "/figs/" + model.getFigurePath();
+                figurePath = "annotation/" + modelName + "/figs/" + model.getFigurePath();
             } else if(model.getModelType().equals("multi")){
-                figurePath = "annotation/" + model.getModelName() + "/figs/" + model.getFigurePath();
+                figurePath = "annotation/" + modelName + "/figs/" + model.getFigurePath();
             } else if(model.getModelType().equals("deno")){
-                figurePath = "denoising/" + model.getModelName() + "/figs/" + model.getFigurePath();
+                figurePath = "denoising/" + modelName + "/figs/" + model.getFigurePath();
             } else {
-                System.out.println("模型 " + model.getModelName() + " 类型出错");
+                System.out.println("模型 " + modelName + " 类型出错");
             }
 
             // 完整的图片路径

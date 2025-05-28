@@ -49,4 +49,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             FROM models
             WHERE user_name = #{userName};
     </select>
+    <select id="getBaseModelName" resultType="java.lang.String">
+        SELECT model_name
+        FROM models
+        WHERE model_id = #{baseModel}
+    </select>
 </mapper>

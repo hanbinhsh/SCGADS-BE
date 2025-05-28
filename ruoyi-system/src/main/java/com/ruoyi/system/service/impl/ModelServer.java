@@ -65,4 +65,9 @@ public class ModelServer implements ModelService {
     public void addChildModel(Models model) {
         modelMapper.addChildModel(model);
     }
+
+    @Override
+    public String getBaseModelName(Long baseModel) {
+        return modelMapper.getBaseModelName(baseModel);
+    }
 }

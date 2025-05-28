@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import com.ruoyi.system.config.ModelCacheUtil;
 import com.ruoyi.system.domain.entity.Models;
 import com.ruoyi.system.mapper.ModelMapper;
 import com.ruoyi.system.service.ModelService;
@@ -13,6 +14,9 @@ public class ModelServer implements ModelService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private ModelCacheUtil modelCache;
+
 
     @Override
     public List<Models> getAllModels() {
@@ -22,16 +26,22 @@ public class ModelServer implements ModelService {
     @Override
     public void deleteModel(Long modelId) {
         modelMapper.deleteModel(modelId);
+        // 再删除缓存
+        modelCache.evictModel(modelId);
     }
 
     @Override
     public void addModel(Models model) {
         modelMapper.addModel(model);
+        // 再写入缓存
+        modelCache.cacheModel(model);
     }
 
     @Override
     public void updateModel(Models model) {
         modelMapper.updateModel(model);
+        // 再更新缓存
+        modelCache.cacheModel(model);
     }
 
     @Override
@@ -42,6 +52,8 @@ public class ModelServer implements ModelService {
     @Override
     public void updateModelRemark(Long modelId, String remark) {
         modelMapper.updateModelRemark(modelId, remark);
+        // 直接删除缓存
+        modelCache.evictModel(modelId);
     }
 
     @Override

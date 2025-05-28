@@ -1,11 +1,15 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.system.domain.entity.ModelImage;
+import com.ruoyi.system.domain.entity.Models;
 import com.ruoyi.system.mapper.ModelImageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ModelImageService {
@@ -19,42 +23,42 @@ public class ModelImageService {
     /**
      * 从数据库加载所有模型图片数据
      */
-    public List<ModelImage> loadAllModelImagesFromDB() {
+    public List<Models> loadAllModelImagesFromDB() {
         return modelImageMapper.selectAllModelImages();
     }
 
     /**
      * 获取单个模型图片（优先从缓存获取）
      */
-    public ModelImage getModelImage(Long modelId) {
+    public Models getModelImage(Long modelId) {
         // 先从缓存获取
-        ModelImage modelImage = cacheService.getModelImageFromCache(modelId);
-        if (modelImage == null) {
+        Models model= cacheService.getModelImageFromCache(modelId);
+        if (model == null) {
             // 缓存中没有，从数据库获取
-            modelImage = modelImageMapper.selectModelImageById(modelId);
-            if (modelImage != null) {
+            model = modelImageMapper.selectModelImageById(modelId);
+            if (model != null) {
                 // 放入缓存
-                cacheService.cacheModelImage(modelImage);
+                cacheService.cacheModelImage(model);
             }
         }
-        return modelImage;
+        return model;
     }
 
     /**
      * 获取所有模型图片（优先从缓存获取）
      */
-    public List<ModelImage> getAllModelImages() {
+    public List<Models> getAllModelImages() {
         // 先从缓存获取
-        List<ModelImage> modelImages = cacheService.getAllModelImagesFromCache();
-        if (modelImages == null || modelImages.isEmpty()) {
+        List<Models> models = cacheService.getAllModelImagesFromCache();
+        if (models == null || models.isEmpty()) {
             // 缓存中没有，从数据库获取
-            modelImages = loadAllModelImagesFromDB();
-            if (modelImages != null && !modelImages.isEmpty()) {
+            models = loadAllModelImagesFromDB();
+            if (models != null && !models.isEmpty()) {
                 // 放入缓存
-                cacheService.cacheAllModelImages(modelImages);
+                cacheService.cacheAllModelImages(models);
             }
         }
-        return modelImages;
+        return models;
     }
 
     /**
@@ -71,9 +75,9 @@ public class ModelImageService {
         // 清除旧缓存
         cacheService.clearAllModelImageCache();
         // 重新加载数据到缓存
-        List<ModelImage> modelImages = loadAllModelImagesFromDB();
-        if (modelImages != null && !modelImages.isEmpty()) {
-            cacheService.cacheAllModelImages(modelImages);
+        List<Models> models = loadAllModelImagesFromDB();
+        if (models != null && !models.isEmpty()) {
+            cacheService.cacheAllModelImages(models);
         }
     }
 }

@@ -42,14 +42,14 @@ public class ModelImageDataLoader implements ApplicationRunner {
             }
 
             // 从数据库加载数据
-            List<ModelImage> modelImages = modelImageService.loadAllModelImagesFromDB();
+            List<Models> models = modelImageService.loadAllModelImagesFromDB();
 
-            changeModelImage(modelImages);
+            changeModelImage(models);
 
-            if (modelImages != null && !modelImages.isEmpty()) {
+            if (models != null && !models.isEmpty()) {
                 // 将数据缓存到Redis
-                cacheService.cacheAllModelImages(modelImages);
-                logger.info("成功加载 {} 条模型图片数据到Redis缓存", modelImages.size());
+                cacheService.cacheAllModelImages(models);
+                logger.info("成功加载 {} 条模型图片数据到Redis缓存", models.size());
             } else {
                 logger.warn("数据库中没有找到模型图片数据");
             }
@@ -59,10 +59,10 @@ public class ModelImageDataLoader implements ApplicationRunner {
         }
     }
 
-    public List<ModelImage> changeModelImage(List<ModelImage> modelImages) {
+    public List<Models> changeModelImage(List<Models> models) {
         String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
         ModelService modelService = SpringUtils.getBean(ModelService.class);
-        for (ModelImage model : modelImages) {
+        for (Models model : models) {
 
             String modelName = model.getModelName();
             if(model.getBaseModel()!=0){ // 读取父模型的名称
@@ -98,6 +98,6 @@ public class ModelImageDataLoader implements ApplicationRunner {
                 System.out.println("读取图片失败: " + fullPath);
             }
         }
-        return modelImages;
+        return models;
     }
 }

@@ -1,6 +1,5 @@
 package com.ruoyi.system.service.impl;
 
-import com.ruoyi.system.config.ModelCacheUtil;
 import com.ruoyi.system.domain.entity.Models;
 import com.ruoyi.system.mapper.ModelMapper;
 import com.ruoyi.system.service.ModelService;
@@ -15,7 +14,7 @@ public class ModelServer implements ModelService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private ModelCacheUtil modelCache;
+    private ModelImageCacheService modelCache;
 
 
     @Override
@@ -32,16 +31,18 @@ public class ModelServer implements ModelService {
 
     @Override
     public void addModel(Models model) {
+        System.out.println(model.getModelId());
         modelMapper.addModel(model);
         // 再写入缓存
-        modelCache.cacheModel(model);
+        System.out.println(model.getModelId());
+        modelCache.cacheModelImage(model);
     }
 
     @Override
     public void updateModel(Models model) {
         modelMapper.updateModel(model);
         // 再更新缓存
-        modelCache.cacheModel(model);
+        modelCache.updateCacheModel(model);
     }
 
     @Override

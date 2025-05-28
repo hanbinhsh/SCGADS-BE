@@ -12,18 +12,18 @@
     </resultMap>
 
     <select id="selectAllModelImages" resultMap="ModelImageResult">
-        SELECT model_id, model_name, model_type, figure_path, predict_file_path, train_file_path, default_parameters, remark, extract_labels, created_time, user_name, company_name, pretrain_model, pretrain_model_path, base_model
+        SELECT *
         FROM models
     </select>
 
     <select id="selectModelImageById" parameterType="Long" resultMap="ModelImageResult">
-        SELECT model_id, model_name, model_type, figure_path, predict_file_path, train_file_path, default_parameters, remark, extract_labels, created_time, user_name, company_name, pretrain_model, pretrain_model_path, base_model
+        SELECT *
         FROM models
         WHERE model_id = #{modelId}
     </select>
 
     <select id="selectModelImagesByType" parameterType="String" resultMap="ModelImageResult">
-        SELECT model_id, model_name, model_type, figure_path, predict_file_path, train_file_path, default_parameters, remark, extract_labels, created_time, user_name, company_name, pretrain_model, pretrain_model_path, base_model
+        SELECT *
         FROM models
         WHERE model_type = #{modelType}
     </select>

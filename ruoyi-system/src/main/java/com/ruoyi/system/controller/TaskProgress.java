@@ -32,7 +32,7 @@ public class TaskProgress {
     @CrossOrigin(origins = "*")
     public Result taskProgress(@RequestParam("taskName") String taskName,
                                @RequestParam("userName") String userName) throws IOException {
-        // TODO 只做了注释处理，训练没做，且现在只有pbmc的sclth模型
+        // TODO 需要判断是否有父模型来确定调用的模型地址等信息
         // 获取seq文件名
         FilesServer filesServer = SpringUtils.getBean(FilesServer.class);
         Scmoannofiles files = filesServer.findFilesByTaskName(taskName);
@@ -87,8 +87,6 @@ public class TaskProgress {
         } else { // 降噪
 
         }
-
-        System.out.println(String.valueOf(model.getModelId()));
 
         List<String> command = buildCommand(scriptPath, atacPath, rnaPath, labelPath,
                                             checkpointPath, outputPath, userName, taskName,

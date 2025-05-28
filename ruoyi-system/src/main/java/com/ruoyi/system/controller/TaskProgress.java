@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 import static com.ruoyi.system.controller.FileController.decryptFile;
@@ -85,6 +87,8 @@ public class TaskProgress {
         } else { // 降噪
 
         }
+
+        System.out.println(String.valueOf(model.getModelId()));
 
         List<String> command = buildCommand(scriptPath, atacPath, rnaPath, labelPath,
                                             checkpointPath, outputPath, userName, taskName,
@@ -187,17 +191,19 @@ public class TaskProgress {
             "--output_path", outputPath,
             "--user_name", userName,
             "--task_name", taskName,
-            "--task_type", taskType
+            "--task_type", taskType,
+            "--base_model", base_model
         ));
 
-        if ("true".equalsIgnoreCase(usePretrained)) { // 训练参数
+        if ("true".equalsIgnoreCase(usePretrained)) { // 预训练参数
             command.add("--use_pretrained");
             if (pretrainPath != null && !pretrainPath.trim().isEmpty()) {
                 command.add("--pretrain_path");
                 command.add(pretrainPath);
             }
-            command.add("--base_model");
-            command.add(base_model);
+        }
+
+        if(taskType.split(":")[0].equals("training")){ // 训练参数
             command.add("--parameters");
             command.add(parameters);
         }

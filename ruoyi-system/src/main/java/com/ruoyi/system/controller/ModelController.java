@@ -142,7 +142,6 @@ public class ModelController {
                                 @RequestParam("companyName") String companyName,
                                 @RequestParam("base_model") long base_model) {
         Models model = modelService.getModelById(base_model);   // 获取基础模型
-
         model.setModelName(taskName);                           // 更改模型名称为任务名
         model.setModelPath(modelPath);                          // 更新模型地址
         model.setPretrainModelPath(pretrainModelPath);          // 更新预训练模型地址
@@ -151,6 +150,7 @@ public class ModelController {
         model.setExtractLabels(extractLabels);                  // 更新标签映射
         model.setUserName(userName);                            // 更新用户名
         model.setCompanyName(companyName);                      // 更新公司名
+        model.setBaseModel(base_model);                         // 更新基础模型
 
         modelService.addChildModel(model);
         return Result.success();

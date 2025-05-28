@@ -234,3 +234,14 @@ BEGIN
 END;
 $$
 DELIMITER ;
+
+-- 删除任务前删除分享
+DELIMITER $$
+DROP TRIGGER IF EXISTS before_delete_task_delete_share $$
+CREATE TRIGGER before_delete_task_delete_share
+BEFORE DELETE ON scMoAnnoTask
+FOR EACH ROW
+BEGIN
+  DELETE FROM share WHERE task_id = OLD.task_id;
+END$$
+DELIMITER ;

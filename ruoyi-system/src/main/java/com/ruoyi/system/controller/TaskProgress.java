@@ -87,7 +87,7 @@ public class TaskProgress {
         // 约定格式：(annotation/training/denoising):(multi/single/deno)
         String labelPath = "";
         String scriptPath = "";
-        String usePretrained = task.isRePretrain() ? "true" : "false";
+        String usePretrained = task.isRePretrain() ? "false" : "true";
 
         if(task.getType().split(":")[0].equals("annotation")){ // 注释任务
             // 无标签，改用模型内置标签映射
@@ -212,7 +212,7 @@ public class TaskProgress {
             "--base_model", base_model
         ));
 
-        if ("true".equalsIgnoreCase(usePretrained)) { // 预训练参数
+        if ("true".equalsIgnoreCase(usePretrained)&&taskType.split(":")[0].equals("training")) { // 预训练参数
             command.add("--use_pretrained");
             if (pretrainPath != null && !pretrainPath.trim().isEmpty()) {
                 command.add("--pretrain_path");

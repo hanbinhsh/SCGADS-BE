@@ -88,6 +88,25 @@ public class FileController {
         return builder.body(FileUtils.readFileToByteArray(dFile));
     }
 
+    @RequestMapping("/downloadTrainResult")
+    @CrossOrigin(origins = "*")  // 跨域
+    public ResponseEntity<byte[]> downloadTrainResult(@RequestParam("taskName") String taskName,
+                                                      @RequestParam("type") String type,
+                                                      @RequestParam("userName") String userName) throws IOException {
+        // 调用业务层接口的方法
+        //Scmoannoresult result = filesServer.findResultByTaskName(taskName);
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();  // 设置响应对象为二进制流
+        builder.contentType(MediaType.APPLICATION_OCTET_STREAM);
+        String fileName = URLEncoder.encode(taskName,"UTF-8");  // 设置下载的文件名
+        builder.header("Access-Control-Expose-Headers", "Content-Disposition");
+        builder.header("Content-Disposition", "attachment;filename*=UTF-8''" + fileName);
+        builder.header("Accept-Ranges", "bytes");
+
+        String filePaths = getResultLocation(userName, taskName) + "result/" + type + ".txt";
+        File dFile = new File(filePaths);
+        return builder.body(FileUtils.readFileToByteArray(dFile));
+    }
+
     @PostMapping("/uploadOneFile")
     @CrossOrigin(origins = "*")  // 跨域
     public Result uploadOneFile(@RequestParam("file") MultipartFile file,

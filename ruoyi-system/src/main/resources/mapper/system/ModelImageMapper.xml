@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ModelImageMapper">
+
+    <resultMap id="ModelImageResult" type="com.ruoyi.system.domain.entity.ModelImage">
+        <id property="modelId" column="model_id"/>
+        <result property="modelName" column="model_name"/>
+        <result property="modelType" column="model_type"/>
+        <result property="figurePath" column="figure_path"/>
+<!--        <result property="figureByte" column="figure_byte"/>-->
+<!--        <result property="updateTime" column="update_time"/>-->
+    </resultMap>
+
+    <select id="selectAllModelImages" resultMap="ModelImageResult">
+        SELECT model_id, model_name, model_type, figure_path, predict_file_path, train_file_path, default_parameters, remark, extract_labels, created_time, user_name, company_name, pretrain_model, pretrain_model_path, base_model
+        FROM models
+    </select>
+
+    <select id="selectModelImageById" parameterType="Long" resultMap="ModelImageResult">
+        SELECT model_id, model_name, model_type, figure_path, predict_file_path, train_file_path, default_parameters, remark, extract_labels, created_time, user_name, company_name, pretrain_model, pretrain_model_path, base_model
+        FROM models
+        WHERE model_id = #{modelId}
+    </select>
+
+    <select id="selectModelImagesByType" parameterType="String" resultMap="ModelImageResult">
+        SELECT model_id, model_name, model_type, figure_path, predict_file_path, train_file_path, default_parameters, remark, extract_labels, created_time, user_name, company_name, pretrain_model, pretrain_model_path, base_model
+        FROM models
+        WHERE model_type = #{modelType}
+    </select>
+
+</mapper>

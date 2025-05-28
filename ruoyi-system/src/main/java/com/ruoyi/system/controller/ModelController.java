@@ -1,5 +1,7 @@
 package com.ruoyi.system.controller;
 
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.system.domain.entity.ModelImage;
 import com.ruoyi.system.domain.entity.Models;
 import com.ruoyi.system.domain.entity.Result;
 import com.ruoyi.system.service.ModelService;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.ruoyi.system.service.impl.ModelImageService;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,40 +23,16 @@ public class ModelController {
     @Autowired
     private ModelService modelService;
 
+    @Autowired
+    private ModelImageService modelImageService;
+
     @GetMapping("/findAllModels")
-    public ResponseEntity<List<Models>> getAllModels() {
-        List<Models> models = modelService.getAllModels();
-        String baseDir = System.getProperty("user.dir"); // 获取当前项目的根目录
-
-        for (Models model : models) {
-            String figurePath = "";
-            StringBuilder figDir  = new StringBuilder(baseDir + "/algorithm/");
-            if(model.getModelType().equals("single")){
-                figurePath = "annotation/" + model.getModelName() + "/figs/" + model.getFigurePath();
-            } else if(model.getModelType().equals("multi")){
-                figurePath = "annotation/" + model.getModelName() + "/figs/" + model.getFigurePath();
-            } else if(model.getModelType().equals("deno")){
-                figurePath = "denoising/" + model.getModelName() + "/figs/" + model.getFigurePath();
-            } else {
-                System.out.println("模型 " + model.getModelName() + " 类型出错");
-            }
-
-            // 完整的图片路径
-            String fullPath = figDir.append(figurePath).toString();
-
-            // 读取图片并转为字节流
-            try {
-                File file = new File(fullPath);
-                if(file.exists() && file.isFile()) {
-                    byte[] fileBytes = Files.readAllBytes(Paths.get(fullPath)); // 将文件转为字节数组
-                    model.setFigureByte(fileBytes); // 存储到模型的figByte字段
-                } else {
-                    System.out.println("文件不存在: " + fullPath);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("读取图片失败: " + fullPath);
-            }
+    public ResponseEntity<List<ModelImage>> getAllModels() {
+        List<ModelImage> models = modelImageService.getAllModelImages();
+//        List<Models> models = modelService.getAllModels();
+        for (ModelImage model : models) {
+            ModelImage modelImage = modelImageService.getModelImage(model.getModelId());
+            model.setFigureByte(modelImage.getFigureByte());
         }
 
         return ResponseEntity.ok(models);
@@ -97,6 +76,7 @@ public class ModelController {
     public Result updateModelRemark(@RequestParam("modelId") long modelId,
                               @RequestParam("remark") String remark) {
         modelService.updateModelRemark(modelId, remark);
+
         return Result.success();
     }
 

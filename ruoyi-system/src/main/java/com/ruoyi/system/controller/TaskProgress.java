@@ -87,8 +87,9 @@ public class TaskProgress {
         }
 
         List<String> command = buildCommand(scriptPath, atacPath, rnaPath, labelPath,
-                                        checkpointPath, outputPath, userName, taskName,
-                                        task.getType(), parameters, usePretrained, pretrainPath);
+                                            checkpointPath, outputPath, userName, taskName,
+                                            task.getType(), parameters, usePretrained, pretrainPath,
+                                            String.valueOf(model.getModelId()));
 
         // 启动进程
         System.out.println("任务 " + taskName + " 处理中" + task.getType());
@@ -176,7 +177,7 @@ public class TaskProgress {
     // 构造命令表
     private List<String> buildCommand(String scriptPath, String atacPath, String rnaPath, String labelPath,
                                       String checkpointPath, String outputPath, String userName, String taskName,
-                                      String taskType, String parameters, String usePretrained, String pretrainPath) {
+                                      String taskType, String parameters, String usePretrained, String pretrainPath, String base_model) {
         List<String> command = new ArrayList<>(Arrays.asList(
             "python", scriptPath,
             "--atac_path", atacPath,
@@ -186,16 +187,19 @@ public class TaskProgress {
             "--output_path", outputPath,
             "--user_name", userName,
             "--task_name", taskName,
-            "--task_type", taskType,
-            "--pretrain_path", pretrainPath
+            "--task_type", taskType
         ));
 
-        if ("true".equalsIgnoreCase(usePretrained)) {
+        if ("true".equalsIgnoreCase(usePretrained)) { // 训练参数
             command.add("--use_pretrained");
             if (pretrainPath != null && !pretrainPath.trim().isEmpty()) {
                 command.add("--pretrain_path");
                 command.add(pretrainPath);
             }
+            command.add("--base_model");
+            command.add(base_model);
+            command.add("--parameters");
+            command.add(parameters);
         }
 
         if (parameters != null && !parameters.trim().isEmpty()) {

@@ -15,4 +15,5 @@ public interface CompanyServer {
     void removeUserFromCompany(long userID, long companyID);
     List<Scmoannouser> getCompanyUsers(long companyID);
     Company findCompanyByUserID(Long userID);
+    Company findCompanyByUserName(String userName);
 }

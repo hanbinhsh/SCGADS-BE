@@ -94,7 +94,7 @@ def main(args):
 
 if __name__ == "__main__":
     # 设置任务为处理中->模型预测->tsne->umap->设置任务为成功
-    if len(sys.argv) < 9:
+    if len(sys.argv) < 8:
         print("参数错误")
         sys.exit(1)
 
@@ -111,10 +111,6 @@ if __name__ == "__main__":
     parser.add_argument('--user_name', type=str, required=True, help='User name.')
     parser.add_argument('--task_name', type=str, required=True, help='Task name.')
     parser.add_argument('--task_type', type=str, required=True, help='Task type.')
-
-    # 预训练相关参数
-    parser.add_argument('--use_pretrained', action='store_true', help='Whether to use existing pretrained model.')
-    parser.add_argument('--pretrain_path', type=str, default='', help='Path to existing pretrained model (required if use_pretrained is True).')
 
     # 训练超参数
     parser.add_argument('--seed', type=int, default=1224455, help='Random seed.')

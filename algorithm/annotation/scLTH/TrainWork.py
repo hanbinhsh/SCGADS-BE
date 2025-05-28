@@ -84,17 +84,53 @@ def main(args):
 
         # 生成标签映射
         extract_labels(args.label_path, args.output_path+"result/extract_labels.csv")
-        # 通知训练完成
-        requests.post(f"http://localhost:8868/updateTaskStatusByTaskName?taskName={args.task_name}&status=2")
 
         # 预测生成降维图
         # 修改模型为本模型
         args.checkpoint = args.output_path+"result/train_best.ckpt"
-        predict(args)
+        predict(args) # 自动生成标签列表，故无需更改标签
 
         # TODO 上传模型市场
+        # 设置参数
+        user_name = args.user_name
+        url = f"http://localhost:8868/findCompanyByUserName"
+        params = {"userName": user_name}
+        try:
+            response = requests.get(url, params=params)
+            response.raise_for_status()  # 如果状态码不是200，将抛出异常
+            result = response.json()  # 解析 JSON 响应
+            company_data = result.get("data", {})
+            company_name = company_data.get("companyName")
+            if company_name:
+                print(f"公司名称是：{company_name}")
+            else:
+                print("未能获取 companyName。返回数据：", company_data)
+
+            payload = {
+                "taskName": args.task_name,
+                "modelPath": f'{args.output_path}result/train_best.ckpt',
+                "pretrainModelPath": f'{args.output_path}result/pretrain_best.ckpt',
+                "defaultParameters": "",
+                "extractLabels": f'{args.output_path}result/extract_labels.csv',
+                "userName": args.user_name,
+                "companyName": company_name,
+                "base_model": args.base_model,
+            }
+            url = "http://localhost:8868/models/addChildModel"
+
+            response = requests.post(url, data=payload)
+            if response.status_code == 200:
+                print("成功调用接口：", response.json())
+            else:
+                print(f"调用失败，状态码：{response.status_code}，响应内容：{response.text}")
+
+        except Exception as e:
+            print(f"请求异常：{e}")
 
         # Todo 删除split文件
+
+        # 通知训练完成
+        requests.post(f"http://localhost:8868/updateTaskStatusByTaskName?taskName={args.task_name}&status=2")
 
     except Exception as e:
         requests.post(f"http://localhost:8868/complete?info=" + f"用户{args.user_name}的scLTH训练任务{args.task_name}出错：{e}")
@@ -168,6 +204,12 @@ if __name__ == "__main__":
     parser.add_argument('--nhead', type=int, default=16, help='Number of attention heads.')
     parser.add_argument('--lr', type=float, default=5e-4, help='Learning rate.')
     parser.add_argument('--weight_decay', type=float, default=5e-3, help='Weight decay.')
+
+    # 父模型
+    parser.add_argument('--base_model', type=int, required=True, help='Base Model.')
+
+    # 字符串格式参数
+    parser.add_argument('--parameters', type=str, default='', help='Parameters.')
 
     args = parser.parse_args()
 

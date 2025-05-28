@@ -27,7 +27,8 @@ CREATE TABLE `models` (
 	`created_time` DATETIME DEFAULT CURRENT_TIMESTAMP 		NOT NULL    COMMENT '创建时间',
     `user_name` varchar(20) 										    COMMENT '用户名',
     `company_name` VARCHAR(255)              						    COMMENT '公司名',
-	`pretrain_model` boolean default false					NOT NULL	COMMENT '预训练模型'
+	`pretrain_model` boolean default false					NOT NULL	COMMENT '预训练模型',
+    `base_model` INT default 0											COMMENT '基础模型' -- 为0则为本身
 );
 
 INSERT INTO models (model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters, extract_labels) VALUES

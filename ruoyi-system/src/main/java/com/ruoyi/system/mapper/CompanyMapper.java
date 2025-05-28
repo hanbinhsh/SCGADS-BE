@@ -17,4 +17,5 @@ public interface CompanyMapper {
     void removeUserFromCompany(@Param("userID") Long userID, @Param("companyID") Long companyID);
     List<Scmoannouser> getCompanyUsers(long companyID);
     Company findCompanyByUserID(@Param("userID") Long userID);
+    Company findCompanyByUserName(@Param("userName") String userName);
 }

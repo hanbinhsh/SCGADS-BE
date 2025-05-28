@@ -15,4 +15,5 @@ public interface ModelMapper {
     Models getModelById(Long modelId);
     void updateModelRemark(@Param("modelId") long modelId, @Param("remark") String remark);
     List<Models> findModelsByUserName(String userName);
+    void addChildModel(Models model);
 }

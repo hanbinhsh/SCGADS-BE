@@ -41,7 +41,17 @@
         LEFT JOIN
             company c ON u.company_id = c.company_id
         WHERE
-            u.user_id = #{ userID };
+            u.user_id = #{userID};
+    </select>
+    <select id="findCompanyByUserName" resultType="com.ruoyi.system.domain.entity.Company">
+        SELECT
+            c.*
+        FROM
+            scMoAnnoUser u
+        LEFT JOIN
+            company c ON u.company_id = c.company_id
+        WHERE
+            u.user_name = #{userName};
     </select>
 
 </mapper>

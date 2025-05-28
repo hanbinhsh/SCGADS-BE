@@ -23,6 +23,7 @@ public class Models {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private java.sql.Timestamp createdTime;
   private boolean pretrainModel;
+  private long baseModel;
 
   private byte[] figureByte;
 
@@ -155,5 +156,13 @@ public class Models {
 
     public void setPretrainModelPath(String pretrainModelPath) {
         this.pretrainModelPath = pretrainModelPath;
+    }
+
+    public long getBaseModel() {
+        return baseModel;
+    }
+
+    public void setBaseModel(long baseModel) {
+        this.baseModel = baseModel;
     }
 }

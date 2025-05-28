@@ -7,6 +7,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into models(model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters, remark, extract_labels, user_name, company_name, pretrain_model, pretrain_model_path)
         VALUES (#{modelName}, #{modelType}, #{modelPath}, #{predictFilePath}, #{trainFilePath}, #{figurePath}, #{defaultParameters}, #{remark}, #{extractLabels}, #{userName}, #{companyName}, #{pretrainModel}, #{pretrainModelPath})
     </insert>
+    <insert id="addChildModel">
+        insert into models(model_name, model_type, model_path, predict_file_path, train_file_path, figure_path, default_parameters, remark, extract_labels, user_name, company_name, pretrain_model, pretrain_model_path, base_model)
+        VALUES (#{modelName}, #{modelType}, #{modelPath}, #{predictFilePath}, #{trainFilePath}, #{figurePath}, #{defaultParameters}, #{remark}, #{extractLabels}, #{userName}, #{companyName}, #{pretrainModel}, #{pretrainModelPath}, #{baseModel})
+    </insert>
     <update id="updateModel">
         update models
         <set>

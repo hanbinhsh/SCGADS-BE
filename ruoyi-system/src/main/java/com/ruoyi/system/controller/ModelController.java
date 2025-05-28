@@ -132,6 +132,30 @@ public class ModelController {
         return Result.success();
     }
 
+    @PostMapping("/addChildModel")
+    public Result addChildModel(@RequestParam("taskName") String taskName,
+                                @RequestParam("modelPath") String modelPath,
+                                @RequestParam("pretrainModelPath") String pretrainModelPath,
+                                @RequestParam("defaultParameters") String defaultParameters,
+                                @RequestParam("extractLabels") String extractLabels,
+                                @RequestParam("userName") String userName,
+                                @RequestParam("companyName") String companyName,
+                                @RequestParam("base_model") long base_model) {
+        Models model = modelService.getModelById(base_model);   // 获取基础模型
+
+        model.setModelName(taskName);                           // 更改模型名称为任务名
+        model.setModelPath(modelPath);                          // 更新模型地址
+        model.setPretrainModelPath(pretrainModelPath);          // 更新预训练模型地址
+        model.setDefaultParameters(defaultParameters);          // 更新参数
+        model.setRemark("");                                    // 清空注释
+        model.setExtractLabels(extractLabels);                  // 更新标签映射
+        model.setUserName(userName);                            // 更新用户名
+        model.setCompanyName(companyName);                      // 更新公司名
+
+        modelService.addChildModel(model);
+        return Result.success();
+    }
+
     @DeleteMapping("/deleteModel")
     public Result deleteModel(@RequestParam("modelId") Long modelId) {
         modelService.deleteModel(modelId);

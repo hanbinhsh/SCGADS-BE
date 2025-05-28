@@ -52,4 +52,9 @@ public class CompanyServer implements com.ruoyi.system.service.CompanyServer {
     public Company findCompanyByUserID(Long userID) {
         return companyMapper.findCompanyByUserID(userID);
     }
+
+    @Override
+    public Company findCompanyByUserName(String userName) {
+        return companyMapper.findCompanyByUserName(userName);
+    }
 }

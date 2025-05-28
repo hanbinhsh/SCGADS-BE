@@ -48,4 +48,9 @@ public class ModelServer implements ModelService {
     public List<Models> findModelsByUserName(String userId) {
         return modelMapper.findModelsByUserName(userId);
     }
+
+    @Override
+    public void addChildModel(Models model) {
+        modelMapper.addChildModel(model);
+    }
 }

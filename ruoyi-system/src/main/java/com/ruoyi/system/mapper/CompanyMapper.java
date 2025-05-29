@@ -18,4 +18,5 @@ public interface CompanyMapper {
     List<Scmoannouser> getCompanyUsers(long companyID);
     Company findCompanyByUserID(@Param("userID") Long userID);
     Company findCompanyByUserName(@Param("userName") String userName);
+    public Company findCompanyByCompanyName(@Param("companyName") String companyName);
 }

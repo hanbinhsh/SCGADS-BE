@@ -46,4 +46,7 @@
     <select id="findUserByUserId" resultType="com.ruoyi.system.domain.entity.Scmoannouser">
         select * from scmoannouser where user_id=#{userId}
     </select>
+    <select id="findUserByName" resultType="com.ruoyi.system.domain.entity.Scmoannouser">
+        select * from scmoannouser where user_name=#{userName}
+    </select>
 </mapper>

@@ -22,4 +22,8 @@ public class ShareService implements com.ruoyi.system.service.ShareService {
     public Map<Object, Object> findSharesReceivedByUserId(Long userId) {
         return shareMapper.findSharesReceivedByUserId(userId);
     }
+    @Override
+    public void insertShare(Share shares) {
+        shareMapper.insertShare(shares);
+    }
 }

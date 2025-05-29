@@ -61,4 +61,12 @@ public class UserServer implements com.ruoyi.system.service.UserServer {
 
     @Override
     public void approveUser(long userId){userMapper.approveUser(userId);}
+
+    @Transactional(readOnly = true)
+    @Override
+    public Scmoannouser findUserByName(String userName){
+        return userMapper.findUserByName(userName);
+    }
+
+
 }

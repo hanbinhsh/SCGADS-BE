@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -132,5 +133,22 @@ public class UserController {
     public Result<String> approveUser(@RequestParam("userId") Long userId) {
         userServer.approveUser(userId);
         return Result.success();
+    }
+
+    @RequestMapping("/queryIfExistsUserByUserName")
+    public Map<String,Object> queryIfExistsUserByUserName(@RequestParam String userName) {  //FINISHED
+        Map<String, Object> data = new HashMap<>();
+        Scmoannouser user = userServer.findUserByName(userName);
+        if(user!=null){
+            data.put("state",1);
+            data.put("userId",user.getUserId());
+        }else{
+            data.put("state",0);
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("code", 200 );
+        result.put("msg", "请求执行成功并返回相应数据");
+        result.put("data",data);
+        return result;
     }
 }

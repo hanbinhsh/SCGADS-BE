@@ -3,6 +3,18 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.ShareMapper">
+    <insert id="insertShare">
+        INSERT INTO `share`
+        (`task_id`,`sharer_id`, `shared_time`, `due_time`, `receiver_id`, `company_id`, `password`)
+        VALUES(
+             #{shares.taskId},
+             #{shares.sharerId},
+             #{shares.sharedTime},
+             IF(#{shares.dueTime} = #{shares.sharedTime}, NULL, #{shares.dueTime}),
+             IF(#{shares.receiverId} = -2, NULL, #{shares.receiverId}),
+             IF(#{shares.companyId} = -2, NULL, #{shares.companyId}),
+             #{shares.password})
+    </insert>
 
     <select id="findSharesByUserId" resultType="java.util.Map">
     SELECT *

@@ -16,4 +16,5 @@ public interface CompanyServer {
     List<Scmoannouser> getCompanyUsers(long companyID);
     Company findCompanyByUserID(Long userID);
     Company findCompanyByUserName(String userName);
+    public Company findCompanyByCompanyName(String companyName);
 }

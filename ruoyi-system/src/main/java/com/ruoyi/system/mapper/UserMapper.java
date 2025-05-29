@@ -18,4 +18,5 @@ public interface UserMapper {
     void updateUser(Scmoannouser scmoannouser);
     Scmoannouser findUserByUserId(long userId);
     void approveUser(long userId);
+    public Scmoannouser findUserByName(@Param("userName") String userName);
 }

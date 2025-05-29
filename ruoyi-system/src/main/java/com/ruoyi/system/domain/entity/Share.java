@@ -10,7 +10,15 @@ public class Share {
   private long companyId;
   private java.sql.Timestamp sharedTime;
   private java.sql.Timestamp dueTime;
+  private String password;
 
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
   public long getShareId() {
     return shareId;

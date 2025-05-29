@@ -53,5 +53,8 @@
         WHERE
             u.user_name = #{userName};
     </select>
+    <select id="findCompanyByCompanyName" resultType="com.ruoyi.system.domain.entity.Company">
+        select * from company where company_name = #{companyName}
+    </select>
 
 </mapper>

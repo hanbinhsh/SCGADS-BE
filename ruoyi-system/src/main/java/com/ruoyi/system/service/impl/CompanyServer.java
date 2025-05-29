@@ -5,6 +5,7 @@ import com.ruoyi.system.domain.entity.Scmoannouser;
 import com.ruoyi.system.mapper.CompanyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -56,5 +57,11 @@ public class CompanyServer implements com.ruoyi.system.service.CompanyServer {
     @Override
     public Company findCompanyByUserName(String userName) {
         return companyMapper.findCompanyByUserName(userName);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Company findCompanyByCompanyName(String companyName){
+        return companyMapper.findCompanyByCompanyName(companyName);
     }
 }

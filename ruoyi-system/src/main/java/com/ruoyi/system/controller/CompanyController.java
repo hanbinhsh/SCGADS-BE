@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 public class CompanyController {
@@ -92,5 +93,22 @@ public class CompanyController {
     public Result<Company> findCompanyByUserName(@RequestParam String userName){
         Company company = companyServer.findCompanyByUserName(userName);
         return Result.success(company);
+    }
+
+    @RequestMapping("/findCompanyByCompanyName")
+    public Map<String,Object> findCompanyByCompanyName(@RequestParam String companyName) {  //FINISHED
+        Company userGroup = companyServer.findCompanyByCompanyName(companyName);
+        int state = 1;
+        Map<String, Object> data = new HashMap<>();
+        if(userGroup == null) {
+            state = 0;
+        }
+        data.put("state",state);
+        Map<String, Object> result = new HashMap<>();
+        result.put("code", 200 );
+        result.put("msg", "请求执行成功并返回相应数据");
+        data.put("userGroup",userGroup);
+        result.put("data", data);
+        return result;
     }
 }

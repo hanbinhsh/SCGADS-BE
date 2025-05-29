@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 public class Models {
 
-  private long modelId;
+  private Long modelId;
   private String modelName;
   private String modelType;
   private String modelPath;
@@ -35,7 +35,7 @@ public class Models {
     this.figureByte = figureByte;
   }
 
-  public long getModelId() {
+  public Long getModelId() {
     return modelId;
   }
 
@@ -142,7 +142,7 @@ public class Models {
         this.createdTime = createdTime;
     }
 
-    public boolean isPretrainModel() {
+    public boolean getPretrainModel() {
         return pretrainModel;
     }
 

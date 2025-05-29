@@ -1,12 +1,13 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.system.domain.entity.ModelImage;
+import com.ruoyi.system.domain.entity.Models;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 
@@ -18,55 +19,125 @@ public class ModelImageCacheService {
 
     // Redis key前缀
     private static final String MODEL_IMAGE_KEY_PREFIX = "model_image:";
+    private static final String MODEL_ID_KEY_PREFIX = "model_id:";
     private static final String MODEL_TYPE_KEY_PREFIX = "model_type:";
     private static final String ALL_MODELS_KEY = "all_model_images";
+
+
+    public void updateCacheModel(Models model) {
+        evictModel(model.getModelId());
+        cacheModelImage(model);
+    }
+
 
     /**
      * 缓存单个模型图片
      */
-    public void cacheModelImage(ModelImage modelImage) {
-        if (modelImage != null && modelImage.getModelId() != null) {
-            String key = MODEL_IMAGE_KEY_PREFIX + modelImage.getModelId();
-            redisTemplate.opsForValue().set(key, modelImage, 24, TimeUnit.HOURS);
+    public void cacheModelImage(Models model) {
+//        System.out.println(model.getModelId());
+        if (model != null && model.getModelId() != null) {
+            String hashKey = "model:" + model.getModelId();
+            redisTemplate.opsForHash().putAll(hashKey, modelToMap(model));
+            redisTemplate.expire(hashKey, 2, TimeUnit.HOURS);
+            // 同时维护一个Set记录所有modelId（用于快速获取全部模型）
+            redisTemplate.opsForSet().add("all_model_ids", model.getModelId().toString());
         }
     }
 
     /**
      * 缓存所有模型图片
      */
-    public void cacheAllModelImages(List<ModelImage> modelImages) {
-        if (modelImages != null && !modelImages.isEmpty()) {
+    public void cacheAllModelImages(List<Models> models) {
+        if (models != null && !models.isEmpty()) {
             // 缓存整个列表
-            redisTemplate.opsForValue().set(ALL_MODELS_KEY, modelImages, 24, TimeUnit.HOURS);
+//            redisTemplate.opsForValue().set(ALL_MODELS_KEY, models, 2, TimeUnit.HOURS);
+            for (Models model : models) {
+                // 使用Hash结构存储单个模型
+                cacheModelImage(model);
+            }
 
             // 分别缓存每个模型
-            for (ModelImage modelImage : modelImages) {
-                cacheModelImage(modelImage);
-
-                // 按类型分组缓存
-                if (modelImage.getModelType() != null) {
-                    String typeKey = MODEL_TYPE_KEY_PREFIX + modelImage.getModelType();
-                    redisTemplate.opsForSet().add(typeKey, modelImage);
-                    redisTemplate.expire(typeKey, 24, TimeUnit.HOURS);
-                }
-            }
+//            for (ModelImage modelImage : modelImages) {
+//                cacheModelImage(modelImage);
+//
+                // 按id分组缓存
+//                if (models.getModelId() != null) {
+//                    String idKey = MODEL_ID_KEY_PREFIX + models.getModelId();
+//                    redisTemplate.opsForSet().add(idKey, models);
+//                    redisTemplate.expire(idKey, 2, TimeUnit.HOURS);
+//                }
+//            }
         }
+    }
+
+    private Map<String, Object> modelToMap(Models model) {
+        Map<String, Object> map = new HashMap<>();
+
+        // 基本字段
+        map.put("modelId", model.getModelId());
+        map.put("modelName", model.getModelName());
+        map.put("modelType", model.getModelType());
+        map.put("modelPath", model.getModelPath());
+        map.put("pretrainModelPath", model.getPretrainModelPath());
+        map.put("predictFilePath", model.getPredictFilePath());
+        map.put("trainFilePath", model.getTrainFilePath());
+        map.put("figurePath", model.getFigurePath());
+        map.put("defaultParameters", model.getDefaultParameters());
+        map.put("remark", model.getRemark());
+        map.put("extractLabels", model.getExtractLabels());
+        map.put("userName", model.getUserName());
+        map.put("companyName", model.getCompanyName());
+
+        // 日期字段（转换为字符串格式）
+        if (model.getCreatedTime() != null) {
+            map.put("createdTime", model.getCreatedTime().toString());
+        } else {
+            map.put("createdTime", null);
+        }
+
+        // 布尔值
+        map.put("pretrainModel", model.getPretrainModel());
+
+        // 数值类型
+        map.put("baseModel", model.getBaseModel());
+
+        // 二进制数据（特殊处理）
+        if (model.getFigureByte() != null) {
+            // 将byte[]转为Base64字符串存储
+            map.put("figureByte", Base64.getEncoder().encodeToString(model.getFigureByte()));
+        } else {
+            map.put("figureByte", null);
+        }
+
+        return map;
     }
 
     /**
      * 从缓存获取单个模型图片
      */
-    public ModelImage getModelImageFromCache(Long modelId) {
+    public Models getModelImageFromCache(Long modelId) {
         String key = MODEL_IMAGE_KEY_PREFIX + modelId;
-        return (ModelImage) redisTemplate.opsForValue().get(key);
+        return (Models) redisTemplate.opsForValue().get(key);
     }
 
     /**
      * 从缓存获取所有模型图片
      */
     @SuppressWarnings("unchecked")
-    public List<ModelImage> getAllModelImagesFromCache() {
-        return (List<ModelImage>) redisTemplate.opsForValue().get(ALL_MODELS_KEY);
+    public List<Models> getAllModelImagesFromCache() {
+//        return (List<Models>) redisTemplate.opsForValue().get(ALL_MODELS_KEY);
+
+        // 1. 从Redis获取所有modelId
+        Set<Object> modelIds = redisTemplate.opsForSet().members("all_model_ids");
+        List<Models> result = new ArrayList<>();
+        for (Object id : modelIds) {
+            Models model = getModelFromCache(Long.valueOf((String) id));
+            if (model != null) {
+                result.add(model);
+            }
+        }
+        return result;
+
     }
 
     /**
@@ -75,6 +146,70 @@ public class ModelImageCacheService {
     public Set<Object> getModelImagesByTypeFromCache(String modelType) {
         String typeKey = MODEL_TYPE_KEY_PREFIX + modelType;
         return redisTemplate.opsForSet().members(typeKey);
+    }
+
+    /**
+     * 从Redis获取单个模型
+     */
+    private Models getModelFromCache(Long modelId) {
+        String hashKey = "model:" + modelId;
+        Map<Object, Object> entries = redisTemplate.opsForHash().entries(hashKey);
+        if (entries.isEmpty()) {
+            return null;
+        }
+        // 将Map转回Models对象
+        Models model = new Models();
+        model = mapToModel(entries);
+        return model;
+    }
+
+    private Models mapToModel(Map<Object, Object> map) {
+        if (map == null || map.isEmpty()) {
+            return null;
+        }
+
+        Models model = new Models();
+
+        // 基本字段
+        model.setModelId(map.get("modelId") != null ? Long.parseLong(map.get("modelId").toString()) : null);
+        model.setModelName((String) map.get("modelName"));
+        model.setModelType((String) map.get("modelType"));
+        model.setModelPath((String) map.get("modelPath"));
+        model.setPretrainModelPath((String) map.get("pretrainModelPath"));
+        model.setPredictFilePath((String) map.get("predictFilePath"));
+        model.setTrainFilePath((String) map.get("trainFilePath"));
+        model.setFigurePath((String) map.get("figurePath"));
+        model.setDefaultParameters((String) map.get("defaultParameters"));
+        model.setRemark((String) map.get("remark"));
+        model.setExtractLabels((String) map.get("extractLabels"));
+        model.setUserName((String) map.get("userName"));
+        model.setCompanyName((String) map.get("companyName"));
+
+        // 日期字段
+        if (map.get("createdTime") != null) {
+            model.setCreatedTime(Timestamp.valueOf((String) map.get("createdTime")));
+        }
+
+        // 布尔值
+        model.setPretrainModel(Boolean.parseBoolean(map.get("pretrainModel").toString()));
+
+        // 数值类型
+        model.setBaseModel(map.get("baseModel") != null ? Long.parseLong(map.get("baseModel").toString()) : 0L);
+
+        // 二进制数据
+        if (map.get("figureByte") != null) {
+            model.setFigureByte(Base64.getDecoder().decode((String) map.get("figureByte")));
+        }
+
+        return model;
+    }
+
+    // 删除缓存
+    public void evictModel(Long modelId) {
+        // 删除Hash数据
+        redisTemplate.delete("model:" + modelId);
+        // 从Set中移除modelId
+        redisTemplate.opsForSet().remove("all_model_ids", modelId.toString());
     }
 
     /**

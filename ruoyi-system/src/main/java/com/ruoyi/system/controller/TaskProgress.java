@@ -27,12 +27,17 @@ import static com.ruoyi.system.controller.Utils.*;
 
 @RestController
 public class TaskProgress {
+    private final ModelServer modelServer;
+
+    public TaskProgress(ModelServer modelServer) {
+        this.modelServer = modelServer;
+    }
+
     // 自动任务处理
     @RequestMapping("/predictProgress")
     @CrossOrigin(origins = "*")
     public Result taskProgress(@RequestParam("taskName") String taskName,
                                @RequestParam("userName") String userName) throws IOException {
-        // TODO 需要判断是否有父模型来确定调用的模型地址等信息
         // 获取seq文件名
         FilesServer filesServer = SpringUtils.getBean(FilesServer.class);
         Scmoannofiles files = filesServer.findFilesByTaskName(taskName);
@@ -43,10 +48,14 @@ public class TaskProgress {
         ModelServer ModelServer = SpringUtils.getBean(ModelServer.class);
         Models model = ModelServer.getModelById(task.getModelId());
 
+        String modelName = model.getModelName();
+        if(model.getBaseModel()!=0){ // 有父模型则说明是用户训练的模型，使用保存的完整路径
+            modelName = ModelServer.getModelById(model.getBaseModel()).getModelName();
+        }
         // Python 脚本路径
         String algorithmPath = getAlgorithmLocation();
         String pythonScriptPath = algorithmPath + ((model.getModelType().equals("single") || model.getModelType().equals("multi")) ? "annotation" : "denoising")
-                + '/' + model.getModelName() + '/';
+                + '/' + modelName + '/';
 
         // 用户需要注释或训练的文件路径
         String atacPathBD   = getUploadLocation() + files.getScAtac_SeqFile();
@@ -57,8 +66,15 @@ public class TaskProgress {
 
         // 模型文件
         String checkpointPath = pythonScriptPath + "models/" + model.getModelPath();
+        String pretrainPath = pythonScriptPath + "models/" + model.getPretrainModelPath();
         // 预测结果输出路径
         String outputPath = getResultLocation(userName, taskName);
+
+        // 需要判断是否有父模型来确定调用的模型地址等信息
+        if(model.getBaseModel()!=0){ // 有父模型则说明是用户训练的模型，使用保存的完整路径
+            checkpointPath = model.getModelPath();
+            pretrainPath   = model.getPretrainModelPath();
+        }
 
         // 解密数据 TODO 如果开启了无需加密
         decryptFile(atacPathBD, atacPath);
@@ -71,11 +87,14 @@ public class TaskProgress {
         // 约定格式：(annotation/training/denoising):(multi/single/deno)
         String labelPath = "";
         String scriptPath = "";
-        String usePretrained = task.isRePretrain() ? "true" : "false";
-        String pretrainPath = model.getPretrainModelPath();
+        String usePretrained = task.isRePretrain() ? "false" : "true";
+
         if(task.getType().split(":")[0].equals("annotation")){ // 注释任务
             // 无标签，改用模型内置标签映射
             labelPath = pythonScriptPath + model.getExtractLabels();
+            if(model.getBaseModel()!=0){ // 有父模型则说明是用户训练的模型，使用保存的完整路径
+                labelPath = model.getExtractLabels();
+            }
             scriptPath = pythonScriptPath + model.getPredictFilePath();
         } else if (task.getType().split(":")[0].equals("training")) { // 训练
             // 有标签使用标签训练
@@ -152,7 +171,7 @@ public class TaskProgress {
         );
         // 启动进程
         Process process = processBuilder.start();
-        System.out.println("生成umap降维图任务 " + taskName + " 处理中");
+        System.out.println("生成降维图任务 " + taskName + " 处理中");
 //        // 输出错误信息（如果有）
 //        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 //        String line;
@@ -193,7 +212,7 @@ public class TaskProgress {
             "--base_model", base_model
         ));
 
-        if ("true".equalsIgnoreCase(usePretrained)) { // 预训练参数
+        if ("true".equalsIgnoreCase(usePretrained)&&taskType.split(":")[0].equals("training")) { // 预训练参数
             command.add("--use_pretrained");
             if (pretrainPath != null && !pretrainPath.trim().isEmpty()) {
                 command.add("--pretrain_path");

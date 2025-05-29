@@ -185,6 +185,60 @@ public class FileController {
         return Result.success();
     }
 
+    @GetMapping("/downloadTask")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<byte[]> downloadTask(@RequestParam("userName") String userName,
+                                               @RequestParam("taskName") String taskName) throws Exception {
+        // 1. 验证任务文件是否存在
+        Scmoannofiles fileRecord = filesServer.findFileByTaskName(taskName);
+        if (fileRecord == null) {
+            return ResponseEntity.notFound().build();
+        }
+        // 2. 获取基础目录
+        String baseDir = getResultLocation(userName, taskName);
+        Path basePath = Paths.get(baseDir);
+        // 4. 创建内存ZIP
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ZipArchiveOutputStream zaos = new ZipArchiveOutputStream(baos)) {
+            // 递归处理目录
+            Files.walk(basePath)
+                    .filter(path -> !path.equals(basePath)) // 排除根目录本身
+                    .forEach(path -> {
+                        try {
+                            // 计算相对路径（用于ZIP中的条目名称）
+                            String relativePath = basePath.relativize(path).toString();
+
+                            if (Files.isDirectory(path)) {
+                                // 如果是目录，在ZIP中创建目录条目
+                                String dirEntryName = relativePath + "/"; // ZIP目录需要以/结尾
+                                ZipArchiveEntry entry = new ZipArchiveEntry(dirEntryName);
+                                zaos.putArchiveEntry(entry);
+                                zaos.closeArchiveEntry();
+                            } else {
+                                // 如果是文件，读取、解密并添加到ZIP
+                                byte[] encrypted = Files.readAllBytes(path);
+//                                byte[] decrypted = decrypt(encrypted, aesKey, iv);
+                                ZipArchiveEntry entry = new ZipArchiveEntry(relativePath);
+                                zaos.putArchiveEntry(entry);
+                                zaos.write(encrypted);
+                                zaos.closeArchiveEntry();
+                            }
+                        } catch (Exception e) {
+                            throw new RuntimeException("处理文件失败: " + path, e);
+                        }
+                    });
+            zaos.finish();
+            // 5. 返回标准ZIP响应
+            return ResponseEntity.ok()
+                    .header("Content-Type", "application/zip")
+                    .header("Content-Disposition", "attachment; filename=" + taskName + ".zip")
+                    .body(baos.toByteArray());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(("下载失败: " + e.getMessage()).getBytes());
+        }
+    }
+
     @GetMapping("/download")
     @CrossOrigin(origins = "*")
     public ResponseEntity<byte[]> download(@RequestParam String taskName) throws Exception {

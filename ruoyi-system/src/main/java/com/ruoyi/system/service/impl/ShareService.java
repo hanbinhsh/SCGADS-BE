@@ -5,6 +5,7 @@ import com.ruoyi.system.mapper.ShareMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,5 +26,25 @@ public class ShareService implements com.ruoyi.system.service.ShareService {
     @Override
     public void insertShare(Share shares) {
         shareMapper.insertShare(shares);
+    }
+
+    @Override
+    public void deleteShareByShareId(long shareId) {
+        shareMapper.deleteShareByShareId(shareId);
+    }
+
+    @Override
+    public Map<String, Object> findAllShareWithDetails() {
+        List<Map<String, Object>> shareDetails = shareMapper.findAllShareWithDetails();
+        Map<String, Object> result = new HashMap<>();
+        for (int i = 0; i < shareDetails.size(); i++) {
+            result.put(String.valueOf(i), shareDetails.get(i));
+        }
+        return result;
+    }
+
+    @Override
+    public void updateShare(Share share) {
+        shareMapper.updateShare(share);
     }
 }

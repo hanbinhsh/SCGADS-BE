@@ -1,6 +1,8 @@
 package com.ruoyi.system.domain.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Share {
 
   private long shareId;
@@ -8,7 +10,9 @@ public class Share {
   private long sharerId;
   private long receiverId;
   private long companyId;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private java.sql.Timestamp sharedTime;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private java.sql.Timestamp dueTime;
   private String password;
 

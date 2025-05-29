@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +67,16 @@ public class CompanyController {
     @CrossOrigin(origins = "*")
     public Result<List<Scmoannouser>> getCompanyUsers(@RequestParam long companyId){
         List<Scmoannouser> userList = companyServer.getCompanyUsers(companyId);
+
+        // 遍历所有用户并转换头像
+        for (Scmoannouser user : userList) {
+            if (user.getAvatar() != null) {
+                String base64Avatar = Base64.getEncoder().encodeToString(user.getAvatar());
+                user.setAvatarBase64(base64Avatar); // 添加 Base64 编码字段
+                user.setAvatar(null); // 清除 BLOB 字段
+            }
+        }
+
         return Result.success(userList);
     }
 

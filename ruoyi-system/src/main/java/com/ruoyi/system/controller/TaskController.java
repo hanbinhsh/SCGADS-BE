@@ -6,15 +6,18 @@ import com.ruoyi.system.domain.entity.Scmoannotask;
 import com.ruoyi.system.service.FilesServer;
 import com.ruoyi.system.service.TaskServer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.ruoyi.common.utils.file.FileUtils.*;
 import static com.ruoyi.system.controller.Utils.*;
@@ -131,5 +134,33 @@ public class TaskController {
     public Result updateTaskStatusByTaskName(@RequestParam("taskName") String taskName, @RequestParam("status") Long status) {
         taskServer.updateTaskStatusByTaskName(taskName, status);
         return Result.success();
+    }
+
+    @RequestMapping("/findImgByTaskName")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/findImgByTaskName")
+    public ResponseEntity<?> findImageByTaskName(@RequestParam("taskName") String taskName,
+                                                @RequestParam("userName") String userName) throws IOException {
+
+        String imageDirectory = "./temp/Result/" + userName + "/" +taskName + "/";
+        String fileName = taskName + ".png";
+        Path imagePath = Paths.get(imageDirectory, fileName);
+
+        // 读取图片文件
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+
+        // 将图片转换为Base64编码
+        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+        String imageDataUrl = "data:image/png;base64," + base64Image;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "图片获取成功");
+        response.put("taskName", taskName);
+        response.put("imageBase64", base64Image);
+        response.put("imageUrl", imageDataUrl);
+        response.put("fileSize", imageBytes.length);
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -3,6 +3,7 @@ package com.ruoyi.system.service;
 import com.ruoyi.system.domain.entity.Scmoannouser;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserServer {
     List<Scmoannouser> findUsers();
@@ -15,5 +16,6 @@ public interface UserServer {
     void updateUser(Scmoannouser scmoannouser);
     Scmoannouser findUserByUserId(long userId);
     void approveUser(long userId);
-    public Scmoannouser findUserByName(String userName);
+    Scmoannouser findUserByName(String userName);
+    Map<Long, String> selectAllUserIdName();
 }

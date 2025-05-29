@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CompanyServer implements com.ruoyi.system.service.CompanyServer {
@@ -63,5 +64,10 @@ public class CompanyServer implements com.ruoyi.system.service.CompanyServer {
     @Override
     public Company findCompanyByCompanyName(String companyName){
         return companyMapper.findCompanyByCompanyName(companyName);
+    }
+
+    @Override
+    public Map<Long, String> selectAllCompanyIdName() {
+        return companyMapper.selectAllCompanyIdName();
     }
 }

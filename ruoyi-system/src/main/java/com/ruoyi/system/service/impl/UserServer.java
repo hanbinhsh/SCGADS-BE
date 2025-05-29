@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserServer implements com.ruoyi.system.service.UserServer {
@@ -68,5 +69,8 @@ public class UserServer implements com.ruoyi.system.service.UserServer {
         return userMapper.findUserByName(userName);
     }
 
-
+    @Override
+    public Map<Long, String> selectAllUserIdName() {
+        return userMapper.selectAllUserIdName();
+    }
 }

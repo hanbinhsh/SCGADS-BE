@@ -1,10 +1,12 @@
 package com.ruoyi.system.mapper;
 
 import com.ruoyi.system.domain.entity.Scmoannouser;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface UserMapper {
@@ -18,5 +20,7 @@ public interface UserMapper {
     void updateUser(Scmoannouser scmoannouser);
     Scmoannouser findUserByUserId(long userId);
     void approveUser(long userId);
-    public Scmoannouser findUserByName(@Param("userName") String userName);
+    Scmoannouser findUserByName(@Param("userName") String userName);
+    @MapKey("user_id")
+    Map<Long, String> selectAllUserIdName();
 }

@@ -16,10 +16,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              #{shares.password})
     </insert>
     <update id="updateShare">
-        UPDATE share SET
-        <if test='password != null'>password = #{password},</if>
-        <if test='dueTime != null'>due_time = #{dueTime},</if>
-        share_id = #{shareId}
+        UPDATE share
+        SET
+            password = #{password},
+            due_time = #{dueTime},
+            receiver_id = IF(#{shares.receiverId} = -2, NULL, #{shares.receiverId}),
+            company_id = IF(#{shares.companyId} = -2, NULL, #{shares.companyId})
         WHERE share_id = #{shareId}
     </update>
     <delete id="deleteShareByShareId">
@@ -35,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             s.company_id,
             s.shared_time,
             s.due_time,
+            s.password,
             receiver.user_name as receiver_name,
             c.company_name
         FROM scmoannotask t

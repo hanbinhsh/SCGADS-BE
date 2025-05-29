@@ -111,4 +111,10 @@ public class CompanyController {
         result.put("data", data);
         return result;
     }
+
+    @GetMapping("/selectAllCompanyIdName")
+    public Result<Map<Long,String>> selectAllCompanyIdName() {
+        Map<Long, String> companyList = companyServer.selectAllCompanyIdName();
+        return Result.success(companyList);
+    }
 }

@@ -49,4 +49,10 @@
     <select id="findUserByName" resultType="com.ruoyi.system.domain.entity.Scmoannouser">
         select * from scmoannouser where user_name=#{userName}
     </select>
+    <select id="selectAllUserIdName" resultType="java.util.Map">
+        select
+            user_id,
+            user_name
+        from scmoannouser
+    </select>
 </mapper>

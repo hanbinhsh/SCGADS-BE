@@ -151,4 +151,10 @@ public class UserController {
         result.put("data",data);
         return result;
     }
+
+    @GetMapping("/selectAllUserIdName")
+    public Result<Map<Long,String>> selectAllUserIdName() {
+        Map<Long, String> userList = userServer.selectAllUserIdName();
+        return Result.success(userList);
+    }
 }

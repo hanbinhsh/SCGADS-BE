@@ -5,6 +5,7 @@ import com.ruoyi.system.domain.entity.Scmoannouser;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CompanyServer {
     void insertCompany(Company company);
@@ -17,4 +18,5 @@ public interface CompanyServer {
     Company findCompanyByUserID(Long userID);
     Company findCompanyByUserName(String userName);
     public Company findCompanyByCompanyName(String companyName);
+    Map<Long, String>  selectAllCompanyIdName();
 }

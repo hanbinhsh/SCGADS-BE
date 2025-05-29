@@ -14,7 +14,7 @@ public class ModelServer implements ModelService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private ModelImageCacheService modelCache;
+    private ModelCacheService modelCache;
 
 
     @Override

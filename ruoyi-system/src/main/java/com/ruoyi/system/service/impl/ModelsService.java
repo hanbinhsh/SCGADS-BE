@@ -4,26 +4,23 @@ import com.ruoyi.system.domain.entity.ModelImage;
 import com.ruoyi.system.domain.entity.Models;
 import com.ruoyi.system.mapper.ModelImageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
-import java.util.Set;
 
 @Service
-public class ModelImageService {
+public class ModelsService {
 
     @Autowired
     private ModelImageMapper modelImageMapper;
 
     @Autowired
-    private ModelImageCacheService cacheService;
+    private ModelCacheService cacheService;
 
     /**
      * 从数据库加载所有模型图片数据
      */
-    public List<Models> loadAllModelImagesFromDB() {
+    public List<Models> loadAllModelFromDB() {
         return modelImageMapper.selectAllModelImages();
     }
 
@@ -32,7 +29,7 @@ public class ModelImageService {
      */
     public Models getModelImage(Long modelId) {
         // 先从缓存获取
-        Models model= cacheService.getModelImageFromCache(modelId);
+        Models model= cacheService.getModelFromCache(modelId);
         if (model == null) {
             // 缓存中没有，从数据库获取
             model = modelImageMapper.selectModelImageById(modelId);
@@ -45,14 +42,14 @@ public class ModelImageService {
     }
 
     /**
-     * 获取所有模型图片（优先从缓存获取）
+     * 获取所有模型（优先从缓存获取）
      */
-    public List<Models> getAllModelImages() {
+    public List<Models> getAllModel() {
         // 先从缓存获取
-        List<Models> models = cacheService.getAllModelImagesFromCache();
+        List<Models> models = cacheService.getAllModelFromCache();
         if (models == null || models.isEmpty()) {
             // 缓存中没有，从数据库获取
-            models = loadAllModelImagesFromDB();
+            models = loadAllModelFromDB();
             if (models != null && !models.isEmpty()) {
                 // 放入缓存
                 cacheService.cacheAllModelImages(models);
@@ -75,7 +72,7 @@ public class ModelImageService {
         // 清除旧缓存
         cacheService.clearAllModelImageCache();
         // 重新加载数据到缓存
-        List<Models> models = loadAllModelImagesFromDB();
+        List<Models> models = loadAllModelFromDB();
         if (models != null && !models.isEmpty()) {
             cacheService.cacheAllModelImages(models);
         }

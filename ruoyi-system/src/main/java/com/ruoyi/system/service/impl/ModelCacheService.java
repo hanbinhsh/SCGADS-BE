@@ -1,8 +1,6 @@
 package com.ruoyi.system.service.impl;
 
-import com.ruoyi.system.domain.entity.ModelImage;
 import com.ruoyi.system.domain.entity.Models;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 
 @Service
-public class ModelImageCacheService {
+public class ModelCacheService {
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -113,18 +111,10 @@ public class ModelImageCacheService {
     }
 
     /**
-     * 从缓存获取单个模型图片
-     */
-    public Models getModelImageFromCache(Long modelId) {
-        String key = MODEL_IMAGE_KEY_PREFIX + modelId;
-        return (Models) redisTemplate.opsForValue().get(key);
-    }
-
-    /**
      * 从缓存获取所有模型图片
      */
     @SuppressWarnings("unchecked")
-    public List<Models> getAllModelImagesFromCache() {
+    public List<Models> getAllModelFromCache() {
 //        return (List<Models>) redisTemplate.opsForValue().get(ALL_MODELS_KEY);
 
         // 1. 从Redis获取所有modelId
@@ -151,7 +141,7 @@ public class ModelImageCacheService {
     /**
      * 从Redis获取单个模型
      */
-    private Models getModelFromCache(Long modelId) {
+    public Models getModelFromCache(Long modelId) {
         String hashKey = "model:" + modelId;
         Map<Object, Object> entries = redisTemplate.opsForHash().entries(hashKey);
         if (entries.isEmpty()) {

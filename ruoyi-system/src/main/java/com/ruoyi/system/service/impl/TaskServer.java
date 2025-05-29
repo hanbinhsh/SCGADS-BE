@@ -65,5 +65,14 @@ public class TaskServer implements com.ruoyi.system.service.TaskServer {
     @Override
     public void updateTaskStatusByTaskName(String taskName, Long status) {
         taskMapper.updateTaskStatusByTaskName(taskName, status);
+        Scmoannotask task = findTaskByTaskName(taskName);
+        if (status == 0 || status == 1) {
+            // 对于未完成的任务，将结束时间设置为 null
+            taskMapper.updateTaskEndTime(task.getTaskId(), null);
+        } else {
+            // 对于完成的任务，将当前时间作为结束时间
+            Date currentTime = new Date();
+            taskMapper.updateTaskEndTime(task.getTaskId(), currentTime);
+        }
     }
 }

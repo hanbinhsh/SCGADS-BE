@@ -52,7 +52,7 @@ public class FileController {
     @CrossOrigin(origins = "*")  // 跨域
     public Result uploadResult(@RequestParam("file") MultipartFile file,
                                @RequestParam("taskName") String taskName,
-                               @RequestParam("fileType") String fileType,
+//                               @RequestParam("fileType") String fileType,
                                @RequestParam("userName") String userName) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());  // 文件名
         // 验证文件名有效性

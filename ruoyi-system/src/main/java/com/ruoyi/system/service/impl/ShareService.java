@@ -26,4 +26,9 @@ public class ShareService implements com.ruoyi.system.service.ShareService {
     public void insertShare(Share shares) {
         shareMapper.insertShare(shares);
     }
+
+    @Override
+    public void deleteShareByShareId(long shareId) {
+        shareMapper.deleteShareByShareId(shareId);
+    }
 }

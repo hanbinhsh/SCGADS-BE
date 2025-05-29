@@ -17,4 +17,6 @@ public interface ShareMapper {
     Map<Object, Object> findSharesReceivedByUserId(Long userId);
 
     public void insertShare(@Param("shares") Share shares);
+
+    public void deleteShareByShareId(@Param("shareId") long shareId);
 }

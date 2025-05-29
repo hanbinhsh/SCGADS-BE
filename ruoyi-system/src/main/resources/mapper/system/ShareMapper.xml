@@ -15,17 +15,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              IF(#{shares.companyId} = -2, NULL, #{shares.companyId}),
              #{shares.password})
     </insert>
+    <delete id="deleteShareByShareId">
+        delete from share where share_id = #{shareId}
+    </delete>
 
     <select id="findSharesByUserId" resultType="java.util.Map">
-    SELECT *
-                FROM scmoannotask t
-                JOIN share s ON t.task_id = s.task_id
-                WHERE t.uploader_id = #{userID};
+        SELECT
+            t.*,
+            s.share_id,
+            s.sharer_id,
+            s.receiver_id,
+            s.company_id,
+            s.shared_time,
+            s.due_time,
+            -- 统一的接收者名称字段，优先显示用户名，如果为空则显示公司名
+            COALESCE(receiver.user_name, c.company_name) AS receiver_name
+        FROM scmoannotask t
+                 JOIN share s ON t.task_id = s.task_id
+                 LEFT JOIN scMoAnnoUser receiver ON s.receiver_id = receiver.user_id
+                 LEFT JOIN company c ON s.company_id = c.company_id
+        WHERE t.uploader_id = #{userID}
+        ORDER BY s.shared_time DESC;
     </select>
     <select id="findSharesReceivedByUserId" resultType="java.util.Map">
     SELECT *
-                FROM scmoannotask t
-                JOIN share s ON t.task_id = s.task_id
-                WHERE s.receiver_id = #{userID};
+    FROM scmoannotask t
+             JOIN share s ON t.task_id = s.task_id
+             LEFT JOIN scMoAnnoUser sharer ON s.sharer_id = sharer.user_id
+             LEFT JOIN company c ON s.company_id = c.company_id
+    WHERE (
+        -- 直接分享给个人
+        s.receiver_id = #{userID}
+            OR
+            -- 分享给公司（用户属于该公司）
+        (s.company_id IS NOT NULL AND s.company_id = (
+            SELECT company_id
+            FROM scMoAnnoUser
+            WHERE user_id = #{userID}
+        ))
+        )
+      AND (s.due_time IS NULL OR s.due_time > NOW()) -- 排除已过期的分享
+    ORDER BY s.shared_time DESC;
     </select>
 </mapper>

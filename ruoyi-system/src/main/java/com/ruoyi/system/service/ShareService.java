@@ -9,4 +9,5 @@ public interface ShareService {
     public Map<Object, Object> findSharesByUserId(Long userId);
     Map<Object, Object> findSharesReceivedByUserId(Long userId);
     void insertShare(Share shares);
+    void deleteShareByShareId(long shareId);
 }

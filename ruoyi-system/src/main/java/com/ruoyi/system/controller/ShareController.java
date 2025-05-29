@@ -45,4 +45,13 @@ public class ShareController {
         result.put("count",count);
         return result;
     }
+
+    @RequestMapping("/deleteShareByShareId")
+    public Map<String, Object> deleteShareByShareId(@RequestBody Map<String, String> map) {
+        shareService.deleteShareByShareId(Long.parseLong(map.get("shareId")));
+        Map<String, Object> result = new HashMap<>();
+        result.put("code", 200 );
+        result.put("msg", "删除成功并返回相应资源数据");
+        return result;
+    }
 }

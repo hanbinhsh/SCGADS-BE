@@ -15,6 +15,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              IF(#{shares.companyId} = -2, NULL, #{shares.companyId}),
              #{shares.password})
     </insert>
+    <update id="updateShare">
+        UPDATE share SET
+        <if test='password != null'>password = #{password},</if>
+        <if test='dueTime != null'>due_time = #{dueTime},</if>
+        share_id = #{shareId}
+        WHERE share_id = #{shareId}
+    </update>
     <delete id="deleteShareByShareId">
         delete from share where share_id = #{shareId}
     </delete>
@@ -56,5 +63,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         )
       AND (s.due_time IS NULL OR s.due_time > NOW()) -- 排除已过期的分享
     ORDER BY s.shared_time DESC;
+    </select>
+
+    <select id="findAllShareWithDetails" resultType="java.util.Map">
+        SELECT
+            s.share_id,
+            s.task_id,
+            s.sharer_id,
+            s.receiver_id,
+            s.company_id,
+            s.password,
+            s.shared_time,
+            s.due_time,
+            sharer.user_name as sharer_name,
+            receiver.user_name as receiver_name,
+            task.task_name,
+            company.company_name,
+            sharer.avatar as sharerAvatarBase64
+        FROM share s
+        LEFT JOIN scMoAnnoUser sharer ON s.sharer_id = sharer.user_id
+        LEFT JOIN scMoAnnoUser receiver ON s.receiver_id = receiver.user_id
+        LEFT JOIN scMoAnnoTask task ON s.task_id = task.task_id
+        LEFT JOIN company ON s.company_id = company.company_id
+        ORDER BY s.shared_time DESC
     </select>
 </mapper>

@@ -19,4 +19,15 @@ public interface ShareMapper {
     public void insertShare(@Param("shares") Share shares);
 
     public void deleteShareByShareId(@Param("shareId") long shareId);
+
+    /**
+     * 获取所有分享的详细信息，包含用户名、任务名、公司名等
+     */
+    @MapKey("share_id")
+    List<Map<String, Object>> findAllShareWithDetails();
+
+     /**
+     * 更新分享设置（主要更新密码和到期时间）
+     */
+    void updateShare(Share share);
 }

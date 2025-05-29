@@ -54,4 +54,37 @@ public class ShareController {
         result.put("msg", "删除成功并返回相应资源数据");
         return result;
     }
+
+    /**
+     * 获取所有分享详情（前端主要调用的接口）
+     */
+    @GetMapping("/findAllShareWithDetails")
+    @CrossOrigin(origins = "*")
+    public Result<Map<String, Object>> findAllShareWithDetails() {
+        try {
+            Map<String, Object> shareDetails = shareService.findAllShareWithDetails();
+            return Result.success(shareDetails);
+        } catch (Exception e) {
+            return Result.error("获取分享详情失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 更新分享设置
+     */
+    @PutMapping("/updateShare")
+    @CrossOrigin(origins = "*")
+    public Map<String, Object> updateShare(@RequestBody Share share) {
+        System.out.println(share.getDueTime());
+        Map<String, Object> result = new HashMap<>();
+        try {
+            shareService.updateShare(share);
+            result.put("code", 200);
+            result.put("msg", "分享设置更新成功");
+        } catch (Exception e) {
+            result.put("code", 500);
+            result.put("msg", "更新失败: " + e.getMessage());
+        }
+        return result;
+    }
 }

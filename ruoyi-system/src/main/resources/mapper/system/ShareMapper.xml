@@ -35,8 +35,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             s.company_id,
             s.shared_time,
             s.due_time,
-            -- 统一的接收者名称字段，优先显示用户名，如果为空则显示公司名
-            COALESCE(receiver.user_name, c.company_name) AS receiver_name
+            receiver.user_name as receiver_name,
+            c.company_name
         FROM scmoannotask t
                  JOIN share s ON t.task_id = s.task_id
                  LEFT JOIN scMoAnnoUser receiver ON s.receiver_id = receiver.user_id

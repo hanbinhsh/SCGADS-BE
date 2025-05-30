@@ -194,6 +194,7 @@ public class FileController {
     @CrossOrigin(origins = "*")
     public ResponseEntity<byte[]> downloadTask(@RequestParam("userName") String userName,
                                                @RequestParam("taskName") String taskName) throws Exception {
+        userName = taskServer.findUserNameByTaskName(taskName);
         // 1. 验证任务文件是否存在
         Scmoannofiles fileRecord = filesServer.findFileByTaskName(taskName);
         if (fileRecord == null) {

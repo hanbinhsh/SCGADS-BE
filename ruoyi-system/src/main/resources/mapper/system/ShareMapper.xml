@@ -84,6 +84,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             sharer.user_name as sharer_name,
             receiver.user_name as receiver_name,
             task.task_name,
+            task.parameters,
+            task.details,
+            task.type,
+            task.status as task_status,
+            m.model_name,
             company.company_name,
             sharer.avatar as sharerAvatarBase64
         FROM share s
@@ -91,6 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN scMoAnnoUser receiver ON s.receiver_id = receiver.user_id
         LEFT JOIN scMoAnnoTask task ON s.task_id = task.task_id
         LEFT JOIN company ON s.company_id = company.company_id
+        LEFT JOIN models m ON m.model_id = task.model_id
         ORDER BY s.shared_time DESC
     </select>
     <select id="existsByTaskIdAndReceiverId" resultType="java.lang.Boolean">

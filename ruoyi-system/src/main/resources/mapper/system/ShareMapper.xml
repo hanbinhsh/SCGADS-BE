@@ -20,8 +20,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SET
             password = #{password},
             due_time = #{dueTime},
-            receiver_id = IF(#{shares.receiverId} = -2, NULL, #{shares.receiverId}),
-            company_id = IF(#{shares.companyId} = -2, NULL, #{shares.companyId})
+            receiver_id = IF(#{receiverId} = -2, NULL, #{receiverId}),
+            company_id = IF(#{companyId} = -2, NULL, #{companyId})
         WHERE share_id = #{shareId}
     </update>
     <delete id="deleteShareByShareId">

@@ -75,7 +75,7 @@ public class ShareController {
     @PutMapping("/updateShare")
     @CrossOrigin(origins = "*")
     public Map<String, Object> updateShare(@RequestBody Share share) {
-        System.out.println(share.getDueTime());
+        System.out.println(share);
         Map<String, Object> result = new HashMap<>();
         try {
             shareService.updateShare(share);

@@ -55,6 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              JOIN share s ON t.task_id = s.task_id
              LEFT JOIN scMoAnnoUser sharer ON s.sharer_id = sharer.user_id
              LEFT JOIN company c ON s.company_id = c.company_id
+             LEFT JOIN models m ON m.model_id = t.model_id
     WHERE (
         -- 直接分享给个人
         s.receiver_id = #{userID}

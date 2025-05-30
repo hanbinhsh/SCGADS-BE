@@ -34,4 +34,5 @@ public interface ShareMapper {
     boolean existsByTaskIdAndReceiverId(@Param("taskId") Long taskId, @Param("userId") Long userId);
     boolean existsByTaskIdAndCompanyId(@Param("taskId") Long taskId, @Param("userCompanyId") Long userCompanyId);
     boolean existsByTaskIdAndPassword(@Param("taskId") Long taskId, @Param("password") String password);
+    boolean existsByTaskIdAndSharePassword(@Param("taskId") Long taskId, @Param("password") String password);
 }

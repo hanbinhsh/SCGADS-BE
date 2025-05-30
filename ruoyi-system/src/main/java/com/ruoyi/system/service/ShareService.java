@@ -25,4 +25,5 @@ public interface ShareService {
     boolean existsByTaskIdAndReceiverId(Long taskId, Long userId);
     boolean existsByTaskIdAndCompanyId(Long taskId, Long userCompanyId);
     boolean existsByTaskIdAndPassword(Long taskId, String password);
+    boolean existsByTaskIdAndSharePassword(Long taskId, String password);
 }

@@ -62,4 +62,8 @@ public class ShareService implements com.ruoyi.system.service.ShareService {
     public boolean existsByTaskIdAndPassword(Long taskId, String password) {
         return shareMapper.existsByTaskIdAndPassword(taskId, password);
     }
+    @Override
+    public boolean existsByTaskIdAndSharePassword(Long taskId, String password) {
+        return shareMapper.existsByTaskIdAndSharePassword(taskId, password);
+    }
 }

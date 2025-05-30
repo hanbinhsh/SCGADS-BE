@@ -181,6 +181,12 @@ public class UserController {
 
         // 查询是否存在匹配密码的分享记录
         boolean valid = shareService.existsByTaskIdAndPassword(taskId, password);
-        return ResponseEntity.ok(valid);
+        if(valid){
+            return ResponseEntity.ok(valid);
+        }else{
+            valid = shareService.existsByTaskIdAndSharePassword(taskId, password);
+            return ResponseEntity.ok(valid);
+        }
+
     }
 }

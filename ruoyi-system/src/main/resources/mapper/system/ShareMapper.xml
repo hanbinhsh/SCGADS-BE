@@ -124,4 +124,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE t.task_id = #{taskId}
           AND u.psw = SHA2(#{password}, 256);
     </select>
+    <select id="existsByTaskIdAndSharePassword" resultType="java.lang.Boolean">
+        SELECT COUNT(*) > 0
+        FROM scMoAnnoTask t
+        WHERE t.task_id = #{taskId}
+          AND t.psw = #{password};
+    </select>
 </mapper>

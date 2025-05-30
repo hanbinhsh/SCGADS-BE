@@ -98,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             FROM share
             WHERE task_id = #{taskId}
               AND receiver_id = #{userId}
+              AND (due_time IS NULL OR due_time > NOW())
         ) AS exists_flag;
     </select>
     <select id="existsByTaskIdAndCompanyId" resultType="java.lang.Boolean">
@@ -106,6 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             FROM share
             WHERE task_id = #{taskId}
               AND company_id = #{userCompanyId}
+              AND (due_time IS NULL OR due_time > NOW())
         ) AS exists_flag;
     </select>
     <select id="existsByTaskIdAndPassword" resultType="java.lang.Boolean">

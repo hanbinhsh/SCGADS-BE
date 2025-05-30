@@ -3,6 +3,7 @@ package com.ruoyi.system.controller;
 import com.ruoyi.system.domain.entity.Result;
 import com.ruoyi.system.domain.entity.Scmoannofiles;
 import com.ruoyi.system.domain.entity.Scmoannotask;
+import com.ruoyi.system.domain.entity.Scmoannouser;
 import com.ruoyi.system.service.FilesServer;
 import com.ruoyi.system.service.ShareService;
 import com.ruoyi.system.service.TaskServer;
@@ -180,8 +181,9 @@ public class TaskController {
         Scmoannotask task = taskServer.findTaskByTaskName(taskName);
         if (task == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
 
+        // 管理员有权限
+        if (userServer.findUserByUserId(userId).getIsAdmin() == 1)  return ResponseEntity.ok(true);
         // 上传者有权限
-        // TODO 管理员有权限
         if (task.getUploaderId() == userId) return ResponseEntity.ok(true);
 
         Long taskId = task.getTaskId();

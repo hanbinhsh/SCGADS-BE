@@ -23,4 +23,5 @@ public interface UserMapper {
     Scmoannouser findUserByName(@Param("userName") String userName);
     @MapKey("user_id")
     Map<Long, String> selectAllUserIdName();
+    Long getCompanyIdByUserId(Long userId);
 }

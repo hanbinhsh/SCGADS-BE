@@ -30,4 +30,8 @@ public interface ShareMapper {
      * 更新分享设置（主要更新密码和到期时间）
      */
     void updateShare(Share share);
+
+    boolean existsByTaskIdAndReceiverId(@Param("taskId") Long taskId, @Param("userId") Long userId);
+    boolean existsByTaskIdAndCompanyId(@Param("taskId") Long taskId, @Param("userCompanyId") Long userCompanyId);
+    boolean existsByTaskIdAndPassword(@Param("taskId") Long taskId, @Param("password") String password);
 }

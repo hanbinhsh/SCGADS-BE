@@ -18,4 +18,5 @@ public interface UserServer {
     void approveUser(long userId);
     Scmoannouser findUserByName(String userName);
     Map<Long, String> selectAllUserIdName();
+    Long getCompanyIdByUserId(Long userId);
 }

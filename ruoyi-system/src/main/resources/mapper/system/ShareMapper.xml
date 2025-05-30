@@ -92,4 +92,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN company ON s.company_id = company.company_id
         ORDER BY s.shared_time DESC
     </select>
+    <select id="existsByTaskIdAndReceiverId" resultType="java.lang.Boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM share
+            WHERE task_id = #{taskId}
+              AND receiver_id = #{userId}
+        ) AS exists_flag;
+    </select>
+    <select id="existsByTaskIdAndCompanyId" resultType="java.lang.Boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM share
+            WHERE task_id = #{taskId}
+              AND company_id = #{userCompanyId}
+        ) AS exists_flag;
+    </select>
+    <select id="existsByTaskIdAndPassword" resultType="java.lang.Boolean">
+        SELECT COUNT(*) > 0
+        FROM scMoAnnoTask t
+        JOIN scMoAnnoUser u ON t.uploader_id = u.user_id
+        WHERE t.task_id = #{taskId}
+          AND u.psw = SHA2(#{password}, 256);
+    </select>
 </mapper>

@@ -4,7 +4,9 @@ import com.ruoyi.system.domain.entity.Result;
 import com.ruoyi.system.domain.entity.Scmoannofiles;
 import com.ruoyi.system.domain.entity.Scmoannotask;
 import com.ruoyi.system.service.FilesServer;
+import com.ruoyi.system.service.ShareService;
 import com.ruoyi.system.service.TaskServer;
+import com.ruoyi.system.service.UserServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,12 @@ public class TaskController {
 
     @Autowired
     private FilesServer filesServer;
+
+    @Autowired
+    private UserServer userServer;
+
+    @Autowired
+    private ShareService shareService;
 
     @RequestMapping("/insertTask")
     @CrossOrigin(origins = "*")
@@ -162,5 +170,29 @@ public class TaskController {
         response.put("fileSize", imageBytes.length);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/checkAccessRight")
+    public ResponseEntity<Boolean> checkAccessRight(
+        @RequestParam Long userId,
+        @RequestParam String taskName) {
+
+        Scmoannotask task = taskServer.findTaskByTaskName(taskName);
+        if (task == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+
+        // 上传者有权限
+        // TODO 管理员有权限
+        if (task.getUploaderId() == userId) return ResponseEntity.ok(true);
+
+        Long taskId = task.getTaskId();
+        Long userCompanyId = userServer.getCompanyIdByUserId(userId);
+
+        // 查询是否为用户接收者
+        boolean isUserReceiver = shareService.existsByTaskIdAndReceiverId(taskId, userId);
+
+        // 查询是否为公司接收者
+        boolean isCompanyReceiver = shareService.existsByTaskIdAndCompanyId(taskId, userCompanyId);
+
+        return ResponseEntity.ok(isUserReceiver || isCompanyReceiver);
     }
 }

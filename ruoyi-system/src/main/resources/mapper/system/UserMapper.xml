@@ -55,4 +55,9 @@
             user_name
         from scmoannouser
     </select>
+    <select id="getCompanyIdByUserId" resultType="java.lang.Long">
+        select company_id
+        from scmoannouser
+        where user_id = #{userId}
+    </select>
 </mapper>

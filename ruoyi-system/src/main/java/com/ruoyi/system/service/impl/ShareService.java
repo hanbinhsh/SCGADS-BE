@@ -47,4 +47,19 @@ public class ShareService implements com.ruoyi.system.service.ShareService {
     public void updateShare(Share share) {
         shareMapper.updateShare(share);
     }
+
+    @Override
+    public boolean existsByTaskIdAndReceiverId(Long taskId, Long userId) {
+        return shareMapper.existsByTaskIdAndReceiverId(taskId, userId);
+    }
+
+    @Override
+    public boolean existsByTaskIdAndCompanyId(Long taskId, Long userCompanyId) {
+        return shareMapper.existsByTaskIdAndCompanyId(taskId, userCompanyId);
+    }
+
+    @Override
+    public boolean existsByTaskIdAndPassword(Long taskId, String password) {
+        return shareMapper.existsByTaskIdAndPassword(taskId, password);
+    }
 }

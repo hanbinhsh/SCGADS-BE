@@ -20,4 +20,8 @@ public interface ShareService {
      * 更新分享设置
      */
     void updateShare(Share share);
+
+    boolean existsByTaskIdAndReceiverId(Long taskId, Long userId);
+    boolean existsByTaskIdAndCompanyId(Long taskId, Long userCompanyId);
+    boolean existsByTaskIdAndPassword(Long taskId, String password);
 }

@@ -3,6 +3,7 @@ package com.ruoyi.system.controller;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.entity.*;
 import com.ruoyi.system.service.FilesServer;
+import com.ruoyi.system.service.impl.TaskServer;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.io.FileUtils;
@@ -47,6 +48,8 @@ public class FileController {
 
     @Autowired
     private FilesServer filesServer;
+    @Autowired
+    private TaskServer taskServer;
 
     @PostMapping("/uploadResult")
     @CrossOrigin(origins = "*")  // 跨域
@@ -74,6 +77,7 @@ public class FileController {
     public ResponseEntity<byte[]> downloadResult(@RequestParam("taskName") String taskName,
                                                  @RequestParam("type") String type,
                                                  @RequestParam("userName") String userName) throws IOException {
+        userName = taskServer.findUserNameByTaskName(taskName);
         // 调用业务层接口的方法
         //Scmoannoresult result = filesServer.findResultByTaskName(taskName);
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();  // 设置响应对象为二进制流
@@ -93,6 +97,7 @@ public class FileController {
     public ResponseEntity<byte[]> downloadTrainResult(@RequestParam("taskName") String taskName,
                                                       @RequestParam("type") String type,
                                                       @RequestParam("userName") String userName) throws IOException {
+        userName = taskServer.findUserNameByTaskName(taskName);
         // 调用业务层接口的方法
         //Scmoannoresult result = filesServer.findResultByTaskName(taskName);
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();  // 设置响应对象为二进制流

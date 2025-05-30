@@ -43,4 +43,10 @@
     <select id="findTaskByTaskName" resultType="com.ruoyi.system.domain.entity.Scmoannotask">
         select * from scmoannotask where task_name = #{taskName}
     </select>
+    <select id="findUserNameByTaskName" resultType="java.lang.String">
+        SELECT u.user_name
+            FROM scMoAnnoTask t
+            JOIN scMoAnnoUser u ON t.uploader_id = u.user_id
+            WHERE t.task_name = #{taskName};
+    </select>
 </mapper>

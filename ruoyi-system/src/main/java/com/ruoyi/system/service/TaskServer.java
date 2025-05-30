@@ -17,4 +17,6 @@ public interface TaskServer {
     void deleteTasksByTaskName(String taskName);
 
     void updateTaskStatusByTaskName(String taskName, Long status);
+
+    String findUserNameByTaskName(String taskName);
 }

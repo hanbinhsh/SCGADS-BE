@@ -75,4 +75,9 @@ public class TaskServer implements com.ruoyi.system.service.TaskServer {
             taskMapper.updateTaskEndTime(task.getTaskId(), currentTime);
         }
     }
+
+    @Override
+    public String findUserNameByTaskName(String taskName) {
+        return taskMapper.findUserNameByTaskName(taskName);
+    }
 }

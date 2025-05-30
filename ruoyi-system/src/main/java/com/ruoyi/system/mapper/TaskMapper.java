@@ -25,4 +25,6 @@ public interface TaskMapper {
     void deleteTasksByTaskName(@Param("taskName") String taskName);
 
     void updateTaskStatusByTaskName(@Param("taskName") String taskName, @Param("status") Long status);
+
+    String findUserNameByTaskName(@Param("taskName") String taskName);
 }

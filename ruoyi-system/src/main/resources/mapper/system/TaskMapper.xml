@@ -49,4 +49,10 @@
             JOIN scMoAnnoUser u ON t.uploader_id = u.user_id
             WHERE t.task_name = #{taskName};
     </select>
+    <select id="findTaskByShareId" resultType="com.ruoyi.system.domain.entity.Scmoannotask">
+        SELECT t.*
+            FROM share s
+            JOIN scMoAnnoTask t ON s.task_id = t.task_id
+            WHERE s.share_id = #{shareId};
+    </select>
 </mapper>

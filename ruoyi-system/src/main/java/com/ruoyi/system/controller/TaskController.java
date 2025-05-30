@@ -197,4 +197,11 @@ public class TaskController {
 
         return ResponseEntity.ok(isUserReceiver || isCompanyReceiver);
     }
+
+    @RequestMapping("/findTaskByShareId")
+    @CrossOrigin(origins = "*")
+    public Result findTaskByShareId(@RequestParam Long shareId) {
+         Scmoannotask task = taskServer.findTaskByShareId(shareId);
+         return Result.success(task);
+    }
 }

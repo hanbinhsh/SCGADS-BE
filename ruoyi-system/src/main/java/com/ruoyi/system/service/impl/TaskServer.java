@@ -80,4 +80,9 @@ public class TaskServer implements com.ruoyi.system.service.TaskServer {
     public String findUserNameByTaskName(String taskName) {
         return taskMapper.findUserNameByTaskName(taskName);
     }
+
+    @Override
+    public Scmoannotask findTaskByShareId(Long shareId) {
+        return taskMapper.findTaskByShareId(shareId);
+    }
 }

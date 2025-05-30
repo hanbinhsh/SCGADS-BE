@@ -27,4 +27,6 @@ public interface TaskMapper {
     void updateTaskStatusByTaskName(@Param("taskName") String taskName, @Param("status") Long status);
 
     String findUserNameByTaskName(@Param("taskName") String taskName);
+
+    Scmoannotask findTaskByShareId(@Param("shareId") Long shareId);
 }

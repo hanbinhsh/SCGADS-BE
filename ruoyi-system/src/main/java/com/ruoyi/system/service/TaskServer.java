@@ -19,4 +19,6 @@ public interface TaskServer {
     void updateTaskStatusByTaskName(String taskName, Long status);
 
     String findUserNameByTaskName(String taskName);
+
+    Scmoannotask findTaskByShareId(Long shareId);
 }

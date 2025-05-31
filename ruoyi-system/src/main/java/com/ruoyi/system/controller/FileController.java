@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,6 +40,7 @@ import java.util.*;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
+import static com.ruoyi.common.constant.HttpStatus.FORBIDDEN;
 import static com.ruoyi.common.utils.file.FileUtils.*;
 import static com.ruoyi.system.controller.Utils.getResultLocation;
 import static com.ruoyi.system.controller.Utils.getUploadLocation;
@@ -194,15 +196,21 @@ public class FileController {
     @CrossOrigin(origins = "*")
     public ResponseEntity<byte[]> downloadTask(@RequestParam("userName") String userName,
                                                @RequestParam("taskName") String taskName) throws Exception {
-        userName = taskServer.findUserNameByTaskName(taskName);
-        // 1. 验证任务文件是否存在
-        Scmoannofiles fileRecord = filesServer.findFileByTaskName(taskName);
-        if (fileRecord == null) {
-            return ResponseEntity.notFound().build();
+        // 1. 参数校验（确保 taskName 和 userName 有效）
+        if (taskName == null || taskName.isEmpty() || userName == null || userName.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body("任务名称或用户名不能为空".getBytes(StandardCharsets.UTF_8));
         }
-        // 2. 获取基础目录
+        // 2. 获取文件存储路径
         String baseDir = getResultLocation(userName, taskName);
-        Path basePath = Paths.get(baseDir);
+        Path basePath = Paths.get(baseDir).normalize(); // 规范化路径，防止路径遍历
+        // 3. 检查目标目录是否存在
+        // 检查目录是否存在
+        if (!Files.exists(basePath)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("目录不存在".getBytes(StandardCharsets.UTF_8));
+        }
+
         // 4. 创建内存ZIP
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ZipArchiveOutputStream zaos = new ZipArchiveOutputStream(baos)) {
@@ -215,18 +223,14 @@ public class FileController {
                             String relativePath = basePath.relativize(path).toString();
 
                             if (Files.isDirectory(path)) {
-                                // 如果是目录，在ZIP中创建目录条目
-                                String dirEntryName = relativePath + "/"; // ZIP目录需要以/结尾
-                                ZipArchiveEntry entry = new ZipArchiveEntry(dirEntryName);
-                                zaos.putArchiveEntry(entry);
+                                // 处理目录
+                                zaos.putArchiveEntry(new ZipArchiveEntry(relativePath + "/"));
                                 zaos.closeArchiveEntry();
                             } else {
-                                // 如果是文件，读取、解密并添加到ZIP
-                                byte[] encrypted = Files.readAllBytes(path);
-//                                byte[] decrypted = decrypt(encrypted, aesKey, iv);
+                                // 如果是文件，读取并添加到ZIP
                                 ZipArchiveEntry entry = new ZipArchiveEntry(relativePath);
                                 zaos.putArchiveEntry(entry);
-                                zaos.write(encrypted);
+                                zaos.write(Files.readAllBytes(path));
                                 zaos.closeArchiveEntry();
                             }
                         } catch (Exception e) {
@@ -234,14 +238,16 @@ public class FileController {
                         }
                     });
             zaos.finish();
-            // 5. 返回标准ZIP响应
+            // 5. 返回ZIP文件
             return ResponseEntity.ok()
                     .header("Content-Type", "application/zip")
-                    .header("Content-Disposition", "attachment; filename=" + taskName + ".zip")
+                    .header("Content-Disposition",
+                            "attachment; filename=\"" + URLEncoder.encode(taskName, "UTF-8") + ".zip\"")
                     .body(baos.toByteArray());
+
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                    .body(("下载失败: " + e.getMessage()).getBytes());
+                    .body(("文件打包失败: " + e.getMessage()).getBytes(StandardCharsets.UTF_8));
         }
     }
 

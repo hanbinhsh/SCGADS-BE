@@ -1,8 +1,10 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.system.domain.entity.Models;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -206,18 +208,26 @@ public class ModelCacheService {
      * 清除所有模型图片缓存
      */
     public void clearAllModelImageCache() {
-        // 获取所有相关的key
-        Set<String> keys = redisTemplate.keys(MODEL_IMAGE_KEY_PREFIX + "*");
-        if (keys != null && !keys.isEmpty()) {
-            redisTemplate.delete(keys);
+
+        // 1. 获取所有modelId（从全局Set）
+        Set<Object> modelIds = redisTemplate.opsForSet().members("all_model_ids");
+
+        for (Object id : modelIds) {
+            redisTemplate.delete("model:" + Long.valueOf((String) id));
         }
 
-        Set<String> typeKeys = redisTemplate.keys(MODEL_TYPE_KEY_PREFIX + "*");
-        if (typeKeys != null && !typeKeys.isEmpty()) {
-            redisTemplate.delete(typeKeys);
-        }
+        // 2. 批量删除所有模型Hash（使用pipeline提高性能）
+//        if (!CollectionUtils.isEmpty(modelIds)) {
+//            redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+//                for (Object id : modelIds) {
+//                    connection.del(("model:" + Long.valueOf((String) id).getBytes());
+//                }
+//                return null;
+//            });
+//        }
 
-        redisTemplate.delete(ALL_MODELS_KEY);
+        // 3. 删除全局索引
+        redisTemplate.delete("all_model_ids");
     }
 
     /**

@@ -16,6 +16,9 @@ public class ModelServer implements ModelService {
     @Autowired
     private ModelCacheService modelCache;
 
+    @Autowired
+    private ModelsService modelsService;
+
 
     @Override
     public List<Models> getAllModels() {
@@ -26,7 +29,8 @@ public class ModelServer implements ModelService {
     public void deleteModel(Long modelId) {
         modelMapper.deleteModel(modelId);
         // 再删除缓存
-        modelCache.evictModel(modelId);
+        modelsService.refreshCache();
+//        modelCache.evictModel(modelId);
     }
 
     @Override
@@ -34,15 +38,17 @@ public class ModelServer implements ModelService {
         System.out.println(model.getModelId());
         modelMapper.addModel(model);
         // 再写入缓存
-        System.out.println(model.getModelId());
-        modelCache.cacheModelImage(model);
+//        System.out.println(model.getModelId());
+        modelsService.refreshCache();
+//        modelCache.cacheModelImage(model);
     }
 
     @Override
     public void updateModel(Models model) {
         modelMapper.updateModel(model);
         // 再更新缓存
-        modelCache.updateCacheModel(model);
+        modelsService.refreshCache();
+//        modelCache.updateCacheModel(model);
     }
 
     @Override
@@ -53,8 +59,9 @@ public class ModelServer implements ModelService {
     @Override
     public void updateModelRemark(Long modelId, String remark) {
         modelMapper.updateModelRemark(modelId, remark);
-        // 直接删除缓存
-        modelCache.evictModel(modelId);
+        // 更新缓存
+        modelsService.refreshCache();
+//        modelCache.evictModel(modelId);
     }
 
     @Override
@@ -65,6 +72,7 @@ public class ModelServer implements ModelService {
     @Override
     public void addChildModel(Models model) {
         modelMapper.addChildModel(model);
+        modelsService.refreshCache();
     }
 
     @Override

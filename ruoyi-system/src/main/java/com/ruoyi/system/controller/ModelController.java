@@ -26,6 +26,8 @@ public class ModelController {
     public ResponseEntity<List<Models>> getAllModels() {
 
         List<Models> models = modelsService.getAllModel();
+//        List<Models> models = modelService.getAllModels();
+
         modelUtil.changeAllModelImage(models);
 
         return ResponseEntity.ok(models);

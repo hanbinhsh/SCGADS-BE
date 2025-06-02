@@ -39,9 +39,9 @@ INSERT INTO models (model_name, model_type, model_path, predict_file_path, train
 -- 公司表：管理用户所属的公司
 drop table if exists `company`;
 CREATE TABLE `company` (
-    `company_id` INT AUTO_INCREMENT PRIMARY KEY     NOT NULL COMMENT '公司ID',
-    `company_name` VARCHAR(255) UNIQUE             NOT NULL COMMENT '公司名称',
-    `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+    `company_id` INT AUTO_INCREMENT PRIMARY KEY     	NOT NULL 	COMMENT '公司ID',
+    `company_name` VARCHAR(255) UNIQUE             		NOT NULL 	COMMENT '公司名称',
+    `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP 				COMMENT '创建时间'
 );
 
 drop table if exists `scMoAnnoUser`;
@@ -131,7 +131,7 @@ CREATE TABLE `log` (
     `log_id` INT AUTO_INCREMENT PRIMARY KEY        NOT NULL COMMENT '日志ID',
     `user_id` INT                                  NOT NULL COMMENT '用户ID',
     `action` VARCHAR(255)                          NOT NULL COMMENT '操作内容',
-    `importance` INT                               NOT NULL COMMENT '操作内容',
+    `importance` INT                               NOT NULL COMMENT '重要性',
     `timestamp` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '时间戳',
     FOREIGN KEY (`user_id`) REFERENCES `scMoAnnoUser`(`user_id`)
 );
@@ -139,12 +139,12 @@ CREATE TABLE `log` (
 -- 创建反馈回复表
 drop table if exists `feedbackReply`;
 CREATE TABLE `feedbackReply` (
-  `reply_id` INT AUTO_INCREMENT PRIMARY KEY,
-  `feedback_id` INT NOT NULL COMMENT '关联反馈ID',
-  `user_id` INT NOT NULL COMMENT '用户ID（关联用户表）',
-  `reply_content` TEXT NOT NULL COMMENT '回复内容',
-  `reply_time` DATETIME NOT NULL COMMENT '回复时间',
-  `subject` VARCHAR(32) NOT NULL COMMENT '反馈主题',
+  `reply_id` INT AUTO_INCREMENT PRIMARY KEY 				COMMENT '回复ID',
+  `feedback_id` INT 							NOT NULL 	COMMENT '关联反馈ID',
+  `user_id` INT 								NOT NULL 	COMMENT '用户ID（关联用户表）',
+  `reply_content` TEXT 							NOT NULL 	COMMENT '回复内容',
+  `reply_time` DATETIME 						NOT NULL 	COMMENT '回复时间',
+  `subject` VARCHAR(32) 						NOT NULL 	COMMENT '反馈主题',
   FOREIGN KEY (feedback_id) REFERENCES feedback(feedback_id),
   FOREIGN KEY (user_id) REFERENCES scMoAnnoUser(user_id)
 );

@@ -14,6 +14,7 @@
     <select id="selectAllModelImages" resultType="com.ruoyi.system.domain.entity.Models">
         SELECT *
         FROM models
+        ORDER BY model_id ASC
     </select>
 
     <select id="selectModelImageById" parameterType="Long" resultType="com.ruoyi.system.domain.entity.Models">

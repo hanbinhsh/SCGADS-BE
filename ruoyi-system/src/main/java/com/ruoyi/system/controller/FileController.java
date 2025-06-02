@@ -54,25 +54,153 @@ public class FileController {
     private TaskServer taskServer;
 
     @PostMapping("/uploadResult")
-    @CrossOrigin(origins = "*")  // 跨域
+    @CrossOrigin(origins = "*")
     public Result uploadResult(@RequestParam("file") MultipartFile file,
-                               @RequestParam("taskName") String taskName,
-//                               @RequestParam("fileType") String fileType,
-                               @RequestParam("userName") String userName) throws IOException {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());  // 文件名
+                             @RequestParam("taskName") String taskName,
+                             @RequestParam("userName") String userName,
+                             @RequestParam(value = "taskType", required = false) String taskType,
+                             @RequestParam(value = "isPreTrain", required = false, defaultValue = "false") Boolean isPreTrain) throws IOException {
+
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
         // 验证文件名有效性
         if (fileName.contains("..")) {
             return Result.error("文件名包含非法路径序列");
         }
-//        String contentType = file.getContentType();  // 内容类型
-        String name = file.getName();  // 表单域名
-//        System.out.println(name+" "+fileName+" "+contentType);
-        String realFilePath = getResultLocation(userName, taskName) + fileName;
+
+        // 文件类型和任务类型验证
+        if (!isValidFileForTask(fileName, taskType, isPreTrain)) {
+            return Result.error("文件类型与任务类型不匹配: " + fileName);
+        }
+
+        // 获取基础结果路径
+        String baseResultPath = getResultLocation(userName, taskName);
+
+        // 根据文件类型确定完整文件路径（包含子文件夹）
+        String realFilePath = getOrganizedFilePath(baseResultPath, fileName);
+
+        // 确保目录存在
+        File targetFile = new File(realFilePath);
+        File targetDir = targetFile.getParentFile();
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+
         // 文件操作
-        file.transferTo(new File(realFilePath));  // 移动到目标文件
-        return Result.success();
+        file.transferTo(targetFile);
+
+        // 记录上传日志
+        logFileUpload(userName, taskName, fileName, taskType, isPreTrain);
+
+        return Result.success("文件上传成功: " + fileName);
     }
 
+    /**
+     * 根据文件名确定文件应该存放的完整路径
+     */
+    private String getOrganizedFilePath(String baseResultPath, String fileName) {
+        String lowerFileName = fileName.toLowerCase();
+
+        // data_split 文件夹中的文件
+        Set<String> dataSplitFiles = Set.of(
+            "cell_types.npy", "x_atac_test.npy", "x_atac_train.npy",
+            "x_rna_test.npy", "x_rna_train.npy", "y_test.npy", "y_test_str.npy",
+            "y_train.npy", "y_train_str.npy"
+        );
+
+        // result 文件夹中的文件
+        Set<String> resultFiles = Set.of(
+            "extract_labels.csv", "pretrain_best.ckpt", "pretrainresult.txt",
+            "train_best.ckpt", "trainresult.txt", "trainresult_pred.txt"
+        );
+
+        // 根目录文件（可视化相关文件）
+        Set<String> rootFiles = Set.of(
+            "config_tsne.js", "config_umap.js", "data_tsne.js", "data_umap.js",
+            "label_pred_tsne.js", "label_pred_umap.js", "label_tsne.js", "label_umap.js",
+            "output.npy"
+        );
+
+        // 确保baseResultPath以分隔符结尾
+        if (!baseResultPath.endsWith(File.separator)) {
+            baseResultPath += File.separator;
+        }
+
+        if (dataSplitFiles.contains(lowerFileName)) {
+            return baseResultPath + "data_split" + File.separator + fileName;
+        } else if (resultFiles.contains(lowerFileName)) {
+            return baseResultPath + "result" + File.separator + fileName;
+        } else if (rootFiles.contains(lowerFileName)) {
+            return baseResultPath + fileName;
+        } else {
+            // 默认放在根目录
+            return baseResultPath + fileName;
+        }
+    }
+
+    private void logFileUpload(String userName, String taskName, String fileName, String taskType, Boolean isPreTrain) {
+        // TODO 记录到数据库
+        System.out.printf("File uploaded - User: %s, Task: %s, File: %s, Type: %s, PreTrain: %s%n",
+                userName, taskName, fileName, taskType, isPreTrain);
+    }
+
+    private boolean isValidFileForTask(String fileName, String taskType, Boolean isPreTrain) {
+        if (fileName == null || taskType == null) {
+            return true; // 如果没有提供类型信息，跳过验证
+        }
+
+        String lowerFileName = fileName.toLowerCase();
+
+        // 通用可视化文件
+        Set<String> visualizationFiles = Set.of(
+            "config_tsne.js", "config_umap.js", "data_tsne.js", "data_umap.js",
+            "label_pred_tsne.js", "label_pred_umap.js", "label_tsne.js", "label_umap.js",
+            "output.npy"
+        );
+
+        // 注释任务文件
+        Set<String> annotationFiles = Set.of(
+            "data_tsne.js", "data_umap.js", "config_tsne.js", "config_umap.js",
+            "label_pred_tsne.js", "label_pred_umap.js", "output.npy"
+        );
+
+        // 训练任务基础文件
+        Set<String> trainingBaseFiles = Set.of(
+            "extract_labels.csv", "train_best.ckpt", "trainresult.txt", "trainresult_pred.txt"
+        );
+
+        // 预训练专有文件
+        Set<String> pretrainFiles = Set.of(
+            "pretrain_best.ckpt", "pretrainresult.txt"
+        );
+
+        // data_split 文件夹中的可选文件
+        Set<String> dataSplitFiles = Set.of(
+            "cell_types.npy", "x_atac_test.npy", "x_atac_train.npy",
+            "x_rna_test.npy", "x_rna_train.npy", "y_test.npy", "y_test_str.npy",
+            "y_train.npy", "y_train_str.npy"
+        );
+
+        switch (taskType.toLowerCase()) {
+            case "annotation":
+                return annotationFiles.contains(lowerFileName);
+
+            case "training":
+                Set<String> validTrainingFiles = new HashSet<>();
+                validTrainingFiles.addAll(trainingBaseFiles);
+                validTrainingFiles.addAll(visualizationFiles);
+                validTrainingFiles.addAll(dataSplitFiles);
+
+                if (isPreTrain != null && isPreTrain) {
+                    validTrainingFiles.addAll(pretrainFiles);
+                }
+
+                return validTrainingFiles.contains(lowerFileName);
+
+            default:
+                return true; // 未知任务类型，允许所有文件
+        }
+    }
 
     @RequestMapping("/downloadResult")
     @CrossOrigin(origins = "*")  // 跨域
@@ -194,24 +322,19 @@ public class FileController {
 
     @GetMapping("/downloadTask")
     @CrossOrigin(origins = "*")
-    public ResponseEntity<byte[]> downloadTask(@RequestParam("userName") String userName,
-                                               @RequestParam("taskName") String taskName) throws Exception {
-        // 1. 参数校验（确保 taskName 和 userName 有效）
-        if (taskName == null || taskName.isEmpty() || userName == null || userName.isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body("任务名称或用户名不能为空".getBytes(StandardCharsets.UTF_8));
-        }
-        // 2. 获取文件存储路径
+    public ResponseEntity<byte[]> downloadTask(@RequestParam("taskName") String taskName) throws Exception {
+        String userName = taskServer.findUserNameByTaskName(taskName);
+        // 获取文件存储路径
         String baseDir = getResultLocation(userName, taskName);
         Path basePath = Paths.get(baseDir).normalize(); // 规范化路径，防止路径遍历
-        // 3. 检查目标目录是否存在
+        // 检查目标目录是否存在
         // 检查目录是否存在
         if (!Files.exists(basePath)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("目录不存在".getBytes(StandardCharsets.UTF_8));
         }
 
-        // 4. 创建内存ZIP
+        // 创建内存ZIP
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ZipArchiveOutputStream zaos = new ZipArchiveOutputStream(baos)) {
             // 递归处理目录
@@ -238,7 +361,7 @@ public class FileController {
                         }
                     });
             zaos.finish();
-            // 5. 返回ZIP文件
+            // 返回ZIP文件
             return ResponseEntity.ok()
                     .header("Content-Type", "application/zip")
                     .header("Content-Disposition",

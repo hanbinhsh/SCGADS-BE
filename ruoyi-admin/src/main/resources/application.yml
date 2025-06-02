@@ -57,9 +57,9 @@ spring:
   servlet:
     multipart:
       # 单个文件大小
-      max-file-size: 512MB
+      max-file-size: 4096MB
       # 设置总上传的文件大小
-      max-request-size: 512MB
+      max-request-size: 8192MB
   # 服务模块
   devtools:
     restart:

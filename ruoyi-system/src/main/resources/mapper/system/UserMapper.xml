@@ -60,4 +60,10 @@
         from scmoannouser
         where user_id = #{userId}
     </select>
+    <select id="findUserCompanyName" resultType="java.lang.String">
+        SELECT c.company_name
+            FROM scMoAnnoUser u
+            JOIN company c ON u.company_id = c.company_id
+            WHERE u.user_name = #{userName};
+    </select>
 </mapper>

@@ -187,6 +187,10 @@ public class UserController {
             valid = shareService.existsByTaskIdAndSharePassword(taskId, password);
             return ResponseEntity.ok(valid);
         }
+    }
 
+    @PostMapping("/findUserCompanyName")
+    public Result<String> findUserCompanyName(@RequestParam String userName){
+        return Result.success(userServer.findUserCompanyName(userName));
     }
 }

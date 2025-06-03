@@ -24,4 +24,5 @@ public interface UserMapper {
     @MapKey("user_id")
     Map<Long, String> selectAllUserIdName();
     Long getCompanyIdByUserId(Long userId);
+    String findUserCompanyName(String userName);
 }

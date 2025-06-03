@@ -1,0 +1,33 @@
+任务:							预训练需要此文件？		训练需要此文件？
+data_split-----					un
+			| cell_types.npy
+			| x_atac_test.npy
+			| x_atac_train.npy
+			| x_rna_test.npy
+			| x_rna_train.npy
+			| y_test.npy
+			| y_test_str.npy
+			| y_train.npy
+			| y_train_str.npy
+
+result---------
+			| extract_labels.csv	y	y
+			| pretrain_best.ckpt	y	n
+			| pretrainresult.txt		y	n
+			| train_best.ckpt		y	y
+			| trainresult.txt		y	y
+			| trainresult_pred.txt	y	y
+
+config_tsne.js						y	y
+config_umap.js					y	y
+data_tsne.js						y	y
+data_umap.js						y	y
+label_pred_tsne.js					y	y
+label_pred_umap.js				y	y
+label_tsne.js						y	y
+label_umap.js						y	y
+output.npy						y	y
+
+data_split在预训练和训练中都会产生，但是非必要上传
+n表示不会产生此文件，不提供上传选项
+y表示必须上传

@@ -78,4 +78,9 @@ public class UserServer implements com.ruoyi.system.service.UserServer {
     public Long getCompanyIdByUserId(Long userId) {
         return userMapper.getCompanyIdByUserId(userId);
     }
+
+    @Override
+    public String findUserCompanyName(String userName) {
+        return userMapper.findUserCompanyName(userName);
+    }
 }

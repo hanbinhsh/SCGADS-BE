@@ -1,6 +1,7 @@
 package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.entity.Scmoannouser;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -19,4 +20,5 @@ public interface UserServer {
     Scmoannouser findUserByName(String userName);
     Map<Long, String> selectAllUserIdName();
     Long getCompanyIdByUserId(Long userId);
+    String findUserCompanyName(String userName);
 }

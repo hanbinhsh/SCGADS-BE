@@ -17,4 +17,5 @@ public interface ModelMapper {
     List<Models> findModelsByUserName(String userName);
     void addChildModel(Models model);
     String getBaseModelName(Long baseModel);
+
 }

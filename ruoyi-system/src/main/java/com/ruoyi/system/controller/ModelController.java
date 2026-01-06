@@ -10,6 +10,8 @@ import com.ruoyi.system.service.impl.ModelsService;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 @RestController
 @RequestMapping("/models")
 public class ModelController {
@@ -142,4 +144,27 @@ public class ModelController {
         List<Models> models = modelService.findModelsByUserName(userName);
         return Result.success(models);
     }
+
+    /**
+     * 新增接口：上传并解压算子包
+     * 功能：接收文件、模型名称、模型类型，根据类型解压到 SCGADS-BE/algorithm/ 下的对应目录
+     */
+    @PostMapping("/uploadPackage")
+    public Result uploadPackage(@RequestParam("file") MultipartFile file,
+                                @RequestParam("modelName") String modelName,
+                                @RequestParam("modelType") String modelType) {
+        try {
+            // 调用 ModelService 中的解压逻辑 (请确保上一轮提供的 Service 代码已更新)
+            modelService.uploadAndUnzipPackage(file, modelName, modelType);
+
+            // 返回成功 (根据你的 Result 类定义，如果有重载方法可以传消息)
+            return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 返回失败信息 (假设你的 Result 类有 error 或 fail 方法，请根据实际情况调整)
+            // 如果 Result 类没有 error(String)，可以使用 new Result(500, e.getMessage()) 等方式
+            return Result.error("上传解压失败: " + e.getMessage());
+        }
+    }
+
 }

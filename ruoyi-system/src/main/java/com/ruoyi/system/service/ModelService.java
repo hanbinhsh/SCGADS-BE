@@ -1,6 +1,7 @@
 package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.entity.Models;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface ModelService {
     List<Models> findModelsByUserName(String userId);
     void addChildModel(Models model);
     String getBaseModelName(Long baseModel);
+
+    void uploadAndUnzipPackage(MultipartFile file, String modelName, String modelType) throws Exception;
 }
